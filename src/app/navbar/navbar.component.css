@@ -1,0 +1,56 @@
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 15px;
+  height: 82px;
+  padding: 0 25px 0 40px;
+  gap: 20px;
+  background-color: white;
+}
+
+.nav-logo {
+  flex: 0 0 auto; /* Логотип не растягивается */
+}
+
+.nav-search {
+  display: flex;
+  flex: 1;
+  position: relative; /* Для позиционирования иконки */
+}
+
+.nav-search i.pi-search {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.nav-search input {
+  width: 100%;
+  padding-left: 35px; /* Оставляем место для иконки внутри инпута */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  max-width: 544px;
+  height: 38px;
+  background-color: #E0E0E0;
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 2rem; /* Расстояние между иконкой корзины и кнопкой */
+}
+
+.nav-login_button {
+  background-color: #2A6DB3;
+  border-radius: 10px;
+  color: white;
+  width: 121px;
+  height: 52px;
+}
+
+.nav-login button {
+  justify-content: center;
+  font-size: 22px;
+}
