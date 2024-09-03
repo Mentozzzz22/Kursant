@@ -1,0 +1,18 @@
+<div class="sidebar" [ngClass]="{'expanded': isExpanded}"
+     (mouseenter)="toggleExpand(true)" (mouseleave)="toggleExpand(false)">
+  <div class="sidebar-header">
+    <img *ngIf="isExpanded; else collapsedLogo" src="assets/images/navbar-Kursant.svg" alt="KursAnt" class="logo">
+    <ng-template #collapsedLogo>
+      <img src="assets/images/KursAnt.svg" alt="KursAnt Collapsed" class="collapsed-logo">
+    </ng-template>
+  </div>
+  <ul class="sidebar-menu">
+    <li *ngFor="let item of menuItems" (click)="navigate(item.link)">
+      <img [src]="item.icon" alt="{{ item.name }}"/>
+      <span *ngIf="isExpanded">{{ item.name }}</span>
+    </li>
+  </ul>
+  <div class="logout" *ngIf="isExpanded">
+    <span (click)="navigate('/logout')">Шығу</span>
+  </div>
+</div>
