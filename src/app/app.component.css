@@ -1,8 +1,6 @@
 :host {
   display: flex;
   flex-direction: column;
-  background-color: #f5f5f5; /* Бледно-серый фон */
-  min-height: 100vh;
   padding: 20px 80px;
 }
 

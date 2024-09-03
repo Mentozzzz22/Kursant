@@ -1,0 +1,162 @@
+* {
+  margin: 0;
+  padding: 0;
+  color: #444444;
+}
+
+.cart-container {
+  display: flex;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.main-right {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 30px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 45px 30px 30px 30px;
+}
+
+.cart-h2 {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.main-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  height: 197px;
+  width: 313px;
+}
+
+.confirm-block {
+  display: flex;
+  flex-direction: column;
+  gap: 23px;
+}
+
+.confirm-block p {
+  font-size: 10px;
+  color: #A4A4A4;
+}
+
+.confirm-block h2 {
+  font-size: 29px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.confirm-block h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #F93C65;
+  text-decoration: line-through;
+}
+
+.confirm-block button {
+  background-color: #2A6DB3;
+  border-radius: 10px;
+  height: 45px;
+  color: white;
+  font-size: 15px;
+  border: none;
+}
+
+.kurstar-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+
+.kurstar-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 7px;
+  border: 1.5px solid #ece5e5;
+}
+
+.kurs-images {
+  width: 289px;
+  height: 138px;
+}
+
+.subject-info h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subject-info p {
+  font-size: 10px;
+  color: #A4A4A4;
+  margin-bottom: 10px;
+}
+
+.kurs-card-content {
+  display: flex;
+  flex-direction: column;
+  padding: 13px;
+  gap: 15px;
+}
+
+.kurs-info {
+  display: flex;
+  gap: 7px;
+}
+
+.bolim {
+  display: flex;
+  gap: 8px;
+  background-color: #B5E8F9;
+  color: #00B0EA;
+  font-size: 10px;
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.sabak {
+  display: flex;
+  gap: 8px;
+  background-color: #CCC7FF;
+  color: #6E63E5;
+  font-size: 10px;
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.kurs-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kurs-footer button {
+  display: flex;
+  height: 28px;
+  border: 1px solid #2A6DB3;
+  background-color: white;
+  color: #2A6DB3;
+  border-radius: 5px;
+  padding: 8px 12px 8px 12px;
+  font-size: 12px;
+  align-items: center;
+}
+
+.kurs-price h3 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.kurs-price p {
+  font-size: 10px;
+  color: #A4A4A4;
+}

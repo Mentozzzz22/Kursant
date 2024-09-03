@@ -1,0 +1,338 @@
+* {
+  margin: 0;
+  padding: 0;
+  color: #444444;
+}
+
+.main-page {
+  display: flex;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.main-right {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.main-carousel {
+
+}
+
+.lil-cards {
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.lil-card {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  background-color: white;
+  border-radius: 20px;
+  max-width: 299px;
+  height: 79px;
+}
+
+.lil-card img {
+  width: 53px;
+  height: 53px;
+  margin: 13px;
+}
+
+.lil-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.main-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.main-card {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+  background-color: white;
+  padding: 25px;
+  border-radius: 20px;
+  height: 435px;
+}
+
+.card-img {
+  display: flex;
+  justify-content: center;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-content h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.card-content p {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 15px;
+}
+
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-input {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.card-input p {
+  font-size: 13px;
+}
+
+.card-input input {
+  width: 100%;
+  height: 38px;
+  background-color: #fdfafa;
+  padding: 10px;
+}
+
+.card-input input::placeholder {
+  font-size: 11px;
+  color: #DDDDDD;
+}
+
+.kurstar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.kurstar-text {
+  display: flex;
+  justify-content: space-between;
+}
+
+.kurstar-text h2 {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.kurstar-text p {
+  font-size: 17px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.kurstar-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+
+.kurstar-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 5px;
+}
+
+.kurs-images {
+  width: 289px;
+  height: 138px;
+}
+
+.subject-info h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subject-info p {
+  font-size: 10px;
+  color: #A4A4A4;
+  margin-bottom: 10px;
+}
+
+.kurs-card-content {
+  display: flex;
+  flex-direction: column;
+  padding: 13px;
+  gap: 15px;
+}
+
+.kurs-info {
+  display: flex;
+  gap: 7px;
+}
+
+.bolim {
+  display: flex;
+  gap: 8px;
+  background-color: #B5E8F9;
+  color: #00B0EA;
+  font-size: 10px;
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.sabak {
+  display: flex;
+  gap: 8px;
+  background-color: #CCC7FF;
+  color: #6E63E5;
+  font-size: 10px;
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.kurs-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kurs-footer button {
+  display: flex;
+  height: 28px;
+  border: 1px solid #2A6DB3;
+  background-color: white;
+  color: #2A6DB3;
+  border-radius: 5px;
+  padding: 8px 12px 8px 12px;
+  font-size: 12px;
+  align-items: center;
+}
+
+.kurs-price h3 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.kurs-price p {
+  font-size: 10px;
+  color: #A4A4A4;
+}
+
+.potoktar-tizimi {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.potok-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  border-radius: 20px;
+  border-left: 12px solid #00B0EA;
+  padding: 20px;
+}
+
+.potok-card1 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  border-radius: 20px;
+  border-left: 12px solid #6E63E5;
+  padding: 20px;
+}
+
+.potok-card h3 {
+  font-size: 20px;
+  font-weight: 500
+}
+
+.potok-info {
+  display: flex;
+  gap: 54px;
+}
+
+.potok-info p {
+  font-size: 15px;
+  font-weight: 500;
+  color: #A4A4A4;
+}
+
+.potok-subjects {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 7px;
+  margin-bottom: 15px;
+}
+.subject_teacher {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #B5E8F9;
+  border-radius: 10px;
+  color: #00B0EA;
+  font-size: 10px;
+  height: 22px;
+}
+
+.subject_teacher1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #CCC7FF;
+  border-radius: 10px;
+  color: #6E63E5;
+  font-size: 10px;
+  height: 22px;
+}
+
+.potok-footer {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+}
+
+.potok-footer button {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  background-color: #444444;
+  color: #ffff;
+  font-size: 10px;
+  padding: 10px 20px;
+}
+
+.potok-footer h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.potok-footer p {
+  font-size: 12px;
+}
+
+.mektep-statistika {
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  background-color: white;
+  padding: 25px;
+  border-radius: 20px;
+}
+
+.statistika-images {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

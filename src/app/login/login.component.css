@@ -1,0 +1,78 @@
+* {
+  margin: 0;
+  padding: 0;
+  color: #212121;
+}
+
+.login-container {
+  display: flex;
+  gap: 58px;
+}
+
+.login-left img {
+  max-width: 100%; /* Изображение адаптируется по ширине контейнера */
+  height: auto; /* Высота изменяется пропорционально ширине */
+  object-fit: cover; /* Обеспечиваем правильное масштабирование изображения */
+}
+
+.login-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 50px;
+}
+
+.login-header {
+  display: flex;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.login-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.login-text h1 {
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.login-text p {
+  font-size: 22px;
+}
+
+.login-input {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.login-input p {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.login-input input {
+  padding: 17px 21px 18px 21px;
+  font-size: 20px;
+  border: none;
+  width: 385px;
+  height: 62px;
+  border-radius: 10px;
+}
+
+.login-button {
+  background-color: #2A6DB3;
+  font-size: 22px;
+  color: white;
+  height: 62px;
+  width: 130px;
+  border: none;
+  border-radius: 10px;
+}
+
+.login-button:hover {
+  background-color: #1565C0;
+}

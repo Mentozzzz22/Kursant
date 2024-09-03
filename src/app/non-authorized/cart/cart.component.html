@@ -1,0 +1,38 @@
+<div class="cart-container">
+  <div class="main-right">
+    <h2 class="cart-h2">Корзина</h2>
+    <div class="kurstar-cards">
+      <div class="kurstar-card" *ngFor="let kurs of kurstar">
+        <img [src]="kurs.img" alt="subject1" class="kurs-images">
+        <div class="kurs-card-content">
+          <div class="kurs-info">
+            <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ kurs.bolim }} бөлім</p>
+            <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ kurs.sabak }} сабақ</p>
+          </div>
+          <div class="subject-info">
+            <h3>{{ kurs.subjectName }}</h3>
+            <p>Ең жақын поток: {{ kurs.closestPotok }}</p>
+            <hr>
+          </div>
+          <div class="kurs-footer">
+            <div class="kurs-price">
+              <h3>{{ kurs.price }} тг</h3>
+              <p>бір реттік төлем</p>
+            </div>
+            <button>Корзинаға</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main-left">
+    <div class="confirm-block">
+      <div>
+        <p>Сумма</p>
+        <h2>300 000 тг</h2>
+        <h3>420 000 тг</h3>
+      </div>
+      <button>Заявка қалдыру</button>
+    </div>
+  </div>
+</div>
