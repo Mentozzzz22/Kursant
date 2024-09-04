@@ -1,0 +1,11 @@
+* {
+  margin: 0;
+  padding: 0;
+  color: #444444;
+}
+.about-courses-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 30px;
+}

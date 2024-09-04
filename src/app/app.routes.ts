@@ -5,6 +5,7 @@ import {LoginComponent} from "./login/login.component";
 import {StudentComponent} from "./student/student.component";
 import {NonAuthorizedComponent} from "./non-authorized/non-authorized.component";
 import {CoursesComponent} from "./student/courses/courses.component";
+import {AboutCourseComponent} from "./student/about-course/about-course.component";
 
 export const routes: Routes = [
   {
@@ -17,6 +18,7 @@ export const routes: Routes = [
   {
     path: 'student', component: StudentComponent, children: [
       {path: 'courses', component: CoursesComponent},
+      {path: 'courses/:courseId', component: AboutCourseComponent},
     ]
   },
   {path: '**', redirectTo: '', pathMatch: 'full'},
