@@ -11,6 +11,7 @@ export interface kurs {
   bolim: number,
   sabak: number,
   closestPotok: string,
+  progress?: number,
   price: number,
 }
 

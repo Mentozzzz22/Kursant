@@ -5,23 +5,38 @@
     </div>
     <div class="lil-cards">
       <div class="lil-card">
-        <img src="../../../assets/images/lil-card-img.svg" alt="lil-card">
         <div>
-          <p>3 поток</p>
+          <div class="progress-wrapper">
+            <div class="progress-text">
+              <p>Прогресс</p>
+              <p>{{ progress }}%</p>
+            </div>
+            <p-progressBar [value]="progress" [showValue]="false" class="progress-bar"></p-progressBar>
+          </div>
           <h3>Потоктар</h3>
         </div>
       </div>
       <div class="lil-card">
-        <img src="../../../assets/images/lil-card-img.svg" alt="lil-card">
         <div>
-          <p>3 курс</p>
+          <div class="progress-wrapper">
+            <div class="progress-text">
+              <p>Прогресс</p>
+              <p>{{ progress }}%</p>
+            </div>
+            <p-progressBar [value]="progress" [showValue]="false" class="progress-bar"></p-progressBar>
+          </div>
           <h3>Курстар</h3>
         </div>
       </div>
       <div class="lil-card">
-        <img src="../../../assets/images/lil-card-img.svg" alt="lil-card">
         <div>
-          <p>3 мұғалім</p>
+          <div class="progress-wrapper">
+            <div class="progress-text">
+              <p>Прогресс</p>
+              <p>{{ progress }}%</p>
+            </div>
+            <p-progressBar [value]="progress" [showValue]="false" class="progress-bar"></p-progressBar>
+          </div>
           <h3>Мұғалімдер</h3>
         </div>
       </div>
@@ -29,7 +44,6 @@
     <div class="kurstar">
       <div class="kurstar-text">
         <h2>Курстар</h2>
-        <p>Барлық пәндер тізімі</p>
       </div>
       <div class="kurstar-cards">
         <div class="kurstar-card" *ngFor="let kurs of kurstar">
@@ -41,15 +55,13 @@
             </div>
             <div class="subject-info">
               <h3>{{ kurs.subjectName }}</h3>
-              <p>Ең жақын поток: {{ kurs.closestPotok }}</p>
-              <hr>
             </div>
-            <div class="kurs-footer">
-              <div class="kurs-price">
-                <h3>{{ kurs.price }} тг</h3>
-                <p>бір реттік төлем</p>
+            <div class="progress-wrapper">
+              <div class="progress-text">
+                <p>Прогресс</p>
+                <p>{{ kurs.progress }}%</p>
               </div>
-              <button>Корзинаға</button>
+              <p-progressBar [value]="kurs.progress" [showValue]="false" class="progress-bar"></p-progressBar>
             </div>
           </div>
         </div>

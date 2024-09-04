@@ -1,13 +1,13 @@
 * {
   margin: 0;
   padding: 0;
-  color: #212121;
+  color: #444444;
 }
 
 .main-page {
   display: flex;
+  justify-content: center;
   gap: 30px;
-  margin-top: 30px;
 }
 
 .main-right {
@@ -27,12 +27,10 @@
 }
 
 .lil-card {
-  display: flex;
-  align-items: center;
-  flex: 1;
+  padding: 13px 30px;
   background-color: white;
   border-radius: 20px;
-  max-width: 299px;
+  width: 100%;
   height: 79px;
 }
 
@@ -170,7 +168,7 @@
 .kurs-card-content {
   display: flex;
   flex-direction: column;
-  padding: 13px;
+  padding: 0 13px 13px 13px;
   gap: 15px;
 }
 
@@ -199,30 +197,33 @@
   padding: 5px 12px;
 }
 
-.kurs-footer {
+.progress-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.progress-text {
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
-.kurs-footer button {
-  display: flex;
-  height: 28px;
-  border: 1px solid #2A6DB3;
-  background-color: white;
-  color: #2A6DB3;
-  border-radius: 5px;
-  padding: 8px 12px 8px 12px;
-  font-size: 12px;
-  align-items: center;
+p-progressBar {
+  height: 11px;
 }
 
-.kurs-price h3 {
-  font-size: 17px;
-  font-weight: 700;
+.progress-wrapper p {
+  font-size: 13px;
+  font-weight: 300;
 }
 
-.kurs-price p {
-  font-size: 10px;
-  color: #A4A4A4;
+:host ::ng-deep .progress-wrapper .p-progressbar .p-progressbar-value {
+  background: #2A6DB3;
 }
+
+:host ::ng-deep .progress-wrapper .p-progressbar {
+  background: #f0f0f0; /* Цвет фона для незаполненной части прогресс-бара */
+  height: 10px;
+  border-radius: 10px;
+  margin-bottom: 7px;
+}
+

@@ -1,17 +1,22 @@
 import {Component} from '@angular/core';
 import {NgForOf} from "@angular/common";
 import {kurs} from "../../non-authorized/main-page/main-page.component";
+import {ProgressBarModule} from "primeng/progressbar";
 
 @Component({
   selector: 'app-courses',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    ProgressBarModule
   ],
   templateUrl: './courses.component.html',
   styleUrl: './courses.component.css'
 })
 export class CoursesComponent {
+
+  public progress: number = 76;
+
   public subjectAndTeacher: any = [
     {
       subject: 'Физика',
@@ -48,6 +53,7 @@ export class CoursesComponent {
       bolim: 10,
       sabak: 70,
       closestPotok: '22/09/2024',
+      progress: 76,
       price: 70000,
     }, {
       id: 2,
@@ -56,6 +62,7 @@ export class CoursesComponent {
       bolim: 10,
       sabak: 70,
       closestPotok: '22/09/2024',
+      progress: 76,
       price: 70000,
     }, {
       id: 3,
@@ -64,6 +71,7 @@ export class CoursesComponent {
       bolim: 10,
       sabak: 70,
       closestPotok: '22/09/2024',
+      progress: 76,
       price: 70000,
     }, {
       id: 4,
@@ -72,6 +80,7 @@ export class CoursesComponent {
       bolim: 10,
       sabak: 70,
       closestPotok: '22/09/2024',
+      progress: 76,
       price: 70000,
     }, {
       id: 5,
@@ -80,6 +89,7 @@ export class CoursesComponent {
       bolim: 10,
       sabak: 70,
       closestPotok: '22/09/2024',
+      progress: 76,
       price: 70000,
     }, {
       id: 6,
@@ -88,6 +98,7 @@ export class CoursesComponent {
       bolim: 10,
       sabak: 70,
       closestPotok: '22/09/2024',
+      progress: 76,
       price: 70000,
     },
   ]
