@@ -1,0 +1,28 @@
+<div class="main-page">
+  <div class="sidebar">
+  </div>
+  <div class="content-wrapper">
+    <div class="content">
+      <h1>Үй жұмысы</h1>
+
+      <div class="task-block"  *ngFor="let homework of homeworks">
+        <div class="task-title">{{ homework.subject }}</div>
+        <div class="task-info">{{ homework.description }}</div>
+        <div class="task-date-time">
+          <span class="task-date" >{{ homework.date }}</span>
+          <span class="task-time" [ngClass]="{'text-red': isLate(homework.date, homework.time)}">{{ homework.time }}</span>
+        </div>
+        <div class="task-score">{{ homework.score }}</div>
+        <div class="task-status">
+          <i *ngIf="homework.status === 'completed'" class="pi pi-check" style="color: green"></i>
+          <i *ngIf="homework.status === 'incomplete'" class="pi pi-times" style="color: red"></i>
+          <i *ngIf="homework.status === 'pending'" class="pi pi-lock" style="color: grey"></i>
+        </div>
+        <div class="task-arrow">
+          <i class="pi pi-angle-right" ></i>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

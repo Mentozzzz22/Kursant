@@ -1,0 +1,123 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.main-page {
+  display: flex;
+  width: 100%;
+  max-width: 1600px;
+}
+
+.sidebar {
+  width: 100px;
+}
+
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.content {
+  width: 100%;
+  max-width: 1200px;
+  background-color: white;
+  padding: 45px 30px;
+  border-radius: 10px;
+  margin: 20px;
+}
+
+/** БЛОКИ **/
+.task-block {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.task-title {
+  flex: 1;
+  font-weight: bold;
+}
+
+.task-info {
+  flex: 2;
+}
+
+.task-date-time {
+  flex: 2;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.task-date {
+  color: #2fada4;
+}
+
+.task-time {
+  color: #2fada4;
+}
+
+.task-score {
+  flex: 1;
+  text-align: center;
+}
+
+.task-status, .task-arrow {
+  flex: 0;
+  margin-left: 10px;
+}
+
+.task-arrow {
+  cursor:pointer;
+}
+
+.status-icon {
+  color: green;
+}
+
+.arrow-icon {
+  color: #ccc;
+}
+
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 80px;
+  }
+
+  .content {
+    padding: 20px;
+    margin: 10px;
+  }
+
+  .task-block {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+
+  .task-title,
+  .task-info,
+  .task-date-time,
+  .task-score,
+  .task-status,
+  .task-arrow {
+    flex: 1 1 100%;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+
+  .task-status, .task-arrow {
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+}

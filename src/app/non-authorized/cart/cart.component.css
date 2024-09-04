@@ -160,3 +160,86 @@
   font-size: 10px;
   color: #A4A4A4;
 }
+
+@media (max-width: 768px) {
+  .cart-container {
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .main-left {
+    width: auto;
+    height: auto;
+    padding: 20px;
+    order: -1;
+  }
+
+  .main-right {
+    padding: 30px;
+  }
+
+  .kurstar-cards {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 15px;
+  }
+
+  .kurs-images {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 425px) {
+  .cart-container {
+    flex-direction: column; /
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .main-left,
+  .main-right {
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  .main-left {
+    order: -1;
+  }
+
+  .cart-container{
+    padding:0 10px 0 10px;
+  }
+
+  .confirm-block h2 {
+    font-size: 24px;
+  }
+
+  .confirm-block h3 {
+    font-size: 16px;
+  }
+
+  .confirm-block button {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .kurstar-cards {
+    grid-template-columns: 1fr;
+    grid-gap: 10px;
+  }
+
+  .kurs-footer button {
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+
+  .kurs-price h3 {
+    font-size: 15px;
+  }
+
+  .kurs-price p {
+    font-size: 9px;
+  }
+}

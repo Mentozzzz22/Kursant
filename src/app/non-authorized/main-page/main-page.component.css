@@ -16,8 +16,10 @@
   gap: 30px;
 }
 
-.main-carousel {
-
+.main-carousel img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
 
 .lil-cards {
@@ -335,4 +337,109 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .main-page {
+    flex-direction: column;
+  }
+
+
+  .lil-cards {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .kurstar-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .potok-info {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .potok-subjects {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .kurs-images {
+    width: 100%;
+    height: auto;
+  }
+
+  .lil-card {
+    width: 100%;
+    max-width: none;
+  }
+
+  .potok-card, .potok-card1 {
+    padding: 15px;
+  }
+
+  .potok-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+
+@media (max-width: 425px) {
+  .main-page {
+    gap: 15px;
+    margin-top: 20px;
+    padding: 0 10px 0 10px;
+  }
+
+
+  .lil-cards {
+    gap: 10px;
+  }
+
+  .kurstar-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .potok-info {
+    gap: 15px;
+  }
+
+  .potok-subjects {
+    grid-template-columns: 1fr;
+  }
+
+  .lil-card {
+    height: auto;
+    padding: 10px;
+  }
+
+  .potok-card,
+  .potok-card1 {
+    padding: 10px;
+  }
+
+  .potok-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .kurs-images {
+    width: 100%;
+    height: auto;
+  }
+
+  .card-content h2,
+  .potok-card h3 {
+    font-size: 18px;
+  }
+
+  .card-content p,
+  .potok-info p,
+  .potok-footer p {
+    font-size: 12px;
+  }
+
+  .mektep-statistika{
+    display:none;
+  }
 }

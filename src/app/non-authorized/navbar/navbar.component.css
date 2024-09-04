@@ -39,7 +39,7 @@
 .nav-buttons {
   display: flex;
   align-items: center;
-  gap: 2rem; /* Расстояние между иконкой корзины и кнопкой */
+  gap: 2rem;
 }
 
 .nav-login_button {
@@ -53,4 +53,34 @@
 .nav-login button {
   justify-content: center;
   font-size: 22px;
+}
+
+@media (max-width: 425px) {
+  .navbar-container {
+    height: auto;
+    padding: 10px 15px;
+    gap: 10px;
+  }
+
+  .nav-search {
+    display:none;
+  }
+
+  .nav-buttons {
+    justify-content: right;
+    gap: 10px;
+  }
+
+  .nav-login_button {
+    width: auto;
+    height: 40px;
+    padding: 0 15px;
+    font-size: 18px;
+  }
+
+
+  .nav-logo img {
+    max-width: 100px;
+    height: auto;
+  }
 }
