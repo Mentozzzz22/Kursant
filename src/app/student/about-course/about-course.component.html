@@ -1,8 +1,61 @@
 <div class="about-courses-container">
-  <div class="subject-carousel">
-    <img src="" alt="">
-  </div>
-  <div class="bolimder">
+  <div class="about-courses-content">
+    <div class="subject-carousel">
+      <img src="assets/images/subject-carousel.svg" alt="subject-carousel">
+    </div>
+    <div class="bolimder">
+      @for (bolim of bolimder; track i; let i = $index) {
+        <div class="bolim-container">
+          <div class="bolim">
+            <div class="left-bolim">
+              <p><strong>Бөлім {{ bolim.id }}.</strong> {{ bolim.bolimName }}</p>
+            </div>
+            <p class="sabak">
+              <img src="../../../assets/images/sabak.svg" alt="sabak"> {{ bolim.temaCount }} тақырып
+            </p>
+            <div class="right-bolim" (click)="toggleBolim(i)">
+              <img [src]="getTemaStatusIcon(bolim.status)" alt="status">
+              <img src="assets/images/right-arrow.svg" alt="right" class="right-arrow"
+                   [ngClass]="{'rotated': isOpen[i]}">
+            </div>
+          </div>
+          <!-- Раскрывающийся список тем -->
+          @if (isOpen[i]) {
+            <div class="tema-list">
+              @for (tema of bolim.tema; track j; let j = $index) {
+                <div class="tema-item" (click)="toggleTema(i, j)">
+                  <img [src]="getTemaStatusIcon(tema.temaStatus)" alt="tema-status">
+                  <p><strong>{{ tema.id }} тақырып.</strong> {{ tema.temaName }}</p>
+                </div>
+                <div *ngIf="isOpenTema[i][j]" class="details-list">
+                  <div *ngIf="tema.sabak.length" class="details-sublist">
+                    <div *ngFor="let sabak of tema.sabak" class="details-item">
+                      <img [src]="getTemaStatusIcon(sabak.status)" alt="sabak-status">
+                      <p><strong>{{ sabak.id }} сабақ.</strong> {{ sabak.sabakName }}</p>
+                    </div>
+                  </div>
 
+                  <div *ngIf="tema.test.length" class="details-sublist">
+                    <div *ngFor="let test of tema.test" class="details-item">
+                      <img [src]="getTemaStatusIcon(test.status)" alt="test-status">
+                      <p><strong>{{ test.testName }}</strong></p>
+                    </div>
+                  </div>
+
+                  <div *ngIf="tema.homework.length" class="details-sublist">
+                    <div *ngFor="let homework of tema.homework" class="details-item">
+                      <img [src]="getTemaStatusIcon(homework.status)" alt="homework-status">
+                      <p><strong>{{ homework.homeworkName }}</strong></p>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
   </div>
 </div>
+
+
