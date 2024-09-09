@@ -6,8 +6,9 @@
 
 .main-page {
   display: flex;
-  justify-content: center;
-  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 30px 30px;
 }
 
 .main-right {

@@ -9,7 +9,7 @@
   flex-direction: column;
   gap: 50px;
   padding: 32px;
-  width: 84px; /* ширина в свернутом состоянии */
+  width: 84px;
   background-color: #FFFFFF;
   height: 100vh;
   transition: width 0.2s ease;
@@ -17,7 +17,7 @@
 }
 
 .sidebar.expanded {
-  width: 250px; /* ширина в развернутом состоянии */
+  width: 250px;
 }
 
 .sidebar-header {
@@ -44,11 +44,11 @@
 }
 
 .sidebar-menu li span {
-  display: none; /* текст скрыт в свернутом состоянии */
+  display: none;
 }
 
 .sidebar.expanded .sidebar-menu li span {
-  display: flex; /* текст отображается в развернутом состоянии */
+  display: flex;
   white-space: nowrap;
 }
 
@@ -60,4 +60,44 @@
   text-decoration: none;
   color: #F93C65;
   font-weight: bold;
+}
+
+/**burger**/
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  padding: 10px 20px;
+  z-index: 1000;
+  position: relative;
+}
+
+.burger-menu {
+  font-size: 30px;
+  cursor: pointer;
+  z-index: 1500;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .sidebar.expanded {
+    padding:20px;
+    width: 270px;
+  }
+
+  .burger-menu {
+    display: block;
+  }
+
+  .sidebar.expanded .sidebar-menu li span,
+  .sidebar.expanded .logout,
+  .sidebar.expanded .sidebar-header img.logo {
+    display: block;
+  }
 }
