@@ -193,4 +193,9 @@ export class AboutCourseComponent implements OnInit {
   goToTest(testId: number): void {
     this.router.navigate(['/student/test', testId]);
   }
+
+  goToSabak(sabakId: number): void {
+    this.router.navigate(['/student/sabak', sabakId]);
+  }
+
 }

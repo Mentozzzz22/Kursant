@@ -2,16 +2,16 @@ import {Component, input} from '@angular/core';
 import {ProgressBarModule} from "primeng/progressbar";
 
 @Component({
-  selector: 'app-test-page',
+  selector: 'app-sabak-page',
   standalone: true,
   imports: [
     ProgressBarModule
   ],
-  templateUrl: './test-page.component.html',
-  styleUrl: './test-page.component.css'
+  templateUrl: './sabak-page.component.html',
+  styleUrl: './sabak-page.component.css'
 })
-export class TestPageComponent {
-  testId = input.required<string>()
+export class SabakPageComponent {
+  sabakId = input.required<string>()
 
   public progress: number = 76;
 
