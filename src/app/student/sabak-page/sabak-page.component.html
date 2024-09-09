@@ -1,11 +1,25 @@
 <div class="test-container">
   <div class="test-content">
+
+    <div class="breadcrumb-container">
+      <p-breadcrumb class="max-w-full" [model]="items">
+        <ng-template pTemplate="item" let-item>
+          <ng-container *ngIf="item.route">
+            <a [routerLink]="item.route" class="breadcrumb-menu-link">
+              <span class="breadcrumb-label-text">{{ item.label }}</span>
+            </a>
+          </ng-container>
+        </ng-template>
+        <ng-template pTemplate="separator"> /</ng-template>
+      </p-breadcrumb>
+    </div>
+
     <div class="test-header">
       <div class="header-text">
         <h2><strong>Мезолит. Орта тас дәуірі</strong>/ 4 сабақ</h2>
         <p>Мұғалім: Ирисбеков Мақсат</p>
       </div>
-      <button>Келесі сабақ</button>
+      <button class="next-sabak-button">Келесі сабақ</button>
     </div>
 
     <div class="test-video-container">

@@ -1,25 +1,30 @@
-import {Component, input, OnInit} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {ProgressBarModule} from "primeng/progressbar";
-import {BreadcrumbModule} from "primeng/breadcrumb";
-import {NgClass, NgIf} from "@angular/common";
-import {MenuItem} from "primeng/api";
+import {DialogModule} from "primeng/dialog";
+import {InputTextModule} from "primeng/inputtext";
+import {Button} from "primeng/button";
 
 @Component({
-  selector: 'app-sabak-page',
+  selector: 'app-test-page',
   standalone: true,
   imports: [
     ProgressBarModule,
-    BreadcrumbModule,
-    NgClass,
-    NgIf
+    DialogModule,
+    InputTextModule,
+    Button
   ],
-  templateUrl: './sabak-page.component.html',
-  styleUrl: './sabak-page.component.css'
+  templateUrl: './test-page.component.html',
+  styleUrl: './test-page.component.css'
 })
-export class SabakPageComponent implements OnInit {
-  sabakId = input.required<string>()
+export class TestPageComponent {
+  testId = input.required<string>()
 
   public progress: number = 50;
+  visible: boolean = false;
+
+  showDialog() {
+    this.visible = true;
+  }
 
   public sabaktar: any = [
     {id: 1, status: 'finished', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'},
@@ -40,17 +45,5 @@ export class SabakPageComponent implements OnInit {
     } else {
       return 'assets/images/closed.svg';
     }
-  }
-
-  items: MenuItem[] | undefined;
-
-  home: MenuItem | undefined;
-
-  ngOnInit() {
-    this.items = [
-      {label: '< Қазақстан тарихы', route: '/#'},
-      {label: 'Қазақстандағы ежелгі адамдардың өмірі', route: '/#'},
-      {label: 'Қазақстан тарихын зерттеуші отандық тарихшылар', route: '/#'}
-    ]
   }
 }

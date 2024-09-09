@@ -6,8 +6,7 @@
 
 .main-page {
   display: flex;
-  width: 100%;
-  max-width: 1200px;
+  justify-content: center;
   padding: 30px 30px;
 }
 

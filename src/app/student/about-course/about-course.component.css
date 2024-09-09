@@ -7,6 +7,7 @@
 .about-courses-container {
   display: flex;
   justify-content: center;
+  padding: 30px;
   gap: 20px;
 }
 

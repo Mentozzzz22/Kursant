@@ -1,0 +1,48 @@
+<div class="test-container">
+  <div class="test-header">
+    <h2>Тақырыптық тест</h2>
+    <p>Мұғалім: Ирисбеков Мақсат</p>
+  </div>
+
+  <div class="test-content">
+    <div class="test-left">
+      <div class="test-details">
+        <div class="test-detail-left">
+          <p>Сұрақ саны</p>
+          <p>Тест уақыты</p>
+          <p>Дедлайн</p>
+        </div>
+
+        <div class="test-detail-right">
+          <p>10</p>
+          <p>15 минут</p>
+          <p>09/09/2024 &nbsp;&nbsp;&nbsp;&nbsp; 23:59</p>
+        </div>
+      </div>
+      <button class="start-test-btn" (click)="showDialog()">Тестті бастау</button>
+    </div>
+
+    <div class="test-right">
+      <h3><strong>Мезолит. Орта тас дәуірі</strong></h3>
+      <div class="progress-wrappper">
+        <p>Тақырып прогрессі</p>
+        <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
+      </div>
+      <div class="sabaktar">
+        @for (sabak of sabaktar; track sabak.id) {
+          <div class="sabak">
+            <img [src]="getTemaStatusIcon(sabak.status)" alt="status">
+            <p>{{ sabak.id }} сабақ. {{ sabak.tema }}. {{ sabak.sabakName }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+<p-dialog class="test-modal" header="Тестілеуді бастау" [modal]="true" [(visible)]="visible">
+  <span class="modal-text">Тестілеуді бастау батырмасы басылғасын уақыт есептегіш қосылады.dadadadadadda adadadadada dadadadad</span>
+  <div class="modal-footer">
+    <button class="back-btn" (click)="visible = false">Артқа</button>
+    <button class="start-btn" (click)="visible = false">Тесттілеуді бастау</button>
+  </div>
+</p-dialog>

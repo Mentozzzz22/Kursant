@@ -1,0 +1,175 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.test-container {
+  background-color: white;
+  min-height: 100vh;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.test-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.test-header h2 {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.test-header p {
+  font-size: 13px;
+  color: #000000;
+}
+
+.test-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.test-left {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.test-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 120px;
+}
+
+.test-detail-left p {
+  position: relative;
+  font-size: 13px;
+  color: #A2A2A2;
+  margin-bottom: 10px;
+}
+
+.test-detail-left p::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 120px; /* Длина линии */
+  height: 1px;
+  border-bottom: 1px dotted #A2A2A2; /* Пунктирная линия */
+  transform: translateY(-50%);
+}
+
+.test-detail-right p {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.start-test-btn {
+  padding: 12px 20px;
+  background-color: #2A6DB3;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  width: 146px;
+  white-space: nowrap;
+}
+
+.start-test-btn:hover {
+  background-color: #1f4d84;
+}
+
+.test-right {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 36px;
+  border: 1px solid #BBBBBB;
+  border-radius: 30px;
+}
+
+.test-right h3 {
+  font-size: 20px;
+}
+
+p-progressBar {
+  height: 5px;
+}
+
+.sabaktar img {
+  width: 17px;
+  height: 17px;
+}
+
+.sabaktar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sabak {
+  display: flex;
+  gap: 15px;
+}
+
+.sabak p {
+  font-size: 15px;
+}
+
+.progress-wrappper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-wrappper p {
+  font-size: 13px;
+}
+
+::ng-deep .p-dialog {
+  max-width: 470px;
+  height: 268px;
+}
+
+.modal-text {
+  font-size: 18px;
+  white-space: wrap;
+  color: #000000;
+}
+
+:host ::ng-deep .modal-footer {
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+:host ::ng-deep .p-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+}
+
+.back-btn {
+  background: none;
+  font-size: 18px;
+  border: 1.5px solid #8F8F8F;
+  border-radius: 5px;
+  padding: 6px 15px;
+  color: #8F8F8F;
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.start-btn {
+  border-radius: 5px;
+  padding: 6px 15px;
+  background-color: #8F8F8F;
+  border: none;
+  color: white;
+  font-size: 18px;
+}

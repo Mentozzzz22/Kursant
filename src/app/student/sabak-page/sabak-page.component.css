@@ -4,6 +4,9 @@
 }
 
 .test-container {
+  background-color: white;
+  min-height: 100vh;
+  padding: 50px;
   display: flex;
   justify-content: center;
   gap: 20px;
@@ -21,6 +24,17 @@
 .test-header {
   display: flex;
   justify-content: space-between;
+}
+
+.next-sabak-button {
+  color: #2A6DB3;
+  border: 1px solid #2A6DB3;
+  background: none;
+  height: 40px;
+  border-radius: 10px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
 }
 
 .test-video-container {
@@ -59,7 +73,7 @@ p-progressBar {
 .sabaktar {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 15px;
 }
 
 .sabak {
@@ -79,4 +93,38 @@ p-progressBar {
 
 .progress-wrappper p {
   font-size: 13px;
+}
+
+::ng-deep .p-breadcrumb{
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+::ng-deep .p-breadcrumb-list  {
+  margin: 0;
+  padding: 0;
+}
+
+::ng-deep .p-menuitem-separator {
+  margin: 0;
+  padding: 0;
+}
+
+.p-menuitem-link {
+  text-decoration: none;
+}
+
+.breadcrumb-container {
+
+}
+::ng-deep a {
+  text-decoration: none;
+}
+
+.breadcrumb-label-text {
+  color: #444444;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
 }
