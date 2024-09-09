@@ -1,5 +1,6 @@
-import {Component, input} from '@angular/core';
+import {Component, inject, input, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {Router} from "@angular/router";
 
 export interface sabak {
   id: number,
@@ -8,6 +9,7 @@ export interface sabak {
 }
 
 export interface test {
+  id: number,
   testName: string,
   status: string,
 }
@@ -45,9 +47,14 @@ export interface bolim {
   templateUrl: './about-course.component.html',
   styleUrl: './about-course.component.css'
 })
-export class AboutCourseComponent {
+export class AboutCourseComponent implements OnInit {
+
+  private router = inject(Router)
 
   courseId = input.required<string>()
+
+  ngOnInit(){
+  }
 
   public bolimder: bolim[] = [
     {
@@ -65,7 +72,7 @@ export class AboutCourseComponent {
             {id: 2, sabakName: 'Қазақстан тарихын зерттеуші отандық тарихшылар', status: 'opened'},
           ],
           test: [
-            {testName: 'Тақырыптық тест', status: 'closed'},
+            {id: 1, testName: 'Тақырыптық тест', status: 'closed'},
           ],
           homework: [
             {homeworkName: 'Үй жұмысы', status: 'closed'},
@@ -181,5 +188,9 @@ export class AboutCourseComponent {
     } else {
       return 'assets/images/closed.svg';
     }
+  }
+
+  goToTest(testId: number): void {
+    this.router.navigate(['/student/test', testId]);
   }
 }

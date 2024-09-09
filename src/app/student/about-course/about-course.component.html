@@ -36,7 +36,7 @@
                   </div>
 
                   <div *ngIf="tema.test.length" class="details-sublist">
-                    <div *ngFor="let test of tema.test" class="details-item">
+                    <div *ngFor="let test of tema.test" class="details-item" (click)="goToTest(test.id)">
                       <img [src]="getTemaStatusIcon(test.status)" alt="test-status">
                       <p><strong>{{ test.testName }}</strong></p>
                     </div>

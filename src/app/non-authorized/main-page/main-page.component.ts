@@ -22,7 +22,8 @@ export interface kurs {
     CardModule,
     Button,
     InputTextModule,
-    NgForOf
+    NgForOf,
+
   ],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.css'
