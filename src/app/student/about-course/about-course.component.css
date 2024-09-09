@@ -17,7 +17,10 @@
 }
 
 .subject-carousel {
-
+}
+.subject-carousel img{
+  width:100%;
+  height:100%;
 }
 
 .bolimder {
@@ -75,7 +78,7 @@
 }
 
 .rotated {
-  transform: rotate(90deg); /* Поворот стрелки */
+  transform: rotate(90deg);
 }
 
 .tema-list {
@@ -124,4 +127,10 @@
 .details-item img {
   width: 17px;
   height: 17px;
+}
+
+
+
+@media(max-width: 768px){
+
 }

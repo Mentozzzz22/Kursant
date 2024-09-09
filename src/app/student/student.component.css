@@ -1,3 +1,32 @@
-.student-container {
-  padding: 30px;
+.layout {
+  display: flex;
+}
+
+.sidebar {
+  width: 84px;
+  transition: width 0.3s ease;
+}
+
+.sidebar-expanded {
+  width: 250px;
+}
+
+.content {
+  flex-grow: 1;
+  transition: margin-left 0.3s ease;
+  margin-left: 84px;
+}
+
+.content-expanded {
+  margin-left: 250px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+  }
+
+  .sidebar-expanded + .content {
+    margin-left: 270px;
+  }
 }

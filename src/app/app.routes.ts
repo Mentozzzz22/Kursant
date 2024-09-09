@@ -8,6 +8,7 @@ import {CoursesComponent} from "./student/courses/courses.component";
 import {AboutCourseComponent} from "./student/about-course/about-course.component";
 import {HomeWorkComponent} from "./student/home-work/home-work.component";
 import {TestPageComponent} from "./student/test-page/test-page.component";
+import {AccessDeniedComponent} from "./login/access-denied/access-denied.component";
 
 export const routes: Routes = [
   {
@@ -17,6 +18,8 @@ export const routes: Routes = [
     ]
   },
   {path: 'login', component: LoginComponent},
+  {path: 'access-denied', component: AccessDeniedComponent},
+
   {
     path: 'student', component: StudentComponent, children: [
       {path: 'courses', component: CoursesComponent, children: []},
