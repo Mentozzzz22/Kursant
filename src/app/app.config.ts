@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes, withComponentInputBinding()),
     provideAnimations(),
-    // provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(),
     importProvidersFrom(ToastModule),
     {provide: MessageService, useClass: MessageService},
     {provide: ConfirmationService, useClass: ConfirmationService},

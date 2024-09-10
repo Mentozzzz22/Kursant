@@ -1,0 +1,45 @@
+<div class="supplier-header">
+  <div class="supplier-container">
+    <h1 class="supplier-title">Заявки</h1>
+    <hr style="transform: scaleY(0.3);">
+    <div class="supplier-actions">
+      <div class="search-form" >
+        <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
+        <input type="text" id="supplierSearch"  placeholder="ID, ФИО" class="search-input" />
+        <button type="submit" class="search-button" >Поиск</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="main-content">
+  <div class="content-buttons" >
+    <button class="content-button" routerLink="../picking/orders" routerLinkActive="active">Все заявки</button>
+    <button class="content-button" routerLink="../picking/in-progress" routerLinkActive="active">Новые заявки</button>
+    <button class="content-button" routerLink="../picking/in-progress" routerLinkActive="active">Получили доступ</button>
+    <button class="content-button" routerLink="../picking/in-progress" routerLinkActive="active">Отклонённые</button>
+  </div>
+  <div class="content-table-container">
+
+    <p-table [value]="applications" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th>ФИО</th>
+          <th>Телефон</th>
+          <th>Статусы</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-application >
+        <tr>
+          <th>{{application.id}}</th>
+          <th>{{application.name}}</th>
+          <th>{{application.phone}}</th>
+          <td [ngClass]="{'new': application.status === 'Новая заявка', 'completed': application.status === 'Получил доступ', 'canceled': application.status === 'Отменён'}">{{ application.status }}</td>
+          <th>{{application.comment}}</th>
+        </tr>
+      </ng-template>
+    </p-table>
+
+  </div>
+</div>
