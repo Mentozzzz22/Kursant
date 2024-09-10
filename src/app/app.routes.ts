@@ -10,6 +10,8 @@ import {HomeWorkComponent} from "./student/home-work/home-work.component";
 import {SabakPageComponent} from "./student/sabak-page/sabak-page.component";
 import {AccessDeniedComponent} from "./login/access-denied/access-denied.component";
 import {TestPageComponent} from "./student/test-page/test-page.component";
+import {ApplicationComponent} from "./admin/application/application.component";
+import {AdminComponent} from "./admin/admin.component";
 
 export const routes: Routes = [
   {
@@ -28,6 +30,15 @@ export const routes: Routes = [
       {path: 'sabak/:sabakId', component: SabakPageComponent},
       {path: 'test/:testId', component: TestPageComponent},
       {path: 'homework-list', component: HomeWorkComponent},
+    ]
+  },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    children:[
+      {
+        path: 'applications', component: ApplicationComponent
+      }
     ]
   },
   // {path: '**', redirectTo: '', pathMatch: 'full'},
