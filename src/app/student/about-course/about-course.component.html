@@ -29,14 +29,14 @@
                 </div>
                 <div *ngIf="isOpenTema[i][j]" class="details-list">
                   <div *ngIf="tema.sabak.length" class="details-sublist">
-                    <div *ngFor="let sabak of tema.sabak" class="details-item">
+                    <div *ngFor="let sabak of tema.sabak" class="details-item" (click)="goToSabak(sabak.id)">
                       <img [src]="getTemaStatusIcon(sabak.status)" alt="sabak-status">
                       <p><strong>{{ sabak.id }} сабақ.</strong> {{ sabak.sabakName }}</p>
                     </div>
                   </div>
 
                   <div *ngIf="tema.test.length" class="details-sublist">
-                    <div *ngFor="let test of tema.test" class="details-item">
+                    <div *ngFor="let test of tema.test" class="details-item" (click)="goToTest(test.id)">
                       <img [src]="getTemaStatusIcon(test.status)" alt="test-status">
                       <p><strong>{{ test.testName }}</strong></p>
                     </div>

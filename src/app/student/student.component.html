@@ -1,4 +1,6 @@
-<app-student-sidebar></app-student-sidebar>
-<div class="student-container">
-<router-outlet></router-outlet>
+<div class="layout">
+  <app-student-sidebar (sidebarToggled)="onSidebarToggled($event)"></app-student-sidebar>
+  <div class="content" [ngClass]="{'content-expanded': isSidebarExpanded}">
+    <router-outlet></router-outlet>
+  </div>
 </div>

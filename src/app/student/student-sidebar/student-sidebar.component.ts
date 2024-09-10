@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {SidebarModule} from "primeng/sidebar";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Button, ButtonModule} from "primeng/button";
@@ -13,8 +13,10 @@ import {RouterModule, Router} from "@angular/router";
 })
 export class StudentSidebarComponent {
   private router = inject(Router)
+  @Output() sidebarToggled = new EventEmitter<boolean>();
 
   isExpanded: boolean = false;
+  isMobileSidebarOpen: boolean = false;
 
   menuItems = [
     { name: 'Курстар', link: '/courses', icon: 'assets/images/courses-icon.svg' },
@@ -25,10 +27,20 @@ export class StudentSidebarComponent {
   ];
 
   toggleExpand(expand: boolean) {
-    this.isExpanded = expand;
+    if (window.innerWidth > 768) {
+      this.isExpanded = expand;
+      this.sidebarToggled.emit(this.isExpanded);
+    }
   }
+
+  toggleMobileSidebar() {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+
 
   navigate(link: string) {
     this.router.navigate([link]);
+    this.isMobileSidebarOpen = false;
   }
 }

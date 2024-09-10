@@ -1,7 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {NgForOf} from "@angular/common";
 import {kurs} from "../../non-authorized/main-page/main-page.component";
 import {ProgressBarModule} from "primeng/progressbar";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-courses',
@@ -14,6 +15,8 @@ import {ProgressBarModule} from "primeng/progressbar";
   styleUrl: './courses.component.css'
 })
 export class CoursesComponent {
+
+  private router = inject(Router);
 
   public progress: number = 76;
 
@@ -102,4 +105,8 @@ export class CoursesComponent {
       price: 70000,
     },
   ]
+  // Метод для перехода на страницу курса
+  goToCourse(courseId: number): void {
+    this.router.navigate(['/student/courses', courseId]);
+  }
 }

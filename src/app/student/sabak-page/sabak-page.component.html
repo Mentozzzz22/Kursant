@@ -1,0 +1,59 @@
+<div class="test-container">
+  <div class="test-content">
+
+    <div class="breadcrumb-container">
+      <p-breadcrumb class="max-w-full" [model]="items">
+        <ng-template pTemplate="item" let-item>
+          <ng-container *ngIf="item.route">
+            <a [routerLink]="item.route" class="breadcrumb-menu-link">
+              <span class="breadcrumb-label-text">{{ item.label }}</span>
+            </a>
+          </ng-container>
+        </ng-template>
+        <ng-template pTemplate="separator"> /</ng-template>
+      </p-breadcrumb>
+    </div>
+
+    <div class="test-header">
+      <div class="header-text">
+        <h2><strong>Мезолит. Орта тас дәуірі</strong>/ 4 сабақ</h2>
+        <p>Мұғалім: Ирисбеков Мақсат</p>
+      </div>
+      <button class="next-sabak-button">Келесі сабақ</button>
+    </div>
+
+    <div class="test-video-container">
+
+      <div class="video">
+        <div class="video-container">
+          <iframe
+            width="845"
+            height="457"
+            src="https://www.youtube.com/embed/BHGdPxbvamw"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+
+      <div class="test-right">
+        <h3><strong>Мезолит. Орта тас дәуірі</strong></h3>
+        <div class="progress-wrappper">
+          <p>Тақырып прогрессі</p>
+          <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
+        </div>
+        <div class="sabaktar">
+          @for (sabak of sabaktar; track sabak.id) {
+            <div class="sabak">
+              <img [src]="getTemaStatusIcon(sabak.status)" alt="status">
+              <p>{{ sabak.id }} сабақ. {{ sabak.tema }}. {{ sabak.sabakName }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
