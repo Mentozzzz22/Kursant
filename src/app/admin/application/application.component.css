@@ -36,6 +36,7 @@
   cursor: pointer;
   border-radius: 0 8px 8px 0;
 }
+/**Контент**/
 
 .main-content {
   padding: 20px;
@@ -117,4 +118,203 @@
 
 .canceled {
   color: #F93C65;
+}
+
+/**Модал*/
+
+.username{
+  padding:5px;
+  background-color:#E8E8E8;
+  border-radius: 10px;
+  font-weight:normal;
+  color:black;
+}
+
+.modal-content {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction:row;
+  align-content: flex-start;
+  height: 100%;
+  width: 100%;
+  gap:20px;
+}
+
+.block-one {
+  background-color: #f7f7f7;
+  border-radius: 15px;
+  padding: 20px;
+  width: 100%;
+  max-width: 500px;
+  color: black;
+}
+
+h5 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.cart-list {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.cart-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.item-name {
+  flex: 1;
+}
+
+.price {
+  width: 100px;
+  text-align: right;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+}
+
+.delete-btn:hover {
+  color: #000;
+}
+
+.total {
+  display: flex;
+  font-size: 18px;
+  gap:10px;
+}
+
+.total-price {
+  font-weight: bold;
+}
+
+.block-two {
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-container input {
+  flex: 1;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.edit-btn {
+  background-color: #eaeaea;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-btn i {
+  font-size: 16px;
+  color: #333;
+}
+
+.block-three {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #444444;
+}
+
+textarea {
+  width: 100%;
+  padding: 15px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  background-color: #f7f7f7;
+  color: #333;
+  resize: none;
+  box-shadow: none;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: #ccc;
+}
+
+.block-four {
+  width: 100%;
+  max-width: 500px;
+}
+
+.check{
+  background-color: white;
+  border: 1px solid;
+  padding:10px 60px;
+  border-radius:10px;
+}
+
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.filled-button {
+  background-color: #444444;
+  color: #fff;
+  padding:10px 60px;
+  border-radius: 10px;
+}
+
+.outlined-button {
+  border: 1px solid #333;
+  color: #333;
+  background-color: transparent;
+  padding:10px 60px;
+  border-radius: 10px;
+}
+
+
+.text-button {
+  width:15%;
+  border: 1px solid #333;
+  color: #333;
+  border-radius: 10px;
+  background-color: transparent;
 }

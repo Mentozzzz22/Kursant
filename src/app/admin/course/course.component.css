@@ -1,0 +1,181 @@
+.supplier-container {
+  background-color: #fff;
+  padding: 28px 32px 15px;
+}
+
+.supplier-title {
+  color: #1d1d42;
+  font-size: 22px;
+  line-height: 1;
+  margin: 0 0 29px;
+}
+
+.supplier-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.search-input {
+  width: 230px;
+  padding: 9px;
+  font-size: 14px;
+  border-radius: 8px 0 0 8px;
+  color: #1D1D42;
+  border: 2px solid #1D1D42;
+}
+
+.search-button {
+  background-color: #1d1d42;
+  color: #fff;
+  border: none;
+  padding: 11px 25px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 0 8px 8px 0;
+}
+
+/**Контент**/
+
+.main-content {
+  padding: 20px;
+}
+
+.content-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+  max-width: 100%;
+  overflow-y: scroll;
+}
+
+.content-buttons::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+.content-button {
+  display: flex;
+  gap:25px;
+  padding: 30px 90px 30px 30px;
+  border: none;
+  background-color: #fff;
+  color: #1d1d42;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.content-button.active {
+  border: 1px solid #1D1D42;
+}
+
+.content-button-names{
+  display: flex;
+  flex-direction: column;
+}
+
+.content-button-names h3{
+  margin:0;
+}
+
+.content-button-names p{
+  text-align: left;
+  color: #BABABA;
+}
+
+
+
+.content-items{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+
+.kurstar-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 5px;
+}
+
+.kurs-images {
+  width: 239px;
+  height: 138px;
+}
+
+.subject-info h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subject-info p {
+  font-size: 10px;
+  color: #A4A4A4;
+  margin-bottom: 10px;
+}
+
+.kurs-card-content {
+  display: flex;
+  flex-direction: column;
+  padding: 13px;
+  gap: 15px;
+}
+
+.kurs-info {
+  display: flex;
+  gap: 7px;
+}
+
+.bolim {
+  display: flex;
+  gap: 8px;
+  background-color: #B5E8F9;
+  color: #00B0EA;
+  font-size: 10px;
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.sabak {
+  display: flex;
+  gap: 8px;
+  background-color: #CCC7FF;
+  color: #6E63E5;
+  font-size: 10px;
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.kurs-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kurs-footer button {
+  display: flex;
+  height: 28px;
+  border: 1px solid #2A6DB3;
+  background-color: white;
+  color: #2A6DB3;
+  border-radius: 5px;
+  padding: 8px 12px 8px 12px;
+  font-size: 12px;
+  align-items: center;
+}
+
+.kurs-price h3 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.kurs-price p {
+  font-size: 10px;
+  color: #A4A4A4;
+}

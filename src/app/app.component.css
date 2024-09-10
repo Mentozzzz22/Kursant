@@ -3,3 +3,9 @@
   flex-direction: column;
 }
 
+:host ::ng-deep .p-toast-message-custom {
+  background-color: #E0F7FA;
+  border: solid #17A2B8;
+  border-width: 0 0 0 6px;
+  color: #0E5A66;
+}

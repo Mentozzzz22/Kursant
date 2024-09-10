@@ -31,7 +31,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-application >
-        <tr>
+        <tr (click)="showDialog()">
           <th>{{application.id}}</th>
           <th>{{application.name}}</th>
           <th>{{application.phone}}</th>
@@ -43,3 +43,122 @@
 
   </div>
 </div>
+
+
+<p-dialog
+  header="Header"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '70rem' }"
+  draggable="false">
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <h3>Заявка #0012</h3>
+      <h5 class="username">Арман</h5>
+    </div>
+  </ng-template>
+  <div class="modal-content">
+
+    <div class="block-one">
+      <h5>В корзине</h5>
+      <ol class="cart-list">
+        <li>
+          <span class="item-name">Қазақстан тарихы</span>
+          <span class="price">50 000 тг</span>
+          <button class="delete-btn">
+            <i class="pi pi-trash"></i>
+          </button>
+        </li>
+        <li>
+          <span class="item-name">Мат. сау.</span>
+          <span class="price">50 000 тг</span>
+          <button class="delete-btn">
+            <i class="pi pi-trash"></i>
+          </button>
+        </li>
+        <li>
+          <span class="item-name">Оқу сау.</span>
+          <span class="price">50 000 тг</span>
+          <button class="delete-btn">
+            <i class="pi pi-trash"></i>
+          </button>
+        </li>
+        <li>
+          <span class="item-name">Математика</span>
+          <span class="price">50 000 тг</span>
+          <button class="delete-btn">
+            <i class="pi pi-trash"></i>
+          </button>
+        </li>
+        <li>
+          <span class="item-name">Физика</span>
+          <span class="price">50 000 тг</span>
+          <button class="delete-btn">
+            <i class="pi pi-trash"></i>
+          </button>
+        </li>
+      </ol>
+      <div class="total">
+        <strong>К оплате:</strong> <span class="total-price">250 000 тг</span>
+      </div>
+    </div>
+
+    <div class="block-two">
+      <div class="form-group">
+        <label for="fullName">ФИО</label>
+        <div class="input-container">
+          <input type="text" id="fullName" class="form-control" value="Адбікерім Ерлан" readonly>
+          <button class="edit-btn">
+            <i class="pi pi-pencil"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Телефон</label>
+        <div class="input-container">
+          <input type="text" id="phone" class="form-control" value="87088084949" readonly>
+          <button class="edit-btn">
+            <i class="pi pi-pencil"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="region">Регион</label>
+        <div class="input-container">
+          <input type="text" id="region" class="form-control" value="-" readonly>
+          <button class="edit-btn">
+            <i class="pi pi-pencil"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="block-three">
+      <label for="comment">Комментарий к админу</label>
+      <textarea id="comment" rows="4"></textarea>
+    </div>
+
+      <div class="block-four">
+        <label for="check">Чек</label>
+        <button class="check" id="check">13221</button>
+      </div>
+
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="button-group">
+
+      <div class="button-container">
+        <button class="filled-button" (click)="saveDialog()">Открыть доступ</button>
+
+        <button class="outlined-button" (click)="cancelDialog()">Отклонить</button>
+      </div>
+
+      <button class="text-button" (click)="closeDialog()">Назад</button>
+    </div>
+  </ng-template>
+
+</p-dialog>

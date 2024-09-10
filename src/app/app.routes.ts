@@ -12,6 +12,7 @@ import {AccessDeniedComponent} from "./login/access-denied/access-denied.compone
 import {TestPageComponent} from "./student/test-page/test-page.component";
 import {ApplicationComponent} from "./admin/application/application.component";
 import {AdminComponent} from "./admin/admin.component";
+import {CourseComponent} from "./admin/course/course.component";
 
 export const routes: Routes = [
   {
@@ -38,6 +39,9 @@ export const routes: Routes = [
     children:[
       {
         path: 'applications', component: ApplicationComponent
+      },
+      {
+        path: 'course', component: CourseComponent
       }
     ]
   },
