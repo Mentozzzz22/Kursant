@@ -6,7 +6,7 @@
 .test-container {
   background-color: white;
   min-height: 100vh;
-  padding: 50px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -173,3 +173,158 @@ p-progressBar {
   color: white;
   font-size: 18px;
 }
+
+::ng-deep .p-breadcrumb {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+::ng-deep .p-breadcrumb-list {
+  margin: 0;
+  padding: 0;
+}
+
+::ng-deep .p-menuitem-separator {
+  margin: 0;
+  padding: 0;
+}
+
+.p-menuitem-link {
+  text-decoration: none;
+}
+
+.breadcrumb-container {
+
+}
+
+::ng-deep a {
+  text-decoration: none;
+}
+
+.breadcrumb-label-text {
+  color: #444444;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.start-test {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.start-test-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.remain-time p {
+  white-space: wrap;
+}
+
+.question-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.question-buttons button {
+  width: 55px;
+  height: 55px;
+  background: none;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.question-buttons button.answered {
+  background-color: #00B0EA; /* Синий цвет для отвеченных вопросов */
+  color: white;
+}
+
+.question-buttons button.current-question {
+  border: 2px solid #00B0EA; /* Подсвечивание текущего вопроса */
+}
+
+.question-card {
+}
+
+.question-header h3 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.question-header {
+  border: 1px solid #E0E0E0;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 25px 45px;
+}
+
+.question-content{
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border: 1px solid #E0E0E0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 25px 45px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 300px;
+}
+
+.question-content h4 {
+  font-size: 18px;
+  color: #444;
+}
+
+.answers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.answer-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+input[type="radio"] {
+  position: relative;
+  appearance: none;
+  width: 23px;
+  height: 23px;
+  border: 2px solid #bbb;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="radio"]:checked {
+  border: 7px solid #00B0EA;
+}
+
+input[type="radio"]::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background-color: #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.2s;
+}
+
+input[type="radio"]:checked::before {
+  background-color: #00B0EA;
+}
+

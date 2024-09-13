@@ -1,48 +1,117 @@
 <div class="test-container">
-  <div class="test-header">
-    <h2>Тақырыптық тест</h2>
-    <p>Мұғалім: Ирисбеков Мақсат</p>
+
+  <div class="breadcrumb-container">
+    <p-breadcrumb class="max-w-full" [model]="items">
+      <ng-template pTemplate="item" let-item>
+        <ng-container *ngIf="item.route">
+          <a [routerLink]="item.route" class="breadcrumb-menu-link">
+            <span class="breadcrumb-label-text">{{ item.label }}</span>
+          </a>
+        </ng-container>
+      </ng-template>
+      <ng-template pTemplate="separator"> /</ng-template>
+    </p-breadcrumb>
   </div>
 
-  <div class="test-content">
-    <div class="test-left">
-      <div class="test-details">
-        <div class="test-detail-left">
-          <p>Сұрақ саны</p>
-          <p>Тест уақыты</p>
-          <p>Дедлайн</p>
-        </div>
+  @if (!isTestStarted) {
 
-        <div class="test-detail-right">
-          <p>10</p>
-          <p>15 минут</p>
-          <p>09/09/2024 &nbsp;&nbsp;&nbsp;&nbsp; 23:59</p>
-        </div>
-      </div>
-      <button class="start-test-btn" (click)="showDialog()">Тестті бастау</button>
+    <div class="test-header">
+      <h2>Тақырыптық тест</h2>
+      <p>Мұғалім: Ирисбеков Мақсат</p>
     </div>
 
-    <div class="test-right">
-      <h3><strong>Мезолит. Орта тас дәуірі</strong></h3>
-      <div class="progress-wrappper">
-        <p>Тақырып прогрессі</p>
-        <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
-      </div>
-      <div class="sabaktar">
-        @for (sabak of sabaktar; track sabak.id) {
-          <div class="sabak">
-            <img [src]="getTemaStatusIcon(sabak.status)" alt="status">
-            <p>{{ sabak.id }} сабақ. {{ sabak.tema }}. {{ sabak.sabakName }}</p>
+    <div class="test-content">
+      <div class="test-left">
+        <div class="test-details">
+          <div class="test-detail-left">
+            <p>Сұрақ саны</p>
+            <p>Тест уақыты</p>
+            <p>Дедлайн</p>
           </div>
-        }
+
+          <div class="test-detail-right">
+            <p>10</p>
+            <p>15 минут</p>
+            <p>09/09/2024 &nbsp;&nbsp;&nbsp;&nbsp; 23:59</p>
+          </div>
+        </div>
+        <button class="start-test-btn" (click)="showStartTestDialog()">Тестті бастау</button>
+      </div>
+
+      <div class="test-right">
+        <h3><strong>Мезолит. Орта тас дәуірі</strong></h3>
+        <div class="progress-wrappper">
+          <p>Тақырып прогрессі</p>
+          <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
+        </div>
+        <div class="sabaktar">
+          @for (sabak of sabaktar; track sabak.id) {
+            <div class="sabak">
+              <img [src]="getTemaStatusIcon(sabak.status)" alt="status">
+              <p>{{ sabak.id }} сабақ. {{ sabak.tema }}. {{ sabak.sabakName }}</p>
+            </div>
+          }
+        </div>
       </div>
     </div>
+  }
+  <!-- Если тест начат, отображаем страницу теста -->
+  <div *ngIf="isTestStarted" class="start-test">
+    <div class="start-test-header">
+      <div class="test-header">
+        <h2>Мезолит. Орта тас дәуірі / Тақырыптық тест</h2>
+        <p>Мұғалім: Ирисбеков Мақсат</p>
+      </div>
+      <div class="remain-time">
+        <p>Қалған уақыт: <strong> 15:00</strong></p>
+      </div>
+    </div>
+
+    <!-- Номера вопросов -->
+    <div class="question-buttons">
+      @for (question of questions; track question.id; let i = $index) {
+        <button (click)="selectQuestion(i)"
+                [ngClass]="{'answered': answeredQuestions[question.id], 'current-question': currentQuestionIndex === i}">
+          {{ i + 1 }}
+        </button>
+      }
+
+    </div>
+
+    <div class="question-card">
+      <div class="question-header">
+        <h3>{{ currentQuestionIndex + 1 }} сұрақ</h3>
+      </div>
+      <div class="question-content">
+        <h4>{{ questions[currentQuestionIndex].question }}</h4>
+        <form [formGroup]="testForm">
+          <div class="answers-list">
+            <div *ngFor="let option of questions[currentQuestionIndex].options; let j = index" class="answer">
+              <label class="answer-option">
+                <input type="radio" [formControlName]="'question_' + questions[currentQuestionIndex].id"
+                       (change)="saveAnswer(questions[currentQuestionIndex].id, j)" [value]="j">
+                <span>{{ option.answerName }}</span>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <button class="start-test-btn" (click)="showEndTestDialog()">Тестті аяқтау</button>
   </div>
 </div>
-<p-dialog class="test-modal" header="Тестілеуді бастау" [modal]="true" [(visible)]="visible">
-  <span class="modal-text">Тестілеуді бастау батырмасы басылғасын уақыт есептегіш қосылады.dadadadadadda adadadadada dadadadad</span>
+<p-dialog class="test-modal" header="Тестілеуді бастау" [modal]="true" [(visible)]="startTestVisible">
+  <span class="modal-text">Тестілеуді бастау батырмасы басылғасын уақыт есептегіш қосылады.</span>
   <div class="modal-footer">
-    <button class="back-btn" (click)="visible = false">Артқа</button>
-    <button class="start-btn" (click)="visible = false">Тесттілеуді бастау</button>
+    <button class="back-btn" (click)="startTestVisible = false">Артқа</button>
+    <button class="start-btn" (click)="startTest()">Тестті бастау</button>
+  </div>
+</p-dialog>
+
+<p-dialog class="test-modal" header="Тестілеуді аяқтау" [modal]="true" [(visible)]="endTestVisible">
+  <span class="modal-text">Белгіленбеген сұрақтар бар, тестілеуді аяқтағанда ол сұрақтарға 0 балл беріледі.</span>
+  <div class="modal-footer">
+    <button class="back-btn" (click)="endTestVisible = false">Артқа</button>
+    <button class="start-btn" (click)="endTest()">Тесттілеуді аяқтау</button>
   </div>
 </p-dialog>

@@ -44,8 +44,6 @@ export class SabakPageComponent implements OnInit {
 
   items: MenuItem[] | undefined;
 
-  home: MenuItem | undefined;
-
   ngOnInit() {
     this.items = [
       {label: '< Қазақстан тарихы', route: '/#'},
