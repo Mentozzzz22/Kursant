@@ -37,6 +37,16 @@
   border-radius: 0 8px 8px 0;
 }
 
+.add-course-btn {
+  background-color: #00ADEF;
+  height: 40px;
+  width: 95px;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  font-size: 10px;
+}
+
 /**Контент**/
 
 .main-content {

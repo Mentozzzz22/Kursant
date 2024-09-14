@@ -17,7 +17,7 @@ import {Router} from "@angular/router";
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
   private messageService = inject(MessageService);
@@ -32,6 +32,7 @@ export class LoginComponent implements OnInit{
   public smsCode = this.fb.group({
     sms: ['', Validators.required]
   });
+
   ngOnInit(): void {
   }
 
@@ -39,8 +40,9 @@ export class LoginComponent implements OnInit{
     let phone = this.loginForm.get('phone')?.value;
 
     if (phone) {
-      phone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
-      phone = `+7 ${phone}`;
+      // Приводим номер к нужному формату
+      phone = phone.replace(/\D/g, ''); // Убираем все символы, кроме цифр
+      phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
     }
 
     if (this.loginForm.valid) {
@@ -48,10 +50,10 @@ export class LoginComponent implements OnInit{
         (response) => {
           console.log('SMS отправлено успешно', response);
           this.loginSuccess = true;
-          this.messageService.add({severity:'success', summary:'Успешно', detail:'Смс отправлено'});
+          this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Смс отправлено'});
         },
         (error) => {
-          this.messageService.add({severity:'error', summary:'Ошибка', detail:'Пользователь не найден'});
+          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Пользователь не найден'});
         }
       );
     } else {
@@ -60,13 +62,13 @@ export class LoginComponent implements OnInit{
   }
 
 
-
   checkSmsCode() {
     let phone = this.loginForm.get('phone')?.value;
 
     if (phone) {
-      phone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
-      phone = `+7 ${phone}`;
+      // Приводим номер к нужному формату
+      phone = phone.replace(/\D/g, ''); // Убираем все символы, кроме цифр
+      phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
     }
 
     const code = this.smsCode.get('sms')?.value;
@@ -76,7 +78,7 @@ export class LoginComponent implements OnInit{
         (response) => {
           console.log('Код успешно проверен', response);
           this.isCodeValid = true;
-          this.messageService.add({severity:'success', summary:'Успешно', detail:'Успешно авторизован'});
+          this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Успешно авторизован'});
           this.router.navigate(['/student']);
         },
         (error) => {

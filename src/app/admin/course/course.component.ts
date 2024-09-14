@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {NgForOf} from "@angular/common";
 import {kurs} from "../../non-authorized/main-page/main-page.component";
+import {SuperAdminService} from "../../service/super-admin.service";
+import {Courses} from "../../../assets/models/courses.interface";
 
 @Component({
   selector: 'app-course',
@@ -14,7 +16,12 @@ import {kurs} from "../../non-authorized/main-page/main-page.component";
   templateUrl: './course.component.html',
   styleUrl: './course.component.css'
 })
-export class CourseComponent {
+export class CourseComponent implements OnInit{
+
+  private superAdminService = inject(SuperAdminService);
+
+  public courses: Courses[] = [];
+
   public kurstar: kurs[] = [
     {
       id: 1,
@@ -66,4 +73,15 @@ export class CourseComponent {
       price: 70000,
     },
   ]
+
+  ngOnInit(){
+    this.loadEmployees()
+  }
+
+  private loadEmployees() {
+    this.superAdminService.getCourses().subscribe(data => {
+      this.courses = data;
+      console.log(data)
+    })
+  }
 }
