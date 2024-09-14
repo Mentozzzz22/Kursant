@@ -7,6 +7,7 @@ import {provideHttpClient, withInterceptors} from "@angular/common/http";
 import {ToastModule} from "primeng/toast";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {DatePipe} from "@angular/common";
+import {provideNgxMask} from 'ngx-mask';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,5 +18,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(ToastModule),
     {provide: MessageService, useClass: MessageService},
     {provide: ConfirmationService, useClass: ConfirmationService},
-    {provide:DatePipe, useClass:DatePipe}
+    {provide:DatePipe, useClass:DatePipe},
+    provideNgxMask()
   ]};
