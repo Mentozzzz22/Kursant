@@ -1,0 +1,141 @@
+<div class="supplier-header">
+  <div class="supplier-container">
+    <h1 class="supplier-title"><i class="pi pi-angle-left"></i> <span style="font-weight: bold">1 тақырып. </span> ыавваыаывваыаыв</h1>
+  </div>
+</div>
+<div class="main-content">
+
+  <div class="content-buttons" >
+    <div class="content-description" routerLink="../picking/orders" routerLinkActive="active">
+      <div class="description">
+
+        <span style="font-weight: bold">Описание ДЗ:</span> ыавваыавыавываываываываыавываыавыааавы
+        аывва ываываы ыаваываы<br> выаваы выаваы аыв ываавы авыаыв авывыа авыавыавы авываы авыавы ываваыавы авы авыавы.
+
+      </div>
+
+      <div class="description-deadline"> Дедлайн: 09/09/2024      23:59 </div>
+
+      <button class="description-button" (click)="showRetakeDialog()">
+        <img src="assets/images/download_icon.svg" width="15" height="15">
+        Үй жұмысының берілгені
+      </button>
+    </div>
+
+  </div>
+
+  <div class="content-buttons" >
+
+    <button class="content-button" routerLink="../picking/orders" routerLinkActive="active">Все (191)</button>
+    <button class="content-button" routerLink="../picking/in-progress" routerLinkActive="active">Сдали (171)</button>
+    <button class="content-button" routerLink="../picking/in-progress" routerLinkActive="active">Не сдали (20)</button>
+
+  </div>
+
+
+
+  <div class="content-table-container">
+
+    <p-table [value]="progress" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ФИО ученика</th>
+          <th>Сдал?</th>
+          <th>Дата сабмита</th>
+          <th>Балл</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-progresses >
+        <tr (click)="showDialog()">
+          <td>{{progresses.module}}</td>
+          <td>{{progresses.topic}}</td>
+          <td>{{progresses.deadline}}</td>
+          <td>{{progresses.submitted}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+  </div>
+</div>
+
+
+<p-dialog
+  header="Header"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '40rem' }"
+  draggable="false">
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <h3>Ставить оценку</h3>
+    </div>
+  </ng-template>
+  <div class="modal-content">
+
+    <div class="block-two">
+      <div class="form-group">
+        <label for="fullName">Оценка (0-100 баллов)</label>
+        <div class="input-container">
+          <input type="text" id="fullName" class="form-control" placeholder="70" readonly>
+          <div class="edit-btn">
+            Пересдача
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="button-group">
+
+      <div class="button-container">
+        <button class="filled-button" >Поставить</button>
+
+        <button class="outlined-button" >Отмена</button>
+      </div>
+
+    </div>
+  </ng-template>
+
+</p-dialog>
+
+
+<p-dialog
+  header="Header"
+  [(visible)]="visibleRetake"
+  [modal]="true"
+  [style]="{ width: '40rem' }"
+  draggable="false">
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <h3>На пересдачу</h3>
+    </div>
+  </ng-template>
+  <div class="modal-content">
+
+    <div class="block-three">
+      <div class="form-group">
+        <label for="comment">Комментарий</label>
+        <textarea id="comment" rows="8"></textarea>
+      </div>
+
+    </div>
+
+
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="button-group">
+
+      <div class="button-container">
+        <button class="filled-button" >Отправить</button>
+
+        <button class="outlined-button" >Отмена</button>
+      </div>
+
+    </div>
+  </ng-template>
+
+</p-dialog>

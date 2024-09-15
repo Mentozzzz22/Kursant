@@ -1,0 +1,162 @@
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+.admin-container {
+  display: flex;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.sidebar {
+  z-index: 100000;
+  width: 240px;
+  background-color: #11143D;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  justify-content: space-between;
+}
+
+.sidebar-header h2 {
+  margin-bottom: 8px;
+  font-size: 24px;
+}
+
+.sidebar-header a {
+  color: white;
+  text-decoration: underline;
+
+}
+
+.divider {
+  height: 1px;
+  background-color: #fff;
+  width: calc(100% + 40px);
+  margin: 24px 0 10px -20px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  margin: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar-menu {
+  overflow-y: scroll; /
+}
+
+.sidebar-menu li {
+  margin-top: 17px;
+  margin-bottom: 15px;
+  padding: 0;
+}
+
+.sidebar-menu a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 25px 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.dropdown-menu:hover,
+.dropdown-menu.active {
+  color: #fff;
+}
+
+.sidebar-menu-links:hover,
+.sidebar-menu-links.active {
+  background-color: #5866e9;
+  color: #fff;
+}
+
+.sidebar-menu li a img {
+  margin-right: 12px;
+}
+
+
+.submenu {
+  margin-left: 20px;
+}
+
+.logout {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: auto;
+}
+
+.logout img {
+  margin-right: 8px;
+}
+
+.sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+  flex-grow: 1;
+}
+
+.sidebar-menu li a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 10px 5px;
+}
+
+.sidebar-menu li a img {
+  margin-right: 8px;
+}
+
+.dropdown-menu {
+  font-size: 14px;
+  color: #B6B6DF;
+}
+
+.sidebar-menu-links {
+  color: white;
+  font-size: 16px;
+}
+
+.content {
+  background-color: #F9FAFC;
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .navbar-item {
+    display: none;
+  }
+
+  .mobile-div1 {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    background-color: white;
+    padding: 10px 20px 10px 20px
+  }
+}
