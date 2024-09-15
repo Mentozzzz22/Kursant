@@ -1,3 +1,16 @@
+:host ::ng-deep .p-dialog-header,
+:host ::ng-deep .p-dialog-content,
+:host ::ng-deep .p-dialog-footer {
+  /*padding: 24px;*/
+  margin: 0 !important;
+}
+
+.course-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .supplier-container {
   background-color: #fff;
   padding: 28px 32px 15px;
@@ -43,7 +56,7 @@
   width: 95px;
   border: none;
   color: white;
-  border-radius: 10px;
+  border-radius: 5px;
   font-size: 10px;
 }
 
@@ -68,7 +81,7 @@
 
 .content-button {
   display: flex;
-  gap:25px;
+  gap: 25px;
   padding: 30px 90px 30px 30px;
   border: none;
   background-color: #fff;
@@ -83,29 +96,29 @@
   border: 1px solid #1D1D42;
 }
 
-.content-button-names{
+.content-button-names {
   display: flex;
   flex-direction: column;
 }
 
-.content-button-names h3{
-  margin:0;
+.content-button-names h3 {
+  margin: 0;
 }
 
-.content-button-names p{
+.content-button-names p {
   text-align: left;
   color: #BABABA;
 }
 
 
-
-.content-items{
+.content-items {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
 }
 
 .kurstar-card {
+  max-width: 300px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -115,8 +128,8 @@
 }
 
 .kurs-images {
-  width: 239px;
-  height: 138px;
+  max-width: 289px;
+  max-height: 138px;
 }
 
 .subject-info h3 {
@@ -188,4 +201,185 @@
 .kurs-price p {
   font-size: 10px;
   color: #A4A4A4;
+}
+
+client-edit__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+}
+
+.client-edit__title {
+  font-size: 25px;
+  color: #444;
+  font-weight: bold;
+}
+
+.client-edit__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #fff;
+  border-radius: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 30px;
+}
+
+.form-label {
+  display: block;
+  color: #444;
+  font-size: 13px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  width: 100%;
+  max-width: 276px;
+  padding: 12px 14px;
+  border: 1px solid #e3e3e3;
+  border-radius: 9px;
+  background-color: #f9fafc;
+  font-size: 11px;
+  color: #444;
+  font-weight: 500;
+}
+
+.toggle-button {
+  padding: 12px 14px;
+  border: 1px solid #e3e3e3;
+  border-radius: 9px;
+  background-color: #f9fafc;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.toggle-button.active {
+  background-color: #00adef;
+  color: #fff;
+}
+
+.form-actions {
+  display: flex;
+  gap: 14px;
+}
+
+.btn {
+  padding: 10px 58px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+
+.access-container {
+  border: 1px solid #e3e3e3;
+  border-radius: 9px;
+  max-width: 290px;
+  padding: 10px
+}
+
+.toggle-buttons {
+  color: black;
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.toggle-buttons span {
+  align-content: center;
+}
+
+.access-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.btn--secondary {
+  background-color: #fff;
+  color: #444;
+  border: 1px solid #444;
+}
+
+.btn--delete {
+  background-color: red;
+  color: white;
+  border: none;
+}
+
+.btn--primary {
+  background-color: #444;
+  color: #fff;
+  border: none;
+}
+
+.custom-file-upload {
+  max-width: 277px;
+  display: flex;
+  align-items: center;
+  border-radius: 9px;
+  overflow: hidden;
+  width: 100%;
+  background-color: #f9fafc;
+  border: 1px solid #e3e3e3;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-upload-button {
+  font-size: 13px;
+  background-color: #00adef;
+  color: #444444;
+  padding: 12px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 9px 0 0 9px;
+  flex-shrink: 0;
+}
+
+.file-upload-filename {
+  font-size: 13px;
+  padding: 12px 16px;
+  color: #444444;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-file-upload:hover .file-upload-button {
+  background-color: #009ed6;
+}
+
+.form-group button {
+  height: 37px;
+  background-color: #444444;
+  color: white;
+  padding: 12px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  display: block;
+  margin-top: 10px;
+  width: 180px;
+}
+
+.form-group1 {
+  display: flex;
+  gap: 50px;
 }

@@ -144,7 +144,7 @@ html, body {
   background-color: #F9FAFC;
   margin-left: 240px;
   width: calc(100% - 240px);
-  height: 100vh;
+  /*height: 100vh;*/
   box-sizing: border-box;
 }
 

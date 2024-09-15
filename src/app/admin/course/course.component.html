@@ -1,63 +1,114 @@
-<div class="supplier-header">
-  <div class="supplier-container">
-    <h1 class="supplier-title">Курсы</h1>
-    <hr style="transform: scaleY(0.3);">
-    <div class="supplier-actions">
-      <div class="search-form">
-        <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
-        <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input"/>
-        <button type="submit" class="search-button">Поиск</button>
+<div class="course-page">
+  <div class="supplier-header">
+    <div class="supplier-container">
+      <h1 class="supplier-title">Курсы</h1>
+      <hr style="transform: scaleY(0.3);">
+      <div class="supplier-actions">
+        <div class="search-form">
+          <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
+          <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input"/>
+          <button type="submit" class="search-button">Поиск</button>
+        </div>
+        <button class="add-course-btn" (click)="showAddDialog()">
+          Добавить курс
+        </button>
       </div>
-      <button class="add-course-btn">
-        Добавить курс
+    </div>
+  </div>
+  <div class="main-content">
+
+    <div class="content-buttons">
+      <button class="content-button" routerLink="../picking/orders" routerLinkActive="active">
+        <img src="assets/images/time_icon.svg" alt="Courses" class="logo"/>
+        <div class="content-button-names">
+          <h3>Курстар</h3>
+          <p>14 курс</p>
+        </div>
+      </button>
+      <button class="content-button" routerLink="../picking/orders" routerLinkActive="active">
+        <img src="assets/images/potok_icon.svg" alt="Courses" class="logo"/>
+        <div class="content-button-names">
+          <h3>Поток</h3>
+          <p>14 курс</p>
+        </div>
       </button>
     </div>
-  </div>
-</div>
-<div class="main-content">
-
-  <div class="content-buttons">
-    <button class="content-button" routerLink="../picking/orders" routerLinkActive="active">
-      <img src="assets/images/time_icon.svg" alt="Courses" class="logo"/>
-      <div class="content-button-names">
-        <h3>Курстар</h3>
-        <p>14 курс</p>
-      </div>
-    </button>
-    <button class="content-button" routerLink="../picking/orders" routerLinkActive="active">
-      <img src="assets/images/potok_icon.svg" alt="Courses" class="logo"/>
-      <div class="content-button-names">
-        <h3>Поток</h3>
-        <p>14 курс</p>
-      </div>
-    </button>
-  </div>
 
 
-  <div class="content-items">
+    <div class="content-items">
 
-    <div class="kurstar-card" *ngFor="let kurs of kurstar">
-      <img [src]="kurs.img" alt="subject1" class="kurs-images">
-      <div class="kurs-card-content">
-        <div class="kurs-info">
-          <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ kurs.bolim }} бөлім</p>
-          <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ kurs.sabak }} сабақ</p>
-        </div>
-        <div class="subject-info">
-          <h3>{{ kurs.subjectName }}</h3>
-          <p>Ең жақын поток: {{ kurs.closestPotok }}</p>
-          <hr>
-        </div>
-        <div class="kurs-footer">
-          <div class="kurs-price">
-            <h3>{{ kurs.price }} тг</h3>
-            <p>бір реттік төлем</p>
+      <div class="kurstar-card" *ngFor="let kurs of kurstar">
+        <img [src]="kurs.img" alt="subject1" class="kurs-images">
+        <div class="kurs-card-content">
+          <div class="kurs-info">
+            <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ kurs.bolim }} бөлім</p>
+            <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ kurs.sabak }} сабақ</p>
           </div>
-          <button>Корзинаға</button>
+          <div class="subject-info">
+            <h3>{{ kurs.subjectName }}</h3>
+            <p>Ең жақын поток: {{ kurs.closestPotok }}</p>
+            <hr>
+          </div>
+          <div class="kurs-footer">
+            <div class="kurs-price">
+              <h3>{{ kurs.price }} тг</h3>
+              <p>бір реттік төлем</p>
+            </div>
+            <button>Корзинаға</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-
 </div>
+<p-dialog header="client-edit" [modal]="true" [(visible)]="visibleAddModal" [style]="{width: '996px'}"
+          [draggable]="false">
+  <ng-template pTemplate="header">
+    <div class="client-edit__header">
+      <h3 class="client-edit__title">Добавить сотрудника</h3>
+    </div>
+  </ng-template>
+
+  <form class="client-edit__form">
+    <div class="form-group">
+      <label for="name" class="form-label">Название</label>
+      <input type="text" id="name" class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label for="description" class="form-label">Описание курса</label>
+      <p-editor id="description" [style]="{ height: '50px' }"/>
+    </div>
+
+    <div class="form-group1">
+      <div>
+        <label for="file" class="form-label">Обложка курса</label>
+        <div class="custom-file-upload">
+          <input type="file" id="file" class="file-input" (change)="onFileSelected($event)"/>
+          <span class="file-upload-button" (click)="triggerFileInput()">Выберите файл</span>
+          <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
+        </div>
+      </div>
+      <div>
+        <label for="file1" class="form-label">Большая обложка</label>
+        <div class="custom-file-upload">
+          <input type="file" id="file1" class="file-input" (change)="onFileSelected($event)"/>
+          <span class="file-upload-button" (click)="triggerFileInput()">Выберите файл</span>
+          <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="price" class="form-label">Цена</label>
+      <input type="text" id="price" class="form-input">
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn--primary">Добавить</button>
+      <button type="button" class="btn btn--secondary" (click)="onCancel()">Отмена</button>
+    </div>
+
+  </form>
+
+</p-dialog>

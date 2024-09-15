@@ -1,9 +1,12 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {kurs} from "../../non-authorized/main-page/main-page.component";
 import {SuperAdminService} from "../../service/super-admin.service";
 import {Courses} from "../../../assets/models/courses.interface";
+import {DialogModule} from "primeng/dialog";
+import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {EditorModule} from "primeng/editor";
 
 @Component({
   selector: 'app-course',
@@ -11,16 +14,25 @@ import {Courses} from "../../../assets/models/courses.interface";
   imports: [
     RouterLink,
     RouterLinkActive,
-    NgForOf
+    NgForOf,
+    DialogModule,
+    ReactiveFormsModule,
+    EditorModule,
+    NgIf
   ],
   templateUrl: './course.component.html',
   styleUrl: './course.component.css'
 })
-export class CourseComponent implements OnInit{
+export class CourseComponent implements OnInit {
 
   private superAdminService = inject(SuperAdminService);
-
-  public courses: Courses[] = [];
+  private fb = inject(FormBuilder)
+  public selectedFileName: string | undefined;
+  public selectedFile: File | null = null;  public courses: Courses[] = [];
+  public visibleAddModal: boolean = false;
+  public productForm = this.fb.group({
+    colors: this.fb.array([]),
+  })
 
   public kurstar: kurs[] = [
     {
@@ -74,7 +86,7 @@ export class CourseComponent implements OnInit{
     },
   ]
 
-  ngOnInit(){
+  ngOnInit() {
     this.loadEmployees()
   }
 
@@ -83,5 +95,26 @@ export class CourseComponent implements OnInit{
       this.courses = data;
       console.log(data)
     })
+  }
+
+  public onCancel(): void {
+    this.visibleAddModal = false;
+  }
+
+  public showAddDialog() {
+    this.visibleAddModal = true;
+  }
+
+  public triggerFileInput(): void {
+    const fileInput = document.getElementById('file') as HTMLInputElement;
+    fileInput.click();
+  }
+
+  public onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.selectedFile = input.files[0];
+      this.selectedFileName = this.selectedFile.name;
+    }
   }
 }
