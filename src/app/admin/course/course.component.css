@@ -81,7 +81,7 @@
 }
 
 .content-button.active {
-  border: 1px solid #1D1D42;
+  border: 2px solid #2D74FF;
 }
 
 .content-button-names {
@@ -104,7 +104,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
-  padding: 20px;
+  padding: 20px 0;
 }
 
 .kurstar-card {
@@ -375,4 +375,54 @@ client-edit__header {
 .form-group1 {
   display: flex;
   gap: 50px;
+}
+
+
+
+/**ПОТОКИ**/
+
+.flow-item {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 23px 100px 65px 33px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.flow-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background-color: #00b0ff;
+  border-radius: 8px 0 0 8px;
+}
+
+.flow-header {
+  display: flex;
+  gap:40px;
+}
+
+.flow-title {
+  font-weight: 600;
+  font-size: 23px;
+  color:#444444;
+}
+
+.flow-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.flow-tag {
+  background-color: #B5E8F9;
+  color: #00B0EA;
+  padding: 8px 12px;
+  border-radius: 15px;
+  font-size: 0.9em;
+  display: inline-block;
 }
