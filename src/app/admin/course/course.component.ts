@@ -24,7 +24,7 @@ import {EditorModule} from "primeng/editor";
   styleUrl: './course.component.css'
 })
 export class CourseComponent implements OnInit {
-
+  activeTab: string = 'courseContent';
   private superAdminService = inject(SuperAdminService);
   private fb = inject(FormBuilder)
   public selectedFileName: string | undefined;
@@ -33,6 +33,32 @@ export class CourseComponent implements OnInit {
   public productForm = this.fb.group({
     colors: this.fb.array([]),
   })
+
+  flowWorks = [
+    {
+      stream: 1,
+      date: '22.09.2024',
+      title: 'ҰБТ-ға 3 профильді пән бойынша дайындық',
+      tags: [
+        { name: 'Физика | Ирисбеков Максат' },
+        { name: 'Тарих | Ирисбеков Максат' },
+        { name: 'Математика | Ирисбеков Максат' },
+        { name: 'Информатика | Ирисбеков Максат' }
+      ]
+    },
+    {
+      stream: 2,
+      date: '22.09.2024',
+      title: 'ҰБТ-ға 3 профильді пән бойынша дайындық',
+      tags: [
+        { name: 'Физика | Ирисбеков Максат' },
+        { name: 'Тарих | Ирисбеков Максат' },
+        { name: 'Математика | Ирисбеков Максат' },
+        { name: 'Информатика | Ирисбеков Максат' }
+      ]
+    },
+
+  ];
 
   public kurstar: kurs[] = [
     {
@@ -86,6 +112,8 @@ export class CourseComponent implements OnInit {
     },
   ]
 
+
+
   ngOnInit() {
     this.loadEmployees()
   }
@@ -117,4 +145,9 @@ export class CourseComponent implements OnInit {
       this.selectedFileName = this.selectedFile.name;
     }
   }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
+  }
+
 }
