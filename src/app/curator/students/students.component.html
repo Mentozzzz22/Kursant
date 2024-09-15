@@ -1,0 +1,50 @@
+<div class="supplier-header">
+  <div class="supplier-container">
+    <h1 class="supplier-title">Ученики</h1>
+    <hr style="transform: scaleY(0.3);">
+    <div class="supplier-actions">
+      <div class="search-form" >
+        <label for="supplierSearch" class="visually-hidden">ФИО</label>
+        <input type="text" id="supplierSearch"  placeholder="ФИО" class="search-input" />
+        <button type="submit" class="search-button" >Поиск</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="main-content">
+  <div class="content-buttons" >
+    <button class="content-button"  routerLinkActive="active">Поток 1</button>
+    <button class="content-button" routerLinkActive="active">Поток 2</button>
+    <button class="content-button"  routerLinkActive="active">Поток 3</button>
+    <button class="content-button"  routerLinkActive="active">Поток 4</button>
+  </div>
+
+  <div class="content-table-container">
+
+      <p-table [value]="progress" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>ФИО</th>
+            <th>Дата добавления</th>
+            <th>Сдали</th>
+            <th>Сдали</th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-progresses >
+          <tr >
+            <td>{{progresses.module}}</td>
+            <td>{{progresses.topic}}</td>
+            <td>{{progresses.deadline}}</td>
+            <td>{{progresses.submitted}}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+
+
+  </div>
+</div>
+
+
+

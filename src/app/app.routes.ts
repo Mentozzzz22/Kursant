@@ -13,6 +13,10 @@ import {TestPageComponent} from "./student/test-page/test-page.component";
 import {ApplicationComponent} from "./admin/application/application.component";
 import {AdminComponent} from "./admin/admin.component";
 import {CourseComponent} from "./admin/course/course.component";
+import {CuratorComponent} from "./curator/curator.component";
+import {HomeworksComponent} from "./curator/homeworks/homeworks.component";
+import {HomeworkDetailComponent} from "./curator/homeworks/homework-detail/homework-detail.component";
+import {StudentsComponent} from "./curator/students/students.component";
 
 export const routes: Routes = [
   {
@@ -39,6 +43,24 @@ export const routes: Routes = [
     children:[
       {
         path: 'applications', component: ApplicationComponent
+      },
+      {
+        path: 'course', component: CourseComponent
+      }
+    ]
+  },
+  {
+    path: 'curator',
+    component: CuratorComponent,
+    children:[
+      {
+        path: 'curator-homework', component: HomeworksComponent
+      },
+      {
+        path: 'homework-detail', component: HomeworkDetailComponent
+      },
+      {
+        path: 'curator-students', component: StudentsComponent
       },
       {
         path: 'course', component: CourseComponent

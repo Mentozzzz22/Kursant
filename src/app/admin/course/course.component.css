@@ -1,16 +1,3 @@
-:host ::ng-deep .p-dialog-header,
-:host ::ng-deep .p-dialog-content,
-:host ::ng-deep .p-dialog-footer {
-  /*padding: 24px;*/
-  margin: 0 !important;
-}
-
-.course-page {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
 .supplier-container {
   background-color: #fff;
   padding: 28px 32px 15px;
@@ -53,17 +40,18 @@
 .add-course-btn {
   background-color: #00ADEF;
   height: 40px;
-  width: 95px;
+  width: 120px;
   border: none;
   color: white;
   border-radius: 5px;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 /**Контент**/
 
 .main-content {
   padding: 20px;
+  max-width:1300px;
 }
 
 .content-buttons {
@@ -111,34 +99,42 @@
 }
 
 
+
 .content-items {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
+  padding: 20px;
 }
 
 .kurstar-card {
-  max-width: 300px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   background-color: white;
-  border-radius: 20px;
-  padding: 5px;
+  border-radius: 15px;
+  padding: 1px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.kurstar-card:hover {
+  transform: translateY(-5px);
 }
 
 .kurs-images {
-  max-width: 289px;
-  max-height: 138px;
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
 }
 
 .subject-info h3 {
-  font-size: 20px;
+  font-size: 23px;
   font-weight: 600;
 }
 
 .subject-info p {
-  font-size: 10px;
+  font-size: 15px;
   color: #A4A4A4;
   margin-bottom: 10px;
 }
@@ -146,8 +142,7 @@
 .kurs-card-content {
   display: flex;
   flex-direction: column;
-  padding: 13px;
-  gap: 15px;
+  padding: 0 15px;
 }
 
 .kurs-info {
@@ -155,24 +150,22 @@
   gap: 7px;
 }
 
-.bolim {
+.bolim, .sabak {
   display: flex;
   gap: 8px;
-  background-color: #B5E8F9;
-  color: #00B0EA;
-  font-size: 10px;
+  font-size: 14px;
   border-radius: 20px;
   padding: 5px 12px;
 }
 
+.bolim {
+  background-color: #B5E8F9;
+  color: #00B0EA;
+}
+
 .sabak {
-  display: flex;
-  gap: 8px;
   background-color: #CCC7FF;
   color: #6E63E5;
-  font-size: 10px;
-  border-radius: 20px;
-  padding: 5px 12px;
 }
 
 .kurs-footer {
@@ -194,12 +187,12 @@
 }
 
 .kurs-price h3 {
-  font-size: 17px;
+  font-size: 23px;
   font-weight: 700;
 }
 
 .kurs-price p {
-  font-size: 10px;
+  font-size: 14px;
   color: #A4A4A4;
 }
 
