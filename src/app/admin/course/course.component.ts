@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {NgForOf, NgIf} from "@angular/common";
 import {kurs} from "../../non-authorized/main-page/main-page.component";
 import {SuperAdminService} from "../../service/super-admin.service";
@@ -26,6 +26,7 @@ import {EditorModule} from "primeng/editor";
 export class CourseComponent implements OnInit {
 
   private superAdminService = inject(SuperAdminService);
+  private router = inject(Router);
   private fb = inject(FormBuilder)
   public selectedFileName: string | undefined;
   public selectedFile: File | null = null;  public courses: Courses[] = [];
@@ -88,6 +89,10 @@ export class CourseComponent implements OnInit {
 
   ngOnInit() {
     this.loadEmployees()
+  }
+
+  navigateToEditCourse(courseId: number): void {
+    this.router.navigate(['/admin/edit-course', courseId]);
   }
 
   private loadEmployees() {

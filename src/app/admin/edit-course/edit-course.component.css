@@ -1,0 +1,169 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.edit-course-page {
+  background: #F9FAFC;
+  padding: 20px;
+  height: 100vh;
+}
+
+.edit-course-header {
+  height: 77px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+}
+
+.header-text {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-course-header h3 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.course-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.delete-course-btn {
+  height: 41px;
+  font-size: 10px;
+  font-weight: 600;
+  background: none;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1.5px solid #F93C65;
+  color: #F93C65;
+}
+
+.edit-course-btn {
+  height: 41px;
+  font-size: 10px;
+  font-weight: 600;
+  background-color: #444444;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+}
+
+.edit-course-container {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-course-container h4 {
+  font-size: 20px;
+}
+
+.modules {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.module {
+  display: flex;
+  gap: 66px;
+  align-items: center;
+}
+
+.module span {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.edit-module-btn {
+  width: 30px;
+  height: 30px;
+  background: #E7E7E7;
+  border: none;
+  border-radius: 5px;
+}
+
+.add-module-btn {
+  max-width: 231px;
+  height: 37px;
+  background: none;
+  color: #444444;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 5px;
+  border: 1.5px solid #444444;
+}
+
+.client-edit__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #fff;
+  border-radius: 20px;
+}
+
+.form-label {
+  display: block;
+  color: #444;
+  font-size: 13px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  width: 100%;
+  max-width: 276px;
+  height: 38px;
+  padding: 12px 14px;
+  border: 1px solid #e3e3e3;
+  border-radius: 9px;
+  background-color: #f9fafc;
+  font-size: 11px;
+  color: #444;
+  font-weight: 500;
+}
+
+:host ::ng-deep .modal-footer {
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+:host ::ng-deep .p-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.back-btn {
+  background-color: #fff;
+  color: #000000;
+  border: 1px solid #444;
+  font-size: 13px;
+}
+
+.start-btn {
+  background-color: #444;
+  color: #fff;
+  border: none;
+  font-size: 13px;
+}
+
+.btn {
+  padding: 10px 58px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+

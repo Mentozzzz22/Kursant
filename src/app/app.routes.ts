@@ -17,6 +17,7 @@ import {CuratorComponent} from "./curator/curator.component";
 import {HomeworksComponent} from "./curator/homeworks/homeworks.component";
 import {HomeworkDetailComponent} from "./curator/homeworks/homework-detail/homework-detail.component";
 import {StudentsComponent} from "./curator/students/students.component";
+import {EditCourseComponent} from "./admin/edit-course/edit-course.component";
 
 export const routes: Routes = [
   {
@@ -46,6 +47,9 @@ export const routes: Routes = [
       },
       {
         path: 'course', component: CourseComponent
+      },
+      {
+        path: 'edit-course/:courseId', component: EditCourseComponent
       }
     ]
   },

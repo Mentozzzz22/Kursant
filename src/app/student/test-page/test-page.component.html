@@ -100,7 +100,7 @@
     <button class="start-test-btn" (click)="showEndTestDialog()">Тестті аяқтау</button>
   </div>
 </div>
-<p-dialog class="test-modal" header="Тестілеуді бастау" [modal]="true" [(visible)]="startTestVisible">
+<p-dialog class="test-modal" header="Тестілеуді бастау" [modal]="true" [(visible)]="startTestVisible" draggable="false">
   <span class="modal-text">Тестілеуді бастау батырмасы басылғасын уақыт есептегіш қосылады.</span>
   <div class="modal-footer">
     <button class="back-btn" (click)="startTestVisible = false">Артқа</button>

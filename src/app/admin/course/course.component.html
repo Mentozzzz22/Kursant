@@ -36,7 +36,7 @@
 
 
     <div class="content-items">
-      <div class="kurstar-card" *ngFor="let kurs of kurstar">
+      <div class="kurstar-card" *ngFor="let kurs of kurstar" (click)="navigateToEditCourse(kurs.id)">
         <img [src]="kurs.img" alt="subject1" class="kurs-images">
         <div class="kurs-card-content">
           <div class="kurs-info">
