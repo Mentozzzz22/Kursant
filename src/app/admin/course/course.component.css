@@ -40,17 +40,18 @@
 .add-course-btn {
   background-color: #00ADEF;
   height: 40px;
-  width: 95px;
+  width: 120px;
   border: none;
   color: white;
-  border-radius: 10px;
-  font-size: 10px;
+  border-radius: 5px;
+  font-size: 12px;
 }
 
 /**Контент**/
 
 .main-content {
   padding: 20px;
+  max-width:1300px;
 }
 
 .content-buttons {
@@ -99,10 +100,11 @@
 
 
 
-.content-items{
+.content-items {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
+  padding: 20px;
 }
 
 .kurstar-card {
@@ -110,22 +112,29 @@
   flex-direction: column;
   gap: 10px;
   background-color: white;
-  border-radius: 20px;
-  padding: 5px;
+  border-radius: 15px;
+  padding: 1px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.kurstar-card:hover {
+  transform: translateY(-5px);
 }
 
 .kurs-images {
-  width: 239px;
-  height: 138px;
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
 }
 
 .subject-info h3 {
-  font-size: 20px;
+  font-size: 23px;
   font-weight: 600;
 }
 
 .subject-info p {
-  font-size: 10px;
+  font-size: 15px;
   color: #A4A4A4;
   margin-bottom: 10px;
 }
@@ -133,8 +142,7 @@
 .kurs-card-content {
   display: flex;
   flex-direction: column;
-  padding: 13px;
-  gap: 15px;
+  padding: 0 15px;
 }
 
 .kurs-info {
@@ -142,24 +150,22 @@
   gap: 7px;
 }
 
-.bolim {
+.bolim, .sabak {
   display: flex;
   gap: 8px;
-  background-color: #B5E8F9;
-  color: #00B0EA;
-  font-size: 10px;
+  font-size: 14px;
   border-radius: 20px;
   padding: 5px 12px;
 }
 
+.bolim {
+  background-color: #B5E8F9;
+  color: #00B0EA;
+}
+
 .sabak {
-  display: flex;
-  gap: 8px;
   background-color: #CCC7FF;
   color: #6E63E5;
-  font-size: 10px;
-  border-radius: 20px;
-  padding: 5px 12px;
 }
 
 .kurs-footer {
@@ -168,24 +174,13 @@
   align-items: center;
 }
 
-.kurs-footer button {
-  display: flex;
-  height: 28px;
-  border: 1px solid #2A6DB3;
-  background-color: white;
-  color: #2A6DB3;
-  border-radius: 5px;
-  padding: 8px 12px 8px 12px;
-  font-size: 12px;
-  align-items: center;
-}
 
 .kurs-price h3 {
-  font-size: 17px;
+  font-size: 23px;
   font-weight: 700;
 }
 
 .kurs-price p {
-  font-size: 10px;
+  font-size: 14px;
   color: #A4A4A4;
 }
