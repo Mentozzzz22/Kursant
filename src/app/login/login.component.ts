@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
 
     if (phone) {
       // Приводим номер к нужному формату
-      phone = phone.replace(/\D/g, ''); // Убираем все символы, кроме цифр
+      phone = phone.replace(/\D/g, '');
       phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
     }
 

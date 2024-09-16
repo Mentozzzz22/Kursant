@@ -3,15 +3,21 @@
     <a href="#"><img src="../../../assets/images/navbar-Kursant.svg" alt="Kursant"></a>
   </div>
   <div class="nav-search">
-    <i class="pi pi-search"></i>
-    <input type="text" pInputText placeholder="Курс или поток"/>
+    <i class="pi pi-search" (click)="onSearchChange()"></i>
+    <input type="text" pInputText placeholder="Курс или поток" [(ngModel)]="searchText"/>
   </div>
   <div class="nav-buttons">
     <div class="nav-cart-logo">
-      <a href="#"><img src="../../../assets/images/navbar-cart-logo.svg" alt="cart-logo"></a>
+      <a routerLink="cart">
+        <div class="icon-wrapper">
+          <img src="../../../assets/images/navbar-cart-logo.svg" alt="cart-logo" class="cart-icon">
+          <p-badge [value]="cartCount" severity="danger" ></p-badge>
+        </div>
+      </a>
     </div>
+
     <div class="nav-login">
-      <button pButton type="button" class="nav-login_button">Кіру</button>
+      <button pButton type="button" class="nav-login_button" routerLink="login">Кіру</button>
     </div>
   </div>
 </div>

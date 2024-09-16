@@ -4,17 +4,40 @@ import {catchError, Observable, throwError} from "rxjs";
 import {Courses} from "../../assets/models/courses.interface";
 import {Course} from "../../assets/models/course.interface";
 import {UserService} from "./user.service";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
+  private apiUrl = 'http://127.0.0.1:8000/api/course/';
+  private http = inject(HttpClient)
+  private searchTextSubject = new BehaviorSubject<string>('');
 
-  private apiUrl = 'http://127.0.0.1:8000/api/course';
-  private http = inject(HttpClient);
   private userService = inject(UserService);
 
 
+  getSearchText() {
+    return this.searchTextSubject.asObservable();
+  }
+
+  setSearchText(searchText: string) {
+    this.searchTextSubject.next(searchText);
+  }
+  getCourses(search?: string, ids?: number[]): Observable<Course[]> {
+    let params: any = {};
+
+    if (search) {
+      params.search = search;
+    }
+
+    if (ids && ids.length > 0) {
+      params.ids = JSON.stringify(ids);
+    }
+
+
+    return this.http.get<Course[]>(`${this.apiUrl}get_courses/`, { params });
+  }
   public getCourses(): Observable<Courses[]> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
