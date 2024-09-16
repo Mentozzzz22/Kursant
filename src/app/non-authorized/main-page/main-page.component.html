@@ -1,3 +1,4 @@
+<div class="main-container">
 <div class="main-page">
   <div class="main-right">
     <div class="main-carousel">
@@ -32,16 +33,16 @@
         <p>Барлық пәндер тізімі</p>
       </div>
       <div class="kurstar-cards">
-        <div class="kurstar-card" *ngFor="let kurs of kurstar">
-          <img [src]="kurs.img" alt="subject1" class="kurs-images">
+        <div class="kurstar-card" *ngFor="let kurs of courses">
+          <img [src]="kurs.poster" alt="subject1" class="kurs-images">
           <div class="kurs-card-content">
             <div class="kurs-info">
-              <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ kurs.bolim }} бөлім</p>
-              <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ kurs.sabak }} сабақ</p>
+              <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ kurs.modules_count }} бөлім</p>
+              <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ kurs.lessons_count }} сабақ</p>
             </div>
             <div class="subject-info">
-              <h3>{{ kurs.subjectName }}</h3>
-              <p>Ең жақын поток: {{ kurs.closestPotok }}</p>
+              <h3>{{ kurs.name }}</h3>
+              <p>Ең жақын поток: {{ kurs.flow_date }}</p>
               <hr>
             </div>
             <div class="kurs-footer">
@@ -49,7 +50,7 @@
                 <h3>{{ kurs.price }} тг</h3>
                 <p>бір реттік төлем</p>
               </div>
-              <button>Корзинаға</button>
+              <button (click)="addToCart(kurs.id)">Корзинаға</button>
             </div>
           </div>
         </div>
@@ -105,14 +106,21 @@
         <p>Төмендегі ақпараттарды толтырып курс жайлы ақпарат ала аласыз</p>
       </div>
       <div class="card-form">
+        <form [formGroup]="orderForm">
         <div class="card-input">
           <p>Аты-жөніңіз</p>
-          <input type="text" pInputText placeholder="Аты-жөніңіз"/>
+          <input type="text" pInputText placeholder="Аты-жөніңіз" formControlName = "fullname"/>
         </div>
         <div class="card-input">
           <p>Телефон номеріңіз</p>
-          <input type="text" pInputText placeholder="+7 777 777 7777"/>
+          <input type="text" pInputText placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'" prefix="+7 " formControlName = "phone_number"/>
         </div>
+          <div class="card-submit">
+            <button class="card-button" (click)="submitOrder()">
+              Заявка қалдыру
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -124,4 +132,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>

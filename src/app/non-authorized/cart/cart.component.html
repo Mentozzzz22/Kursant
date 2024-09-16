@@ -1,38 +1,94 @@
+<div class="cart">
 <div class="cart-container">
   <div class="main-right">
     <h2 class="cart-h2">Корзина</h2>
     <div class="kurstar-cards">
-      <div class="kurstar-card" *ngFor="let kurs of kurstar">
-        <img [src]="kurs.img" alt="subject1" class="kurs-images">
+      <div class="kurstar-card" *ngFor="let kurs of courses">
+        <img [src]="kurs.poster" alt="subject1" class="kurs-images">
         <div class="kurs-card-content">
           <div class="kurs-info">
-            <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ kurs.bolim }} бөлім</p>
-            <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ kurs.sabak }} сабақ</p>
+            <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ kurs.modules_count }} бөлім</p>
+            <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ kurs.lessons_count }} сабақ</p>
           </div>
           <div class="subject-info">
-            <h3>{{ kurs.subjectName }}</h3>
-            <p>Ең жақын поток: {{ kurs.closestPotok }}</p>
+            <h3>{{ kurs.name }}</h3>
+            <p>Ең жақын поток: {{ kurs.flow_date }}</p>
             <hr>
           </div>
           <div class="kurs-footer">
             <div class="kurs-price">
-              <h3>{{ kurs.price }} тг</h3>
+              <div class="price-line">
+                <h3 class="current-price">{{ kurs.current_price }} тг</h3>
+                <h3 class="old-price">{{ kurs.price }} тг</h3>
+              </div>
               <p>бір реттік төлем</p>
             </div>
-            <button>Корзинаға</button>
+            <button class="remove-button" (click)="removeFromCart(kurs.id)">
+             <img src="assets/images/delete_icon.svg" width="20" height="20">
+            </button>
           </div>
+
         </div>
       </div>
     </div>
+
   </div>
   <div class="main-left">
     <div class="confirm-block">
       <div>
         <p>Сумма</p>
-        <h2>300 000 тг</h2>
-        <h3>420 000 тг</h3>
+        <h2>{{ totalCurrentPrice }} тг</h2>
+        <h3>{{ totalOldPrice }} тг</h3>
       </div>
-      <button>Заявка қалдыру</button>
+      <button (click)="showDialog()">Заявка қалдыру</button>
     </div>
   </div>
 </div>
+</div>
+
+
+<p-dialog
+  header="Header"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '35rem' }"
+  draggable="false">
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <h3>Заявка қалдыру</h3>
+    </div>
+  </ng-template>
+  <div class="modal-content">
+
+    <div class="block-two">
+      <form [formGroup]="orderForm">
+      <div class="form-group">
+        <label for="full_name">ФИО</label>
+        <div class="input-container">
+          <input type="text" id="full_name" class="form-control" placeholder="Аты-жөніңіз" formControlName = "fullname">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Телефон</label>
+        <div class="input-container">
+          <input type="text" id="phone" class="form-control" placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'" prefix="+7 "  formControlName = "phone_number">
+        </div>
+      </div>
+      </form>
+
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="button-group">
+
+      <div class="button-container">
+        <button class="filled-button" (click)="submitOrder()">Жіберу</button>
+
+        <button class="outlined-button" (click)="cancelDialog()">Бас тарту</button>
+      </div>
+    </div>
+  </ng-template>
+
+</p-dialog>

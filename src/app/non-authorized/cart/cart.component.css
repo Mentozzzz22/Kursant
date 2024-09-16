@@ -4,10 +4,16 @@
   color: #444444;
 }
 
+.cart{
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
 .cart-container {
   display: flex;
   gap: 30px;
   margin-top: 30px;
+
 }
 
 .main-right {
@@ -73,6 +79,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
+  padding: 20px 0;
 }
 
 .kurstar-card {
@@ -80,23 +87,29 @@
   flex-direction: column;
   gap: 10px;
   background-color: white;
-  border-radius: 20px;
-  padding: 7px;
-  border: 1.5px solid #ece5e5;
+  border-radius: 15px;
+  padding: 1px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.kurstar-card:hover {
+  transform: translateY(-5px);
 }
 
 .kurs-images {
-  width: 289px;
-  height: 138px;
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
 }
 
 .subject-info h3 {
-  font-size: 20px;
+  font-size: 23px;
   font-weight: 600;
 }
 
 .subject-info p {
-  font-size: 10px;
+  font-size: 15px;
   color: #A4A4A4;
   margin-bottom: 10px;
 }
@@ -104,8 +117,7 @@
 .kurs-card-content {
   display: flex;
   flex-direction: column;
-  padding: 13px;
-  gap: 15px;
+  padding: 0 15px;
 }
 
 .kurs-info {
@@ -113,24 +125,22 @@
   gap: 7px;
 }
 
-.bolim {
+.bolim, .sabak {
   display: flex;
   gap: 8px;
-  background-color: #B5E8F9;
-  color: #00B0EA;
-  font-size: 10px;
+  font-size: 14px;
   border-radius: 20px;
   padding: 5px 12px;
 }
 
+.bolim {
+  background-color: #B5E8F9;
+  color: #00B0EA;
+}
+
 .sabak {
-  display: flex;
-  gap: 8px;
   background-color: #CCC7FF;
   color: #6E63E5;
-  font-size: 10px;
-  border-radius: 20px;
-  padding: 5px 12px;
 }
 
 .kurs-footer {
@@ -139,26 +149,117 @@
   align-items: center;
 }
 
-.kurs-footer button {
+.kurs-price {
   display: flex;
-  height: 28px;
-  border: 1px solid #2A6DB3;
-  background-color: white;
-  color: #2A6DB3;
-  border-radius: 5px;
-  padding: 8px 12px 8px 12px;
-  font-size: 12px;
+  flex-direction: column;
+}
+
+.price-line {
+  display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .kurs-price h3 {
-  font-size: 17px;
+  font-size: 23px;
   font-weight: 700;
+  margin: 0;
+}
+
+.kurs-price .current-price {
+  color: #2A2A2A;
+}
+
+.kurs-price .old-price {
+  color: #F56C6C;
+  text-decoration: line-through;
 }
 
 .kurs-price p {
-  font-size: 10px;
+  font-size: 14px;
   color: #A4A4A4;
+  margin-top: 5px;
+}
+
+.remove-button {
+  display: flex;
+  height: 28px;
+  border: none;
+  background-color: transparent;
+  border-radius: 5px;
+  padding: 8px;
+  font-size: 18px;
+  align-items: center;
+  cursor: pointer;
+}
+.remove-button img {
+  filter: invert(24%) sepia(92%) saturate(6595%) hue-rotate(351deg) brightness(94%) contrast(107%);
+}
+
+/**MODAL**/
+.modal-content {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction:row;
+  align-content: flex-start;
+  height: 100%;
+  width: 100%;
+  gap:20px;
+}
+
+.block-two {
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-container input {
+  flex: 1;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.filled-button {
+  background-color: #444444;
+  color: #fff;
+  padding:10px 60px;
+  border-radius: 10px;
+}
+
+.outlined-button {
+  border: 1px solid #333;
+  color: #333;
+  background-color: transparent;
+  padding:10px 60px;
+  border-radius: 10px;
 }
 
 @media (max-width: 768px) {
