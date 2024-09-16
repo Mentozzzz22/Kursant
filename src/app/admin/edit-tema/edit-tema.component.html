@@ -1,0 +1,29 @@
+<div class="edit-course-header">
+  <div class="header-text">
+    <img src="assets/images/back-arrow.svg" alt="back" (click)="back()">
+    <h3>Тақырып 1. Қазақстандағы ежелгі адамдардың өмірі</h3>
+  </div>
+  <div class="course-actions">
+    <button class="delete-course-btn">Удалить тему</button>
+  </div>
+</div>
+<div class="edit-course-page">
+  <div class="edit-course-container">
+    <h4>Уроки</h4>
+    <div class="modules">
+      <div class="module" *ngFor="let lesson of lessons">
+        <span class="module-span"> <strong>Сабақ {{ lesson.id }}.</strong> {{ lesson.name }}</span>
+        <div>
+          <div class="custom-file-upload">
+            <input type="file" id="file" class="file-input" (change)="onFileSelected($event)"/>
+            <span class="file-upload-button" (click)="triggerFileInput()">Выберите файл</span>
+            <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
+          </div>
+        </div>
+        <button class="delete-course-btn">Удалить файл</button>
+        <button class="delete-course-btn">Удалить урок</button>
+      </div>
+    </div>
+    <button class="add-module-btn">Добавить урок</button>
+  </div>
+</div>

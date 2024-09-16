@@ -18,6 +18,8 @@ import {HomeworksComponent} from "./curator/homeworks/homeworks.component";
 import {HomeworkDetailComponent} from "./curator/homeworks/homework-detail/homework-detail.component";
 import {StudentsComponent} from "./curator/students/students.component";
 import {EditCourseComponent} from "./admin/edit-course/edit-course.component";
+import {EditModuleComponent} from "./admin/edit-module/edit-module.component";
+import {EditTemaComponent} from "./admin/edit-tema/edit-tema.component";
 
 export const routes: Routes = [
   {
@@ -41,7 +43,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminComponent,
-    children:[
+    children: [
       {
         path: 'applications', component: ApplicationComponent
       },
@@ -49,14 +51,26 @@ export const routes: Routes = [
         path: 'course', component: CourseComponent
       },
       {
-        path: 'edit-course/:courseId', component: EditCourseComponent
+        path: 'edit-course/:courseId', component: EditCourseComponent,
+        children: [
+          {
+            path: 'edit-module/:moduleId',
+            component: EditModuleComponent,
+            children: [
+              {
+                path: 'edit-tema/:temaId',
+                component: EditTemaComponent
+              }
+            ]
+          }
+        ]
       }
     ]
   },
   {
     path: 'curator',
     component: CuratorComponent,
-    children:[
+    children: [
       {
         path: 'curator-homework', component: HomeworksComponent
       },

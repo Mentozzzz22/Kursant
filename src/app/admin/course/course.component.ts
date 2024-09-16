@@ -29,7 +29,8 @@ export class CourseComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder)
   public selectedFileName: string | undefined;
-  public selectedFile: File | null = null;  public courses: Courses[] = [];
+  public selectedFile: File | null = null;
+  public courses: Courses[] = [];
   public visibleAddModal: boolean = false;
   public productForm = this.fb.group({
     colors: this.fb.array([]),
