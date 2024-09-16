@@ -18,7 +18,8 @@
   <div class="main-content">
 
     <div class="content-buttons">
-      <button class="content-button" (click)="setActiveTab('courseContent')" [class.active]="activeTab === 'courseContent'">
+      <button class="content-button" (click)="setActiveTab('courseContent')"
+              [class.active]="activeTab === 'courseContent'">
         <img src="assets/images/time_icon.svg" alt="Courses" class="logo"/>
         <div class="content-button-names">
           <h3>Курстар</h3>
@@ -36,27 +37,27 @@
 
     <ng-container *ngIf="activeTab === 'courseContent'">
       <div class="content-items">
-        <div class="kurstar-card" *ngFor="let kurs of kurstar" (click)="navigateToEditCourse(kurs.id)">
-          <img [src]="kurs.img" alt="subject1" class="kurs-images">
+        <div class="kurstar-card" *ngFor="let course of courses" (click)="navigateToEditCourse(course.id)">
+          <img [src]="course.poster" alt="subject1" class="kurs-images">
           <div class="kurs-card-content">
             <div class="kurs-info">
               <p class="bolim">
                 <img src="../../../assets/images/bolim.svg" alt="bolim">
-                {{ kurs.bolim }} бөлім
+                {{ course.module_count }} бөлім
               </p>
               <p class="sabak">
                 <img src="../../../assets/images/sabak.svg" alt="sabak">
-                {{ kurs.sabak }} сабақ
+                {{ course.lesson_count }} сабақ
               </p>
             </div>
             <div class="subject-info">
-              <h3>{{ kurs.subjectName }}</h3>
-              <p>Ең жақын поток: {{ kurs.closestPotok }}</p>
+              <h3>{{ course.name }}</h3>
+              <p>Ең жақын поток: {{ course.flow_date }}</p>
               <hr>
             </div>
             <div class="kurs-footer">
               <div class="kurs-price">
-                <h3>{{ kurs.price }} тг</h3>
+                <h3>{{ course.price }} тг</h3>
                 <p>бір реттік төлем</p>
               </div>
             </div>
@@ -91,46 +92,51 @@
     </div>
   </ng-template>
 
-  <form class="client-edit__form">
+  <form class="client-edit__form" [formGroup]="courseAddForm">
     <div class="form-group">
       <label for="name" class="form-label">Название</label>
-      <input type="text" id="name" class="form-input">
+      <input type="text" id="name" class="form-input" formControlName="name">
     </div>
 
     <div class="form-group">
       <label for="description" class="form-label">Описание курса</label>
-      <p-editor id="description" [style]="{ height: '50px' }"/>
+      <p-editor id="description" formControlName="description" [style]="{ height: '50px' }"></p-editor>
     </div>
 
     <div class="form-group1">
       <div>
         <label for="file" class="form-label">Обложка курса</label>
         <div class="custom-file-upload">
-          <input type="file" id="file" class="file-input" (change)="onFileSelected($event)"/>
-          <span class="file-upload-button" (click)="triggerFileInput()">Выберите файл</span>
-          <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
+          <input type="file" id="file" class="file-input" (change)="onPosterSelected($event)"/>
+          <span class="file-upload-button" (click)="triggerFileInput('file')">Выберите файл</span>
+          <span class="file-upload-filename">{{ selectedPosterName || 'Файл не выбран' }}</span>
         </div>
       </div>
       <div>
         <label for="file1" class="form-label">Большая обложка</label>
         <div class="custom-file-upload">
-          <input type="file" id="file1" class="file-input" (change)="onFileSelected($event)"/>
-          <span class="file-upload-button" (click)="triggerFileInput()">Выберите файл</span>
-          <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
+          <input type="file" id="file1" class="file-input" (change)="onBigPosterSelected($event)"/>
+          <span class="file-upload-button" (click)="triggerFileInput('file1')">Выберите файл</span>
+          <span class="file-upload-filename">{{ selectedBigPosterName || 'Файл не выбран' }}</span>
         </div>
       </div>
     </div>
 
     <div class="form-group">
       <label for="price" class="form-label">Цена</label>
-      <input type="text" id="price" class="form-input">
+      <input type="text" id="price" class="form-input" formControlName="price">
+    </div>
+
+    <div class="form-group">
+      <label for="teacherFio" class="form-label">ФИО учителя</label>
+      <input type="text" id="teacherFio" class="form-input" formControlName="teacher_fullname">
     </div>
 
     <div class="form-actions">
-      <button type="button" class="btn btn--primary">Добавить</button>
+      <button type="button" class="btn btn--primary" (click)="onSubmitAddCourse()">Добавить</button>
       <button type="button" class="btn btn--secondary" (click)="onCancel()">Отмена</button>
     </div>
-
   </form>
+
 
 </p-dialog>

@@ -8,7 +8,7 @@ import {UserService} from "./user.service";
 @Injectable({
   providedIn: 'root'
 })
-export class SuperAdminService {
+export class CourseService {
 
   private apiUrl = 'http://127.0.0.1:8000/api/course';
   private http = inject(HttpClient);
@@ -33,12 +33,12 @@ export class SuperAdminService {
     );
   }
 
-  saveCourse(course: Partial<Course>): Observable<any> {
+  saveCourse(courseData: FormData): Observable<any> {
     const token = this.userService.token;
-    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
-    return this.http.post(`${this.apiUrl}/save_course/`, course,
-      {headers}
-    ).pipe(
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);  // Без установки Content-Type
+
+    // Отправляем запрос с FormData
+    return this.http.post(`${this.apiUrl}/save_course/`, courseData, { headers }).pipe(
       catchError(error => {
         console.error('Save course failed:', error);
         return throwError(error);

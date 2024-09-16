@@ -1,8 +1,10 @@
 import {Component, inject, input, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
-import {FormsModule} from "@angular/forms";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
+import {ModuleService} from "../../service/module.service";
+import {Module} from "../../../assets/models/module.interface";
 
 @Component({
   selector: 'app-edit-course',
@@ -12,7 +14,8 @@ import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
     DialogModule,
     FormsModule,
     RouterOutlet,
-    NgIf
+    NgIf,
+    ReactiveFormsModule
   ],
   templateUrl: './edit-course.component.html',
   styleUrl: './edit-course.component.css'
@@ -20,16 +23,16 @@ import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 export class EditCourseComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private courseId!: number;
+  private moduleService = inject(ModuleService);
+  private fb = inject(FormBuilder);
   public EditModuleVisible: boolean = false;
+  public AddModuleVisible: boolean = false;
   public isModuleOpened: boolean = false;
-
-  courseModules = [
-    {id: 1, name: 'Казақстандағы ежелгі адамдардың өмірі'},
-    {id: 2, name: 'Казақстандағы ежелгі адамдардың өмірі'},
-    {id: 3, name: 'Казақстандағы ежелгі адамдардың өмірі'},
-    {id: 4, name: 'Казақстандағы ежелгі адамдардың өмірі'},
-  ];
+  public modules: Module[] = []
+  private courseId!: number;
+  public selectedModuleId!: number;
+  public addModuleForm!: FormGroup;
+  public editModuleForm!: FormGroup;
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -38,14 +41,77 @@ export class EditCourseComponent implements OnInit {
     this.route.firstChild?.paramMap.subscribe(params => {
       this.isModuleOpened = !!params.get('moduleId');
     });
+    this.initAddModuleForm();
+    this.initEditModuleForm();
+    this.loadModules()
   }
 
-  public showEditDialog() {
+  private initAddModuleForm() {
+    this.addModuleForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]], // Поле "Название модуля" обязательно
+    });
+  }
+
+  private initEditModuleForm() {
+    this.editModuleForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]], // Поле "Название модуля" обязательно
+    });
+  }
+
+  public loadModules() {
+    this.moduleService.getCourseModules(this.courseId).subscribe({
+      next: (data) => {
+        this.modules = data.modules;
+        console.log(data)
+      },
+      error: (err) => {
+        console.error('Ошибка при загрузке модулей курса:', err);
+      }
+    });
+  }
+
+  public editModule(moduleId: number) {
+    if (this.editModuleForm.invalid) {
+      return;
+    }
+    const updatedModule: Module = this.editModuleForm.value; // Получаем данные из формы
+    updatedModule.id = moduleId;
+    this.moduleService.saveCourseModule(updatedModule, this.courseId).subscribe({
+      next: () => {
+        this.loadModules();
+        this.EditModuleVisible = false;
+        this.editModuleForm.reset();
+      },
+      error: (err) => {
+        console.error('Ошибка при редактировании модуля:', err);
+      }
+    });
+  }
+
+  public showEditDialog(moduleId: number) {
     this.EditModuleVisible = true;
+    this.selectedModuleId = moduleId
   }
 
-  addModule() {
-    // Logic to add a module
+  public showAddDialog() {
+    this.AddModuleVisible = true;
+  }
+
+  public addModule() {
+    if (this.addModuleForm.invalid) {
+      return;
+    }
+    const newModule: Module = this.addModuleForm.value; // Получаем данные из формы
+    this.moduleService.saveCourseModule(newModule, this.courseId).subscribe({
+      next: () => {
+        this.loadModules();
+        this.AddModuleVisible = false;
+        this.addModuleForm.reset();
+      },
+      error: (err) => {
+        console.error('Ошибка при добавлении модуля:', err);
+      }
+    });
   }
 
   deleteCourse() {

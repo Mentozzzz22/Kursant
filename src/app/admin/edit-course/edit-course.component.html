@@ -1,44 +1,70 @@
 <div *ngIf="!isModuleOpened">
-<div class="edit-course-header">
-  <div class="header-text">
-    <img src="assets/images/back-arrow.svg" alt="back" (click)="navigateToCourses()">
-    <h3>Казахстан тарихы</h3>
+  <div class="edit-course-header">
+    <div class="header-text">
+      <img src="assets/images/back-arrow.svg" alt="back" (click)="navigateToCourses()">
+      <h3>Казахстан тарихы</h3>
+    </div>
+    <div class="course-actions">
+      <button class="delete-course-btn">Удалить курс</button>
+      <button class="edit-course-btn">Редактировать курс</button>
+    </div>
   </div>
-  <div class="course-actions">
-    <button class="delete-course-btn">Удалить курс</button>
-    <button class="edit-course-btn">Редактировать курс</button>
-  </div>
-</div>
-<div class="edit-course-page">
+  <div class="edit-course-page">
 
-  <div class="edit-course-container">
-    <h2>Модули</h2>
-    <div class="modules">
-      <div class="module" *ngFor="let module of courseModules" (click)="navigateToEditModule(module.id)">
-        <span> <strong>Бөлім {{ module.id }}.</strong> {{ module.name }}</span>
-        <button class="edit-module-btn" (click)="showEditDialog()">
-          <img src="assets/images/edit-icon.svg" alt="edit">
-        </button>
+    <div class="edit-course-container">
+      <h2>Модули</h2>
+      <div class="modules">
+        <div class="module" *ngFor="let module of modules" (click)="navigateToEditModule(module.id!)">
+          <span> <strong>Бөлім {{ module.id }}.</strong> {{ module.name }}</span>
+          <button class="edit-module-btn" (click)="showEditDialog(module.id!); $event.stopPropagation()">
+            <img src="assets/images/edit-icon.svg" alt="edit">
+          </button>
+        </div>
       </div>
+      <button class="add-module-btn" (click)="showAddDialog()">Добавить модуль</button>
     </div>
-    <button class="add-module-btn">Добавить модуль</button>
   </div>
-</div>
 
-<p-dialog class="test-modal" header="Редактировать модуль" [modal]="true" [(visible)]="EditModuleVisible" draggable="false">
-  <form class="client-edit__form">
-    <div class="form-group">
-      <label for="name" class="form-label">Название</label>
-      <input type="text" id="name" class="form-input">
+  <p-dialog class="test-modal" header="Редактировать модуль" [modal]="true"
+            [(visible)]="EditModuleVisible" draggable="false" *ngIf="editModuleForm">
+    <form [formGroup]="editModuleForm" class="client-edit__form">
+      <div class="form-group">
+        <label for="name" class="form-label">Название</label>
+        <input type="text" id="name" class="form-input" formControlName="name">
+        <div *ngIf="editModuleForm.controls['name'].invalid && editModuleForm.controls['name'].touched"
+             class="error-message">
+          <small>Название должно содержать минимум 3 символа.</small>
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn start-btn" (click)="editModule(selectedModuleId)" [disabled]="editModuleForm.invalid">
+        Сохранить
+      </button>
+      <button class="btn back-btn" (click)="EditModuleVisible = false">Отмена</button>
     </div>
-  </form>
-  <div class="modal-footer">
-    <button class="btn start-btn">Редактировать</button>
-    <button class="btn back-btn" (click)="EditModuleVisible = false">Отмена</button>
-  </div>
-</p-dialog>
+  </p-dialog>
+
+  <p-dialog class="test-modal" header="Добавить модуль" [modal]="true"
+            [(visible)]="AddModuleVisible" draggable="false" *ngIf="addModuleForm">
+    <form [formGroup]="addModuleForm" class="client-edit__form">
+      <div class="form-group">
+        <label for="name1" class="form-label">Название</label>
+        <input type="text" id="name1" class="form-input" formControlName="name">
+        <!-- Вывод ошибок, если поле не заполнено -->
+        <div *ngIf="addModuleForm.controls['name'].invalid && addModuleForm.controls['name'].touched"
+             class="error-message">
+          <small>Название должно содержать минимум 3 символа.</small>
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn start-btn" (click)="addModule()" [disabled]="addModuleForm.invalid">Добавить</button>
+      <button class="btn back-btn" (click)="AddModuleVisible = false">Отмена</button>
+    </div>
+  </p-dialog>
 </div>
 
 <div *ngIf="isModuleOpened">
-<router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 </div>

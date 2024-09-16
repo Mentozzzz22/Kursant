@@ -2,11 +2,12 @@ import {Component, inject, OnInit} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {NgForOf, NgIf} from "@angular/common";
 import {kurs} from "../../non-authorized/main-page/main-page.component";
-import {SuperAdminService} from "../../service/super-admin.service";
+import {CourseService} from "../../service/course.service";
 import {Courses} from "../../../assets/models/courses.interface";
 import {DialogModule} from "primeng/dialog";
-import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {EditorModule} from "primeng/editor";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-course',
@@ -24,17 +25,20 @@ import {EditorModule} from "primeng/editor";
   styleUrl: './course.component.css'
 })
 export class CourseComponent implements OnInit {
-  activeTab: string = 'courseContent';
-  private superAdminService = inject(SuperAdminService);
+
+  private superAdminService = inject(CourseService);
   private router = inject(Router);
+  private messageService = inject(MessageService);
   private fb = inject(FormBuilder)
-  public selectedFileName: string | undefined;
-  public selectedFile: File | null = null;
-  public courses: Courses[] = [];
+
+  public activeTab: string = 'courseContent';
+  public selectedPosterName: string | undefined;
+  public selectedBigPosterName: string | undefined;
+  public selectedPosterFile: File | null = null;
+  public selectedBigPosterFile: File | null = null;
   public visibleAddModal: boolean = false;
-  public productForm = this.fb.group({
-    colors: this.fb.array([]),
-  })
+  public courses: Courses[] = [];
+  public courseAddForm!: FormGroup;
 
   flowWorks = [
     {
@@ -42,10 +46,10 @@ export class CourseComponent implements OnInit {
       date: '22.09.2024',
       title: 'ҰБТ-ға 3 профильді пән бойынша дайындық',
       tags: [
-        { name: 'Физика | Ирисбеков Максат' },
-        { name: 'Тарих | Ирисбеков Максат' },
-        { name: 'Математика | Ирисбеков Максат' },
-        { name: 'Информатика | Ирисбеков Максат' }
+        {name: 'Физика | Ирисбеков Максат'},
+        {name: 'Тарих | Ирисбеков Максат'},
+        {name: 'Математика | Ирисбеков Максат'},
+        {name: 'Информатика | Ирисбеков Максат'}
       ]
     },
     {
@@ -53,82 +57,85 @@ export class CourseComponent implements OnInit {
       date: '22.09.2024',
       title: 'ҰБТ-ға 3 профильді пән бойынша дайындық',
       tags: [
-        { name: 'Физика | Ирисбеков Максат' },
-        { name: 'Тарих | Ирисбеков Максат' },
-        { name: 'Математика | Ирисбеков Максат' },
-        { name: 'Информатика | Ирисбеков Максат' }
+        {name: 'Физика | Ирисбеков Максат'},
+        {name: 'Тарих | Ирисбеков Максат'},
+        {name: 'Математика | Ирисбеков Максат'},
+        {name: 'Информатика | Ирисбеков Максат'}
       ]
     },
 
   ];
 
-  public kurstar: kurs[] = [
-    {
-      id: 1,
-      img: 'assets/images/subject1.svg',
-      subjectName: 'Қазақстан тарихы',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      price: 70000,
-    }, {
-      id: 2,
-      img: 'assets/images/subject2.svg',
-      subjectName: 'Математика',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      price: 70000,
-    }, {
-      id: 3,
-      img: 'assets/images/subject3.svg',
-      subjectName: 'Физика',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      price: 70000,
-    }, {
-      id: 4,
-      img: 'assets/images/subject4.svg',
-      subjectName: 'Информатика',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      price: 70000,
-    }, {
-      id: 5,
-      img: 'assets/images/subject5.svg',
-      subjectName: 'География',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      price: 70000,
-    }, {
-      id: 6,
-      img: 'assets/images/subject6.svg',
-      subjectName: 'Ағылшын тілі',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      price: 70000,
-    },
-  ]
-
-
 
   ngOnInit() {
-    this.loadEmployees()
+    this.loadCourses()
+
+    this.courseAddForm = this.fb.group({
+      name: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+      price: ['', [Validators.required]],
+      discount_percentage: [1, [Validators.required]],
+      teacher_fullname: ['', [Validators.required]],
+      poster: [null, Validators.required],
+      big_poster: [null, Validators.required]
+    });
   }
 
-  navigateToEditCourse(courseId: number): void {
-    this.router.navigate(['/admin/edit-course', courseId]);
-  }
-
-  private loadEmployees() {
+  private loadCourses() {
     this.superAdminService.getCourses().subscribe(data => {
-      this.courses = data;
+      this.courses = data.map((course: Courses) => ({
+        ...course,
+        poster: `http://127.0.0.1:8000${course.poster}`
+      }));
       console.log(data)
     })
+  }
+
+  public onSubmitAddCourse(): void {
+    const formData: FormData = new FormData();
+
+    const posterFile = this.selectedPosterFile;
+    const poster = this.courseAddForm.get('poster')?.value;
+
+    if (posterFile) {
+      formData.append('poster_uploaded_file', posterFile);
+      formData.append('poster', 'poster_uploaded_file');
+    } else if (poster && poster !== 'poster_uploaded_file') {
+      formData.append('poster', poster);
+    } else {
+      console.error('Poster is required but not provided.');
+      return;
+    }
+
+    const bigPosterFile = this.selectedBigPosterFile;
+    const bigPoster = this.courseAddForm.get('big_poster')?.value;
+
+    if (bigPosterFile) {
+      formData.append('big_poster_uploaded_file', bigPosterFile);
+      formData.append('big_poster', 'big_poster_uploaded_file');
+    } else if (bigPoster && bigPoster !== 'big_poster_uploaded_file') {
+      formData.append('big_poster', bigPoster);
+    } else {
+      console.error('Big poster is required but not provided.');
+      return;
+    }
+
+    formData.append('name', this.courseAddForm.get('name')?.value);
+    formData.append('description', this.courseAddForm.get('description')?.value);
+    formData.append('price', this.courseAddForm.get('price')?.value);
+    formData.append('discount_percentage', this.courseAddForm.get('discount_percentage')?.value);
+    formData.append('teacher_fullname', this.courseAddForm.get('teacher_fullname')?.value);
+
+    this.superAdminService.saveCourse(formData).subscribe({
+      next: (response) => {
+        console.log('Course added successfully', response);
+        this.visibleAddModal = false;
+        this.loadCourses();
+      },
+      error: (err) => {
+        console.error('Error adding course:', err);
+      }
+    });
   }
 
   public onCancel(): void {
@@ -139,21 +146,44 @@ export class CourseComponent implements OnInit {
     this.visibleAddModal = true;
   }
 
-  public triggerFileInput(): void {
-    const fileInput = document.getElementById('file') as HTMLInputElement;
-    fileInput.click();
-  }
-
-  public onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files?.length) {
-      this.selectedFile = input.files[0];
-      this.selectedFileName = this.selectedFile.name;
+  public triggerFileInput(fileInputId: string): void {
+    const fileInput = document.getElementById(fileInputId) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
     }
   }
 
-  setActiveTab(tab: string) {
+  public onPosterSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedPosterFile = input.files[0];
+      this.selectedPosterName = this.selectedPosterFile.name;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Успешно',
+        detail: `Файл: ${this.selectedPosterName} загружен!`
+      });
+    }
+  }
+
+  public onBigPosterSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedBigPosterFile = input.files[0];
+      this.selectedBigPosterName = this.selectedBigPosterFile.name;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Успешно',
+        detail: `Файл: ${this.selectedBigPosterName} загружен!`
+      });
+    }
+  }
+
+  public setActiveTab(tab: string) {
     this.activeTab = tab;
   }
 
+  public navigateToEditCourse(courseId: number): void {
+    this.router.navigate(['/admin/edit-course', courseId]);
+  }
 }
