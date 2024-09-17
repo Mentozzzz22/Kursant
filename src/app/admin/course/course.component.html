@@ -37,17 +37,17 @@
 
     <ng-container *ngIf="activeTab === 'courseContent'">
       <div class="content-items">
-        <div class="kurstar-card" *ngFor="let course of courses" (click)="navigateToEditCourse(course.id)">
+        <div class="kurstar-card" *ngFor="let course of courses" (click)="navigateToEditCourse(course.id!)">
           <img [src]="course.poster" alt="subject1" class="kurs-images">
           <div class="kurs-card-content">
             <div class="kurs-info">
               <p class="bolim">
                 <img src="../../../assets/images/bolim.svg" alt="bolim">
-                {{ course.module_count }} бөлім
+                {{ course.modules_count }} бөлім
               </p>
               <p class="sabak">
                 <img src="../../../assets/images/sabak.svg" alt="sabak">
-                {{ course.lesson_count }} сабақ
+                {{ course.lessons_count }} сабақ
               </p>
             </div>
             <div class="subject-info">

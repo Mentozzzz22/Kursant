@@ -1,11 +1,11 @@
-<div *ngIf="!isTemaOpened">
+<div *ngIf="!isTopicOpened">
   <div class="edit-course-header">
     <div class="header-text">
       <img src="assets/images/back-arrow.svg" alt="back" (click)="back()">
       <h3>Бөлім 1. Қазақстандағы ежелгі адамдардың өмірі</h3>
     </div>
     <div class="course-actions">
-      <button class="delete-course-btn">Удалить модуль</button>
+      <button class="delete-course-btn" (click)="deleteModule(moduleId)">Удалить модуль</button>
     </div>
   </div>
   <div class="edit-course-page">
@@ -13,33 +13,57 @@
     <div class="edit-course-container">
       <h4>Темы</h4>
       <div class="modules">
-        <div class="module" *ngFor="let tema of temas" (click)="navigateToEditTema(tema.id)">
-          <span> <strong>Тақырып {{ tema.id }}.</strong> {{ tema.name }}</span>
-          <button class="edit-module-btn" (click)="showEditDialog()">
+        <div class="module" *ngFor="let topic of topics; let i = index" (click)="navigateToEditTema(topic.id!)">
+          <span> <strong>Тақырып {{ i+1 }}.</strong> {{ topic.name }}</span>
+          <button class="edit-module-btn" (click)="showEditDialog(topic.id!, topic.name); $event.stopPropagation()">
             <img src="assets/images/edit-icon.svg" alt="edit">
           </button>
         </div>
       </div>
-      <button class="add-module-btn">Добавить тему</button>
+      <button class="add-module-btn" (click)="showAddDialog()">Добавить тему</button>
     </div>
   </div>
 
-  <p-dialog class="test-modal" header="Редактировать модуль" [modal]="true" [(visible)]="EditModuleVisible"
+  <p-dialog class="test-modal" header="Редактировать тему" [modal]="true" [(visible)]="EditTopicVisible"
             draggable="false">
-    <form class="client-edit__form">
+    <form [formGroup]="editTopicForm" class="client-edit__form">
       <div class="form-group">
         <label for="name" class="form-label">Название</label>
-        <input type="text" id="name" class="form-input">
+        <input type="text" id="name" class="form-input" formControlName="name">
+        <div *ngIf="editTopicForm.controls['name'].invalid && editTopicForm.controls['name'].touched"
+             class="error-message">
+          <small>Название должно содержать минимум 3 символа.</small>
+        </div>
       </div>
     </form>
     <div class="modal-footer">
-      <button class="btn start-btn">Редактировать</button>
-      <button class="btn back-btn" (click)="EditModuleVisible = false">Отмена</button>
+      <button class="btn start-btn" (click)="editTopic(selectedTopicId)" [disabled]="editTopicForm.invalid">
+        Редактировать
+      </button>
+      <button class="btn back-btn" (click)="EditTopicVisible = false">Отмена</button>
+    </div>
+  </p-dialog>
+
+  <p-dialog class="test-modal" header="Добавить тему" [modal]="true"
+            [(visible)]="AddTopicVisible" draggable="false" *ngIf="addTopicForm">
+    <form [formGroup]="addTopicForm" class="client-edit__form">
+      <div class="form-group">
+        <label for="name1" class="form-label">Название</label>
+        <input type="text" id="name1" class="form-input" formControlName="name">
+        <div *ngIf="addTopicForm.controls['name'].invalid && addTopicForm.controls['name'].touched"
+             class="error-message">
+          <small>Название должно содержать минимум 3 символа.</small>
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn start-btn" (click)="addTopics()" [disabled]="addTopicForm.invalid">Добавить</button>
+      <button class="btn back-btn" (click)="AddTopicVisible = false">Отмена</button>
     </div>
   </p-dialog>
 </div>
 
-<div *ngIf="isTemaOpened">
+<div *ngIf="isTopicOpened">
   <router-outlet></router-outlet>
 </div>
 

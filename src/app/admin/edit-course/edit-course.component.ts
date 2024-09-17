@@ -1,10 +1,12 @@
-import {Component, inject, input, OnInit} from '@angular/core';
+import {Component, inject, input, OnDestroy, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from "@angular/router";
 import {ModuleService} from "../../service/module.service";
 import {Module} from "../../../assets/models/module.interface";
+import {CourseService} from "../../service/course.service";
+import {filter, Subscription} from "rxjs";
 
 @Component({
   selector: 'app-edit-course',
@@ -20,30 +22,53 @@ import {Module} from "../../../assets/models/module.interface";
   templateUrl: './edit-course.component.html',
   styleUrl: './edit-course.component.css'
 })
-export class EditCourseComponent implements OnInit {
+export class EditCourseComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private moduleService = inject(ModuleService);
+  private courseService = inject(CourseService);
   private fb = inject(FormBuilder);
   public EditModuleVisible: boolean = false;
   public AddModuleVisible: boolean = false;
   public isModuleOpened: boolean = false;
   public modules: Module[] = []
-  private courseId!: number;
+  public courseId!: number;
   public selectedModuleId!: number;
   public addModuleForm!: FormGroup;
   public editModuleForm!: FormGroup;
 
+  private navigationSubscription: Subscription;
+
+  constructor() {
+    // Подписываемся на события роутера
+    this.navigationSubscription = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.checkModuleOpened();
+    });
+  }
+
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.courseId = +params.get('courseId')!;
+      this.loadModules()
     });
-    this.route.firstChild?.paramMap.subscribe(params => {
-      this.isModuleOpened = !!params.get('moduleId');
-    });
+
     this.initAddModuleForm();
     this.initEditModuleForm();
-    this.loadModules()
+
+    this.checkModuleOpened();
+  }
+
+  private checkModuleOpened() {
+    // Здесь мы проверяем URL или параметры роута, чтобы определить, должен ли быть открыт модуль
+    this.isModuleOpened = this.route.firstChild != null;
+  }
+
+  ngOnDestroy() {
+    if (this.navigationSubscription) {
+      this.navigationSubscription.unsubscribe();
+    }
   }
 
   private initAddModuleForm() {
@@ -62,10 +87,26 @@ export class EditCourseComponent implements OnInit {
     this.moduleService.getCourseModules(this.courseId).subscribe({
       next: (data) => {
         this.modules = data.modules;
-        console.log(data)
       },
       error: (err) => {
         console.error('Ошибка при загрузке модулей курса:', err);
+      }
+    });
+  }
+
+  public addModule() {
+    if (this.addModuleForm.invalid) {
+      return;
+    }
+    const newModule: Module = this.addModuleForm.value; // Получаем данные из формы
+    this.moduleService.saveCourseModule(newModule, this.courseId).subscribe({
+      next: () => {
+        this.loadModules();
+        this.AddModuleVisible = false;
+        this.addModuleForm.reset();
+      },
+      error: (err) => {
+        console.error('Ошибка при добавлении модуля:', err);
       }
     });
   }
@@ -88,38 +129,28 @@ export class EditCourseComponent implements OnInit {
     });
   }
 
-  public showEditDialog(moduleId: number) {
-    this.EditModuleVisible = true;
-    this.selectedModuleId = moduleId
+  public deleteCourse(courseId: number) {
+    this.courseService.deleteCourse(courseId).subscribe({
+      next: () => {
+        this.loadModules();
+      },
+      error: (err) => {
+        console.error('Ошибка при удалении курса:', err);
+      }
+    });
+    this.router.navigate(['/admin/course']);
+  }
+
+  public showEditDialog(moduleId: number, moduleName: string) {
+    this.selectedModuleId = moduleId;
+    this.editModuleForm.patchValue({
+      name: moduleName
+    });
+    this.EditModuleVisible = true; // Показываем модалку
   }
 
   public showAddDialog() {
     this.AddModuleVisible = true;
-  }
-
-  public addModule() {
-    if (this.addModuleForm.invalid) {
-      return;
-    }
-    const newModule: Module = this.addModuleForm.value; // Получаем данные из формы
-    this.moduleService.saveCourseModule(newModule, this.courseId).subscribe({
-      next: () => {
-        this.loadModules();
-        this.AddModuleVisible = false;
-        this.addModuleForm.reset();
-      },
-      error: (err) => {
-        console.error('Ошибка при добавлении модуля:', err);
-      }
-    });
-  }
-
-  deleteCourse() {
-    // Logic to delete the course
-  }
-
-  editCourse() {
-    // Logic to edit the course details
   }
 
   public navigateToCourses() {

@@ -1,13 +1,12 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {NgForOf, NgIf} from "@angular/common";
-import {kurs} from "../../non-authorized/main-page/main-page.component";
 import {CourseService} from "../../service/course.service";
-import {Courses} from "../../../assets/models/courses.interface";
 import {DialogModule} from "primeng/dialog";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {EditorModule} from "primeng/editor";
 import {MessageService} from "primeng/api";
+import {Course} from "../../../assets/models/course.interface";
 
 @Component({
   selector: 'app-course',
@@ -37,7 +36,7 @@ export class CourseComponent implements OnInit {
   public selectedPosterFile: File | null = null;
   public selectedBigPosterFile: File | null = null;
   public visibleAddModal: boolean = false;
-  public courses: Courses[] = [];
+  public courses: Course[] = [];
   public courseAddForm!: FormGroup;
 
   flowWorks = [
@@ -83,11 +82,10 @@ export class CourseComponent implements OnInit {
 
   private loadCourses() {
     this.superAdminService.getCourses().subscribe(data => {
-      this.courses = data.map((course: Courses) => ({
+      this.courses = data.map((course: Course) => ({
         ...course,
         poster: `http://127.0.0.1:8000${course.poster}`
       }));
-      console.log(data)
     })
   }
 
@@ -128,7 +126,6 @@ export class CourseComponent implements OnInit {
 
     this.superAdminService.saveCourse(formData).subscribe({
       next: (response) => {
-        console.log('Course added successfully', response);
         this.visibleAddModal = false;
         this.loadCourses();
       },

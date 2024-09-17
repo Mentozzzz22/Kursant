@@ -5,7 +5,7 @@
       <h3>Казахстан тарихы</h3>
     </div>
     <div class="course-actions">
-      <button class="delete-course-btn">Удалить курс</button>
+      <button class="delete-course-btn" (click)="deleteCourse(courseId)">Удалить курс</button>
       <button class="edit-course-btn">Редактировать курс</button>
     </div>
   </div>
@@ -14,9 +14,9 @@
     <div class="edit-course-container">
       <h2>Модули</h2>
       <div class="modules">
-        <div class="module" *ngFor="let module of modules" (click)="navigateToEditModule(module.id!)">
-          <span> <strong>Бөлім {{ module.id }}.</strong> {{ module.name }}</span>
-          <button class="edit-module-btn" (click)="showEditDialog(module.id!); $event.stopPropagation()">
+        <div class="module" *ngFor="let module of modules; let i = index" (click)="navigateToEditModule(module.id!)">
+          <span> <strong>Бөлім {{ i + 1 }}.</strong> {{ module.name }}</span>
+          <button class="edit-module-btn" (click)="showEditDialog(module.id!, module.name); $event.stopPropagation()">
             <img src="assets/images/edit-icon.svg" alt="edit">
           </button>
         </div>
@@ -39,7 +39,7 @@
     </form>
     <div class="modal-footer">
       <button class="btn start-btn" (click)="editModule(selectedModuleId)" [disabled]="editModuleForm.invalid">
-        Сохранить
+        Редактировать
       </button>
       <button class="btn back-btn" (click)="EditModuleVisible = false">Отмена</button>
     </div>
@@ -51,7 +51,6 @@
       <div class="form-group">
         <label for="name1" class="form-label">Название</label>
         <input type="text" id="name1" class="form-input" formControlName="name">
-        <!-- Вывод ошибок, если поле не заполнено -->
         <div *ngIf="addModuleForm.controls['name'].invalid && addModuleForm.controls['name'].touched"
              class="error-message">
           <small>Название должно содержать минимум 3 символа.</small>

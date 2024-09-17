@@ -93,7 +93,9 @@ export class CartComponent implements OnInit{
 
 
   submitOrder(): void {
-    const courseIds = this.courses.map(course => course.id);
+    const courseIds = this.courses
+      .map(course => course.id)
+      .filter((id): id is number => id !== undefined); // Фильтруем undefined значения
 
     this.orderForm.patchValue({
       courses: courseIds
@@ -122,7 +124,7 @@ export class CartComponent implements OnInit{
           this.totalCurrentPrice = 0;
           this.totalOldPrice = 0;
 
-          this.visible=false;
+          this.visible = false;
         },
         (error) => {
           console.error('Error submitting order', error);
