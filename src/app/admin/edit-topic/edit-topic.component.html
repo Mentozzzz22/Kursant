@@ -19,10 +19,10 @@
             <div class="custom-file-upload">
               <input type="file" id="file{{ i }}" class="file-input" (change)="onFileSelected($event, i)"/>
               <span class="file-upload-button" (click)="triggerFileInput(i)">Выберите файл</span>
-              <span class="file-upload-filename">{{ lesson.file || 'Файл не выбран' }}</span>
+              <span class="file-upload-filename">{{ lesson.fileName || 'Файл не выбран' }}</span>
             </div>
           </div>
-          <button class="delete-course-btn">Удалить файл</button>
+          <button class="delete-course-btn" (click)="removeLessonFile(i)">Удалить файл</button>
           <button class="delete-course-btn" (click)="deleteLesson(i)">Удалить урок</button>
         </div>
       </div>

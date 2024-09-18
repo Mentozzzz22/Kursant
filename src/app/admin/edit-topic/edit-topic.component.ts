@@ -82,6 +82,10 @@ export class EditTopicComponent implements OnInit {
       this.topicId = +params.get('topicId')!;
       this.loadTopicContent();
     });
+    // this.testForm.get('description')?.valueChanges.subscribe(value => {
+    //   this.homeworkDescription = value;
+    // });
+
     this.initializeForm();
     this.initAddTopicForm();
 
@@ -149,15 +153,16 @@ export class EditTopicComponent implements OnInit {
   private loadTopicContent() {
     this.topicService.getTopicContent(this.topicId).subscribe({
       next: (data) => {
-        this.lessons = data.lessons;
+        this.lessons = data.lessons.map(lesson => ({
+          ...lesson,
+          fileName: typeof lesson.file === 'string' ? lesson.file : undefined
+        }));
         this.test = data.test;
         this.initializeForm(data.test);
 
-        // Устанавливаем данные для домашнего задания
         this.homeworkFileName = data.homework.file;
         this.homeworkDescription = data.homework.description;
 
-        // Обновляем описание в форме
         this.testForm.get('description')?.setValue(this.homeworkDescription);
 
         console.log('Topic Content Loaded:', data);
@@ -167,7 +172,6 @@ export class EditTopicComponent implements OnInit {
       }
     });
   }
-
 
   public addLesson() {
     if (this.addLessonForm.invalid) {
@@ -197,7 +201,6 @@ export class EditTopicComponent implements OnInit {
   }
 
   public saveContent(): void {
-
     if (this.testForm.invalid) {
       console.error("Form is invalid");
       return;
@@ -206,29 +209,48 @@ export class EditTopicComponent implements OnInit {
     const formData = new FormData();
     formData.append('topic_id', String(this.topicId));
 
-    // Добавление уроков
-    const lessonsData = this.lessons.map(lesson => ({
-      name: lesson.name,
-      file: lesson.file   // используется file_url вместо File объекта
-    }));
+    const lessonsData = this.lessons.map((lesson, index) => {
+      return {
+        name: lesson.name,
+        file: lesson.file instanceof File ? `lesson_file_${index}` : lesson.file
+      };
+    });
+
     formData.append('lessons', JSON.stringify(lessonsData));
 
-    // Добавление домашнего задания
+    // Добавляем новые файлы в FormData (бинарные данные)
+    this.lessons.forEach((lesson, index) => {
+      if (lesson.file instanceof File) {
+        formData.append(`lesson_file_${index}`, lesson.file);
+      }
+    });
+
     const homeworkData = {
-      file: this.homeworkFileName,  // предполагается, что это строка URL
-      description: this.homeworkDescription
+      description: this.testForm.get('description')?.value,
+      file: this.homeworkFile instanceof File ? 'homework_file' : this.homeworkFileName || ''
     };
     formData.append('homework', JSON.stringify(homeworkData));
 
-    // Добавление теста
+    if (this.homeworkFile instanceof File) {
+      formData.append('homework_file', this.homeworkFile);
+    }
+
     formData.append('test', JSON.stringify(this.testForm.value));
 
-    // Отправка данных
     this.topicService.saveTopicContent(formData).subscribe({
       next: response => console.log('Content saved successfully:', response),
       error: error => console.error('Failed to save content:', error)
     });
   }
+
+  public removeLessonFile(index: number): void {
+    if (this.lessons[index]) {
+      this.lessons[index].file = '';
+      this.lessons[index].fileName = undefined;
+      console.log(`Файл для урока ${index + 1} удалён.`);
+    }
+  }
+
 
   public showAddDialog() {
     this.AddLessonVisible = true;
@@ -248,26 +270,21 @@ export class EditTopicComponent implements OnInit {
   public onFileSelected(event: Event, index: number): void {
     const input = event.target as HTMLInputElement;
     if (input.files?.length) {
-      this.lessons[index].file = input.files[0];
-      console.log(this.lessons[index].file)
-      this.selectedFile = input.files[0];
-      this.selectedFileName = this.lessons[index].file.name;
-      console.log(this.selectedFileName)
+      const file = input.files[0];
+      this.lessons[index].file = file;
+      this.lessons[index].fileName = file.name;
+      console.log(`Файл для урока ${index + 1}: ${file.name}`);
     }
   }
-
-  // Метод для обработки выбора файла
   public onHomeworkFileSelected(event: Event): void {
     const element = event.target as HTMLInputElement;
     if (element.files && element.files.length > 0) {
       this.homeworkFile = element.files[0];
       this.homeworkFileName = this.homeworkFile.name;
-      console.log('Homework file set:', this.homeworkFile);
       console.log('Homework file set:', this.homeworkFileName);
     }
   }
 
-// Метод для программного триггера выбора файла
   public triggerHomeworkFileInput(): void {
     const fileInput = document.getElementById('homeworkFile') as HTMLInputElement;
     fileInput.click();

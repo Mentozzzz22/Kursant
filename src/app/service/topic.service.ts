@@ -94,15 +94,18 @@ export class TopicService {
       );
   }
 
-  saveTopicContent(topicData: any): Observable<any> {
+  saveTopicContent(topicData: FormData): Observable<any> {
     const token = this.userService.token;
+
+    // Установка только заголовка Authorization, Content-Type не устанавливаем вручную для FormData
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
-    console.log(topicData)
+
     return this.http
-      .post<any>(`${this.apiUrl}/save_topic_content/`, topicData, {headers}).pipe(
+      .post<any>(`${this.apiUrl}/save_topic_content/`, topicData, { headers })
+      .pipe(
         catchError(error => {
           console.error('Error saving topic content:', error);
-          throw error;
+          return throwError(error); // Возвращаем поток с ошибкой
         })
       );
   }
