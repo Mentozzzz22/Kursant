@@ -1,0 +1,451 @@
+.supplier-container {
+  background-color: #fff;
+  padding: 28px 32px 15px;
+}
+
+.supplier-title {
+  color: #1d1d42;
+  font-size: 22px;
+  line-height: 1;
+  margin: 0 0 29px;
+}
+
+.supplier-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.search-input {
+  width: 230px;
+  padding: 9px;
+  font-size: 14px;
+  border-radius: 8px 0 0 8px;
+  color: #1D1D42;
+  border: 2px solid #1D1D42;
+}
+
+.search-button {
+  background-color: #1d1d42;
+  color: #fff;
+  border: none;
+  padding: 11px 25px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 0 8px 8px 0;
+}
+
+.add-course-btn {
+  background-color: #00ADEF;
+  height: 40px;
+  width: 120px;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.add-btn-course {
+  background-color: transparent;
+  border: none;
+  color: black;
+  border-radius: 5px;
+  font-size: 18px;
+  text-decoration:underline;
+}
+/**Контент**/
+
+.main-content {
+  padding: 20px;
+}
+
+.content-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+  max-width: 100%;
+  overflow-y: scroll;
+}
+
+.content-buttons::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+.content-button {
+  padding: 9px 20px;
+  border: none;
+  background-color: #fff;
+  color: #1d1d42;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.content-button.active {
+  border: 1px solid black;
+}
+
+
+.content-table-container {
+  background-color: white;
+  padding: 20px 32px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.content-supplier-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.content-supplier-table th, .content-supplier-table td {
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+:host ::ng-deep .p-datatable {
+  width: 100%;
+}
+
+:host ::ng-deep .p-datatable-thead > tr > th {
+  text-align: left;
+  background-color: transparent;
+  padding: 10px;
+  color:#d2d2d2;
+  border-bottom: 1px solid #dfdede;
+
+}
+
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > th {
+  text-align: left;
+  border-bottom: 2px solid #F9FAFC;
+  padding: 10px;
+}
+
+.new {
+  color: #00B69B;
+}
+
+.completed {
+  color: #17B7EC;
+}
+
+.canceled {
+  color: #F93C65;
+}
+
+/**Модал*/
+
+.username{
+  padding:5px;
+  background-color:#E8E8E8;
+  border-radius: 10px;
+  font-weight:normal;
+  color:black;
+}
+
+.modal-content {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction:row;
+  align-content: flex-start;
+  height: 100%;
+  width: 100%;
+  gap:20px;
+}
+
+.block-one {
+  background-color: #f7f7f7;
+  border-radius: 15px;
+  padding: 20px;
+  width: 100%;
+  max-width: 500px;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 260px;
+}
+
+h5 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.cart-list {
+  padding-left: 0;
+  list-style-type: none;
+  margin-bottom: auto;
+}
+
+.cart-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.item-name {
+  flex: 1;
+}
+
+.price {
+  width: 100px;
+  text-align: right;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+}
+
+.delete-btn:hover {
+  color: #000;
+}
+
+.total {
+  display: flex;
+  justify-content:space-between;
+  font-size: 18px;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.total-price {
+  font-weight: bold;
+}
+
+
+.block-two {
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-container input {
+  flex: 1;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.edit-btn {
+  background-color: #eaeaea;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-btn i {
+  font-size: 16px;
+  color: #333;
+}
+
+.block-three {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #444444;
+}
+
+textarea {
+  width: 100%;
+  padding: 15px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  background-color: #f7f7f7;
+  color: #333;
+  resize: none;
+  box-shadow: none;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: #ccc;
+}
+
+.block-four {
+  width: 100%;
+  max-width: 500px;
+}
+
+
+.custom-file-upload {
+  display: flex;
+  align-items: center;
+  border-radius: 9px;
+  overflow: hidden;
+  width: 70%;
+  background-color: #f9fafc;
+  border: 1px solid #e3e3e3;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-upload-button {
+  background-color: #00adef;
+  color: white;
+  padding: 12px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 9px 0 0 9px;
+  flex-shrink: 0;
+}
+
+.file-upload-filename {
+  padding: 12px 16px;
+  color: #444444;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-file-upload:hover .file-upload-button {
+  background-color: #009ed6;
+}
+
+.custom-file-upload input[type="file"] {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  cursor: pointer;
+}
+
+.check{
+  background-color: white;
+  border: 1px solid;
+  padding:10px 60px;
+  border-radius:10px;
+}
+
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.filled-button {
+  background-color: #444444;
+  color: #fff;
+  padding:10px 60px;
+  border-radius: 10px;
+}
+
+.outlined-button {
+  border: 1px solid #333;
+  color: #333;
+  background-color: transparent;
+  padding:10px 60px;
+  border-radius: 10px;
+}
+
+
+.text-button {
+  width:15%;
+  border: 1px solid #333;
+  color: #333;
+  border-radius: 10px;
+  background-color: transparent;
+}
+
+
+::ng-deep .p-dropdown-items {
+  padding-left: 0; /* Убираем отступы */
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.flex-line {
+  flex-wrap: nowrap;
+}
+
+.gap-3 {
+  gap: 1rem;
+}
+
+.w-25rem {
+  width: 25rem;
+}
+
+.add-btn, .close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10%;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.add-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.1);
+}
+
+.close-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.close-btn:hover {
+  background-color: #e53935;
+  transform: scale(1.1);
+}
+
+.add-btn i, .close-btn i {
+  font-size: 1.2em;
+}

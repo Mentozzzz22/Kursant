@@ -1,0 +1,269 @@
+<div class="supplier-header">
+  <div class="supplier-container">
+    <h1 class="supplier-title">Заявки</h1>
+    <hr style="transform: scaleY(0.3);">
+    <div class="supplier-actions">
+      <div class="search-form">
+        <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
+        <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input" [(ngModel)]="searchText" />
+        <button type="submit" class="search-button" (click)="searchApplications()">Поиск</button>
+      </div>
+      <button class="add-course-btn" (click)="showAddDialog()">
+        Добавить Заявку
+      </button>
+    </div>
+  </div>
+</div>
+<div class="main-content">
+  <div class="content-buttons">
+    <button class="content-button" [ngClass]="{'active': activeStatus === ''}" (click)="filterApplications('')">Все заявки</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'new'}" (click)="filterApplications('new')">Новые заявки</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'waiting_admin'}" (click)="filterApplications('waiting_admin')">На проверке у админа</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'accepted'}" (click)="filterApplications('accepted')">Получили доступ</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'rejected'}" (click)="filterApplications('rejected')">Отклонённые</button>
+  </div>
+
+
+  <div class="content-table-container">
+
+    <p-table [value]="applications" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th>ФИО</th>
+          <th>Телефон</th>
+          <th>Статусы</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-application >
+        <tr *ngIf="application && application.order_id" (click)="showDialog(application)">
+          <td>{{ application.order_id }}</td>
+          <td>{{ application.learner_fullname }}</td>
+          <td>{{ application.learner_phone_number }}</td>
+          <td>{{ application.status_display }}</td>
+          <td>{{ application.comments }}</td>
+        </tr>
+
+      </ng-template>
+    </p-table>
+
+  </div>
+</div>
+
+<p-dialog
+  header="Header"
+  [(visible)]="isVisible"
+  [modal]="true"
+  [style]="{ width: selectedApplicationType?.showCancelReason ? '40rem' : '70rem' }"
+  draggable="false"
+  (onHide)="onDialogHide()">
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <h3>Заявка #0012</h3>
+      <h5 class="username">Арман</h5>
+    </div>
+  </ng-template>
+
+  <ng-container *ngIf="!visibleAdd && !selectedApplicationType?.showCancelReason">
+  <form  [formGroup]="applicationsForm">
+  <div class="modal-content">
+
+    <div class="block-one">
+      <h5>В корзине</h5>
+      <ol class="cart-list">
+        <li *ngFor="let course of coursesList let i = index">
+          <span class="item-name">{{ course.name }}</span>
+          <span class="price">{{ course.current_price}} тг</span>
+          <button class="delete-btn" (click)="removeCourse(i)">
+            <i class="pi pi-trash"></i>
+          </button>
+        </li>
+      </ol>
+      <div class="total">
+        <strong>К оплате:</strong> <span class="total-price">{{ calculateTotalPrice() }}</span>
+      </div>
+    </div>
+
+
+    <div class="block-two">
+
+      <div class="form-group">
+        <label for="fullName">ФИО</label>
+        <div class="input-container">
+          <input type="text" id="fullName" class="form-control" formControlName="learner_fullname">
+          <button class="edit-btn">
+            <i class="pi pi-pencil"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Телефон</label>
+        <div class="input-container">
+          <input type="text" id="phone" class="form-control" formControlName="learner_phone_number">
+          <button class="edit-btn">
+            <i class="pi pi-pencil"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="region">Регион</label>
+        <div class="input-container">
+          <input type="text" id="region" class="form-control" formControlName="learner_region">
+          <button class="edit-btn">
+            <i class="pi pi-pencil"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="block-three">
+      <label for="comment">Комментарий к админу</label>
+      <textarea id="comment" rows="4" formControlName="comments"></textarea>
+    </div>
+
+    <div class="block-four">
+      <label for="fileInput1">Чек</label>
+      <div class="custom-file-upload">
+        <input type="file" id="fileInput1" class="file-input" (change)="onFileSelected($event)" hidden />
+        <span class="file-upload-button" (click)="triggerFileInputFirst()">Выберите файл</span>
+        <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
+      </div>
+    </div>
+
+  </div>
+  </form>
+  </ng-container>
+
+  <ng-container *ngIf="visibleAdd && !selectedApplicationType?.showCancelReason">
+  <form [formGroup]="applicationAddForm">
+    <div class="modal-content">
+
+      <div class="block-one">
+        <h5>В корзине</h5>
+        <ol class="cart-list">
+          <li *ngFor="let course of coursesAddList let i = index">
+            <span class="item-name">{{ course.name }}</span>
+            <span class="price">{{ course.current_price}} тг</span>
+            <button class="delete-btn" (click)="removeAddCourse(i)">
+              <i class="pi pi-trash"></i>
+            </button>
+          </li>
+        </ol>
+        <div class="total">
+          <div>
+            <strong>К оплате:</strong> <span class="total-price">{{ calculateTotalAddPrice() }}</span>
+          </div>
+
+          <div >
+            <button (click)="op.toggle($event)" class="add-btn-course">Добавить курс </button>
+            <p-overlayPanel #op>
+              <div class="flex flex-line gap-3 w-20rem">
+                <p-dropdown
+                  [options]="courses"
+                  [(ngModel)]="selectedCourse"
+                  optionLabel="name"
+                  placeholder="Выберите курс"
+                  [showClear]="true"
+                  formControlName="course"/>
+
+                <button class="add-btn" (click)="addCourseToCart(); op.hide();"><i class="pi pi-check"></i></button>
+                <button class="close-btn" (click)="op.hide();"><i class="pi pi-times"></i></button>
+              </div>
+            </p-overlayPanel>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="block-two">
+
+        <div class="form-group">
+          <label for="fullNameAdd">ФИО</label>
+          <div class="input-container">
+            <input type="text" id="fullNameAdd" class="form-control" formControlName="learner_fullname">
+            <button class="edit-btn">
+              <i class="pi pi-pencil"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phoneAdd">Телефон</label>
+          <div class="input-container">
+            <input type="text" id="phoneAdd" class="form-control" formControlName="learner_phone_number">
+            <button class="edit-btn">
+              <i class="pi pi-pencil"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="regionAdd">Регион</label>
+          <div class="input-container">
+            <input type="text" id="regionAdd" class="form-control" formControlName="learner_region">
+            <button class="edit-btn">
+              <i class="pi pi-pencil"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="block-three">
+        <label for="commentAdd">Комментарий к админу</label>
+        <textarea id="commentAdd" rows="4" formControlName="comments"></textarea>
+      </div>
+
+      <div class="block-four">
+        <label for="fileInput2">Чек</label>
+        <div class="custom-file-upload">
+          <input type="file" id="fileInput2" class="file-input" (change)="onFileSelected($event)" hidden />
+          <span class="file-upload-button" (click)="triggerFileInputSecond()">Выберите файл</span>
+          <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
+        </div>
+      </div>
+
+
+    </div>
+  </form>
+  </ng-container>
+
+  <ng-container *ngIf="selectedApplicationType?.showCancelReason">
+    <div class="block-three">
+      <label for="commentReason">Комментарий к админу</label>
+      <textarea id="commentReason" rows="4" [(ngModel)]="rejection_reason"></textarea>
+    </div>
+  </ng-container>
+
+  <ng-template pTemplate="footer">
+    <ng-container  *ngIf="!selectedApplicationType?.showCancelReason">
+      <div class="button-group">
+
+        <div class="button-container" >
+          <button class="filled-button" (click)="saveDialog()" *ngIf="status !== 'waiting_admin'">Открыть доступ</button>
+          <button class="outlined-button" (click)="cancelDialog()" *ngIf="status !== 'waiting_admin'">Отклонить</button>
+        </div>
+
+
+        <button class="text-button" (click)="closeDialog()">Назад</button>
+      </div>
+    </ng-container>
+
+    <ng-container  *ngIf="selectedApplicationType?.showCancelReason">
+      <div class="button-group">
+
+        <div class="button-container" >
+          <button class="filled-button" (click)="saveCancelDialog()" >Отклонить</button>
+        </div>
+      </div>
+    </ng-container>
+
+  </ng-template>
+
+
+</p-dialog>

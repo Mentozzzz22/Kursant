@@ -12,6 +12,7 @@ export class UserService implements OnInit {
   private userUrl = 'http://127.0.0.1:8000/api/user/';
   private role: string | null = null;
   token: string | null = null;
+  phone:string|null = null;
 
   constructor() {
     this.loadAuthData();
@@ -45,6 +46,7 @@ export class UserService implements OnInit {
   private loadAuthData(): void {
     this.token = localStorage.getItem('token');
     this.role = localStorage.getItem('role');
+    this.phone = localStorage.getItem('phone');
     const userData = localStorage.getItem('user_data');
     console.log('Loaded role:', this.role);
   }
