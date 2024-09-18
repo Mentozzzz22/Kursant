@@ -40,7 +40,6 @@ export class EditCourseComponent implements OnInit, OnDestroy {
   private navigationSubscription: Subscription;
 
   constructor() {
-    // Подписываемся на события роутера
     this.navigationSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
@@ -54,9 +53,12 @@ export class EditCourseComponent implements OnInit, OnDestroy {
       this.loadModules()
     });
 
+    this.moduleService.moduleUpdated$.subscribe(() => {
+      this.loadModules();
+    });
+
     this.initAddModuleForm();
     this.initEditModuleForm();
-
     this.checkModuleOpened();
   }
 
@@ -132,13 +134,12 @@ export class EditCourseComponent implements OnInit, OnDestroy {
   public deleteCourse(courseId: number) {
     this.courseService.deleteCourse(courseId).subscribe({
       next: () => {
-        this.loadModules();
+        this.router.navigate(['/admin/course']);
       },
       error: (err) => {
         console.error('Ошибка при удалении курса:', err);
       }
     });
-    this.router.navigate(['/admin/course']);
   }
 
   public showEditDialog(moduleId: number, moduleName: string) {

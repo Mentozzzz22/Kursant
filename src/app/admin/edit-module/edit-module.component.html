@@ -30,10 +30,6 @@
       <div class="form-group">
         <label for="name" class="form-label">Название</label>
         <input type="text" id="name" class="form-input" formControlName="name">
-        <div *ngIf="editTopicForm.controls['name'].invalid && editTopicForm.controls['name'].touched"
-             class="error-message">
-          <small>Название должно содержать минимум 3 символа.</small>
-        </div>
       </div>
     </form>
     <div class="modal-footer">
@@ -50,10 +46,6 @@
       <div class="form-group">
         <label for="name1" class="form-label">Название</label>
         <input type="text" id="name1" class="form-input" formControlName="name">
-        <div *ngIf="addTopicForm.controls['name'].invalid && addTopicForm.controls['name'].touched"
-             class="error-message">
-          <small>Название должно содержать минимум 3 символа.</small>
-        </div>
       </div>
     </form>
     <div class="modal-footer">

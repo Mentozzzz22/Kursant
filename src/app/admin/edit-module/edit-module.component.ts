@@ -63,6 +63,11 @@ export class EditModuleComponent implements OnInit, OnDestroy {
       this.loadTopics();
     });
 
+    // Подписываемся на событие обновления топиков
+    this.topicService.topicUpdated$.subscribe(() => {
+      this.loadTopics();
+    });
+
     this.initAddTopicForm();
     this.initEditTopicForm();
     this.checkTopicOpened();
@@ -140,13 +145,13 @@ export class EditModuleComponent implements OnInit, OnDestroy {
   public deleteModule(moduleId: number) {
     this.moduleService.deleteCourseModule(moduleId).subscribe({
       next: () => {
-        this.loadTopics(); // Перезагружаем модули после удаления
+        this.router.navigate([`/admin/edit-course/${this.courseId}`]);
       },
       error: (err) => {
         console.error('Ошибка при удалении модуля:', err);
       }
     });
-    this.router.navigate([`/admin/edit-course/${this.courseId}`]);
+
   }
 
   public showEditDialog(topicId: number, topicName: string) {
@@ -162,7 +167,6 @@ export class EditModuleComponent implements OnInit, OnDestroy {
   }
 
   public back() {
-    console.log(this.courseId + 'edit-module')
     this.router.navigate([`/admin/edit-course/${this.courseId}`]);
   }
 

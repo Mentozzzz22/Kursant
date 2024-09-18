@@ -25,7 +25,7 @@ import {Course} from "../../../assets/models/course.interface";
 })
 export class CourseComponent implements OnInit {
 
-  private superAdminService = inject(CourseService);
+  private courseService = inject(CourseService);
   private router = inject(Router);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder)
@@ -69,6 +69,10 @@ export class CourseComponent implements OnInit {
   ngOnInit() {
     this.loadCourses()
 
+    this.courseService.courseUpdated$.subscribe(() => {
+      this.loadCourses();
+    });
+
     this.courseAddForm = this.fb.group({
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
@@ -81,7 +85,7 @@ export class CourseComponent implements OnInit {
   }
 
   private loadCourses() {
-    this.superAdminService.getCourses().subscribe(data => {
+    this.courseService.getCourses().subscribe(data => {
       this.courses = data.map((course: Course) => ({
         ...course,
         poster: `http://127.0.0.1:8000${course.poster}`
@@ -124,7 +128,7 @@ export class CourseComponent implements OnInit {
     formData.append('discount_percentage', this.courseAddForm.get('discount_percentage')?.value);
     formData.append('teacher_fullname', this.courseAddForm.get('teacher_fullname')?.value);
 
-    this.superAdminService.saveCourse(formData).subscribe({
+    this.courseService.saveCourse(formData).subscribe({
       next: (response) => {
         this.visibleAddModal = false;
         this.loadCourses();
@@ -155,6 +159,7 @@ export class CourseComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       this.selectedPosterFile = input.files[0];
       this.selectedPosterName = this.selectedPosterFile.name;
+      console.log(this.selectedPosterFile.name)
       this.messageService.add({
         severity: 'success',
         summary: 'Успешно',

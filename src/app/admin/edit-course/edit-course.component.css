@@ -87,6 +87,11 @@
   flex: 1;
   font-size: 18px;
   font-weight: 500;
+  cursor: pointer;
+}
+
+.module span:hover {
+  text-decoration: underline;
 }
 
 .edit-module-btn {

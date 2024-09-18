@@ -4,26 +4,98 @@
     <h3>Тақырып 1. Қазақстандағы ежелгі адамдардың өмірі</h3>
   </div>
   <div class="course-actions">
-    <button class="delete-course-btn">Удалить тему</button>
+    <button class="delete-course-btn" (click)="deleteTopic(topicId)">Удалить тему</button>
   </div>
 </div>
-<div class="edit-course-page">
-  <div class="edit-course-container">
-    <h4>Уроки</h4>
-    <div class="modules">
-      <div class="module" *ngFor="let lesson of lessons">
-        <span class="module-span"> <strong>Сабақ {{ lesson.id }}.</strong> {{ lesson.name }}</span>
-        <div>
-          <div class="custom-file-upload">
-            <input type="file" id="file" class="file-input" (change)="onFileSelected($event)"/>
-            <span class="file-upload-button" (click)="triggerFileInput()">Выберите файл</span>
-            <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
+
+<form [formGroup]="testForm">
+  <div class="edit-course-page">
+    <div class="edit-course-container">
+      <h4>Уроки</h4>
+      <div class="modules">
+        <div class="module" *ngFor="let lesson of lessons; let i = index">
+          <span class="module-span"><strong>Сабақ {{ i + 1 }}.</strong> {{ lesson.name }}</span>
+          <div>
+            <div class="custom-file-upload">
+              <input type="file" id="file{{ i }}" class="file-input" (change)="onFileSelected($event, i)"/>
+              <span class="file-upload-button" (click)="triggerFileInput(i)">Выберите файл</span>
+              <span class="file-upload-filename">{{ lesson.file || 'Файл не выбран' }}</span>
+            </div>
+          </div>
+          <button class="delete-course-btn">Удалить файл</button>
+          <button class="delete-course-btn" (click)="deleteLesson(i)">Удалить урок</button>
+        </div>
+      </div>
+      <button class="add-module-btn" (click)="showAddDialog()">Добавить урок</button>
+    </div>
+    <hr>
+    <div class="edit-course-container">
+      <h4>Тест</h4>
+      <div formArrayName="questions" class="test">
+        <div *ngFor="let question of questions().controls; let qIndex = index" [formGroupName]="qIndex"
+             class="test-container">
+          <div class="test-header">
+            <h5>Вопрос {{ qIndex + 1 }}</h5>
+            <button type="button" (click)="deleteQuestion(qIndex)"><i class="pi pi-times"></i></button>
+          </div>
+          <div class="question">
+            <p>Cұрақтың берілген</p>
+            <p-editor formControlName="text" [style]="{height: '50px'}"></p-editor>
+          </div>
+          <div class="answers" formArrayName="answers">
+            <p>Нұсқалар</p>
+            <div class="answer-inputs">
+              <div class="answer" *ngFor="let answer of answers(qIndex).controls; let aIndex = index"
+                   [formGroupName]="aIndex">
+                <label [for]="'answer-' + qIndex + '-' + aIndex" class="answer-label">
+                  <input type="radio" [id]="'answer-' + qIndex + '-' + aIndex"
+                         [attr.name]="'answer-' + qIndex" formControlName="is_correct"
+                         (change)="setCorrectAnswer(qIndex, aIndex)">
+                  <span class="radio-custom"></span>
+                  <input type="text" class="answer-text" formControlName="text" placeholder="Введите текст ответа">
+                </label>
+              </div>
+            </div>
           </div>
         </div>
-        <button class="delete-course-btn">Удалить файл</button>
-        <button class="delete-course-btn">Удалить урок</button>
+        <button type="button" class="add-module-btn" (click)="addQuestion()">Добавить вопрос</button>
       </div>
     </div>
-    <button class="add-module-btn">Добавить урок</button>
+    <hr>
+    <div class="edit-course-container">
+      <h4>Домашнее задание</h4>
+      <div>
+        <p>Картинка №1</p>
+        <div class="custom-file-upload">
+          <input type="file" id="homeworkFile" class="file-input" (change)="onHomeworkFileSelected($event)"/>
+          <span class="file-upload-button" (click)="triggerHomeworkFileInput()">Выберите файл</span>
+          <span class="file-upload-filename">{{ homeworkFileName || 'Файл не выбран' }}</span>
+        </div>
+      </div>
+      <div>
+        <div class="question">
+          <p>Описание</p>
+          <p-editor formControlName="description" [style]="{height: '50px'}"></p-editor>
+        </div>
+      </div>
+      <div class="edit-course-footer">
+        <button class="btn start-btn" (click)="saveContent()">Сохранить</button>
+        <button class="btn back-btn">Отмена</button>
+      </div>
+    </div>
   </div>
-</div>
+</form>
+
+<p-dialog class="test-modal" header="Добавить урок" [modal]="true"
+          [(visible)]="AddLessonVisible" draggable="false">
+  <form [formGroup]="addLessonForm" class="client-edit__form">
+    <div class="form-group">
+      <label for="name1" class="form-label">Название</label>
+      <input type="text" id="name1" class="form-input" formControlName="name">
+    </div>
+    <div class="modal-footer">
+      <button class="btn start-btn" (click)="addLesson()">Добавить</button>
+      <button class="btn back-btn" (click)="AddLessonVisible = false">Отмена</button>
+    </div>
+  </form>
+</p-dialog>
