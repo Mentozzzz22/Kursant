@@ -16,6 +16,9 @@ import {
   Validators
 } from "@angular/forms";
 import {EditorModule} from "primeng/editor";
+import {ConfirmationService, MessageService} from "primeng/api";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {ConfirmPopupModule} from "primeng/confirmpopup";
 
 type FormAnswer = FormGroup<{
   text: FormControl<string>
@@ -40,7 +43,9 @@ type Form = FormGroup<{
     DialogModule,
     NgIf,
     ReactiveFormsModule,
-    EditorModule
+    EditorModule,
+    ConfirmDialogModule,
+    ConfirmPopupModule,
   ],
   templateUrl: './edit-topic.component.html',
   styleUrl: './edit-topic.component.css'
@@ -50,6 +55,9 @@ export class EditTopicComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private topicService = inject(TopicService);
   private fb = inject(NonNullableFormBuilder);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
+
   private courseId!: number;
   private moduleId!: number;
   public topicId!: number;
@@ -58,7 +66,7 @@ export class EditTopicComponent implements OnInit {
   public homeworkFile: File | null = null;
   public homeworkFileName: string | undefined;
   public homeworkDescription?: string;
-
+  public topicName?: string;
   public lessons: Lesson[] = [];
   public test!: Test;
   public homework!: Homework;
@@ -66,7 +74,7 @@ export class EditTopicComponent implements OnInit {
   public addLessonForm!: FormGroup;
 
   public testForm: FormGroup = this.fb.group({
-    duration: [null, Validators.required],
+    duration: [15, Validators.required],
     questions: this.fb.array([]),
     description: ['']
   });
@@ -129,8 +137,25 @@ export class EditTopicComponent implements OnInit {
     this.questions().push(this.generateQuestion());
   }
 
-  public deleteQuestion(index: number) {
-    this.questions().removeAt(index);
+  public deleteQuestion(event: Event, index: number) {
+    console.log(this.questions())
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Вы действительно хотите удалить вопрос - "${this.questions().value[index].text}" ?`,
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Нет',
+      acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      accept: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Успешно',
+          detail: `Вопрос успешно удален!`
+        });
+        this.questions().removeAt(index);
+      }
+    });
+
   }
 
   public setCorrectAnswer(questionIndex: number, correctAnswerIndex: number): void {
@@ -158,6 +183,8 @@ export class EditTopicComponent implements OnInit {
           fileName: typeof lesson.file === 'string' ? lesson.file : undefined
         }));
         this.test = data.test;
+        this.topicName = data.topic.name
+        console.log(this.topicName)
         this.initializeForm(data.test);
 
         this.homeworkFileName = data.homework.file;
@@ -185,26 +212,52 @@ export class EditTopicComponent implements OnInit {
     this.addLessonForm.reset();
   }
 
-  public deleteLesson(index: number) {
-    this.lessons.splice(index, 1);
+  public deleteLesson(event: Event, index: number) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Вы действительно хотите удалить урок - "${this.lessons[index].name}" ?`,
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Нет',
+      acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      accept: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Успешно',
+          detail: `Урок - "${this.lessons[index].name}" успешно удален!`
+        });
+        this.lessons.splice(index, 1);
+      }
+    });
   }
 
-  public deleteTopic(topicId: number) {
-    this.topicService.deleteTopic(topicId).subscribe({
-      next: () => {
-        this.router.navigate([`/admin/edit-course/${this.courseId}/edit-module/${this.moduleId}`]);
-      },
-      error: (err) => {
-        console.error('Ошибка при удалении модуля:', err);
+  public deleteTopic(event: Event, topicId: number) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Вы действительно хотите удалить тему - "${this.topicName}" ?`,
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'Да',
+      rejectLabel: 'Нет',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      accept: () => {
+        this.topicService.deleteTopic(topicId).subscribe({
+          next: () => {
+            this.router.navigate([`/admin/edit-course/${this.courseId}/edit-module/${this.moduleId}`]);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Успешно',
+              detail: `Тема - "${this.topicName}" успешно удалена!`
+            });
+          },
+          error: (err) => {
+            console.error('Ошибка при удалении модуля:', err);
+          }
+        });
       }
     });
   }
 
   public saveContent(): void {
-    if (this.testForm.invalid) {
-      console.error("Form is invalid");
-      return;
-    }
 
     const formData = new FormData();
     formData.append('topic_id', String(this.topicId));
@@ -243,14 +296,27 @@ export class EditTopicComponent implements OnInit {
     });
   }
 
-  public removeLessonFile(index: number): void {
-    if (this.lessons[index]) {
-      this.lessons[index].file = '';
-      this.lessons[index].fileName = undefined;
-      console.log(`Файл для урока ${index + 1} удалён.`);
-    }
+  public removeLessonFile(event: Event, index: number): void {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Вы действительно хотите удалить файл ${index + 1} ?`,
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'Да',
+      rejectLabel: 'Нет',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      accept: () => {
+        if (this.lessons[index]) {
+          this.lessons[index].file = '';
+          this.lessons[index].fileName = undefined;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: `Файл ${index + 1} успешно удален!`
+          });
+        }
+      }
+    });
   }
-
 
   public showAddDialog() {
     this.AddLessonVisible = true;
@@ -276,6 +342,7 @@ export class EditTopicComponent implements OnInit {
       console.log(`Файл для урока ${index + 1}: ${file.name}`);
     }
   }
+
   public onHomeworkFileSelected(event: Event): void {
     const element = event.target as HTMLInputElement;
     if (element.files && element.files.length > 0) {

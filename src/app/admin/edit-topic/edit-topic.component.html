@@ -1,10 +1,11 @@
 <div class="edit-course-header">
   <div class="header-text">
     <img src="assets/images/back-arrow.svg" alt="back" (click)="back()">
-    <h3>Тақырып 1. Қазақстандағы ежелгі адамдардың өмірі</h3>
+    <h3>Тақырып 1. {{ topicName }}</h3>
   </div>
   <div class="course-actions">
-    <button class="delete-course-btn" (click)="deleteTopic(topicId)">Удалить тему</button>
+    <p-confirmPopup/>
+    <button class="delete-course-btn" (click)="deleteTopic($event, topicId)">Удалить тему</button>
   </div>
 </div>
 
@@ -22,8 +23,10 @@
               <span class="file-upload-filename">{{ lesson.fileName || 'Файл не выбран' }}</span>
             </div>
           </div>
-          <button class="delete-course-btn" (click)="removeLessonFile(i)">Удалить файл</button>
-          <button class="delete-course-btn" (click)="deleteLesson(i)">Удалить урок</button>
+          <p-confirmPopup/>
+          <button class="delete-course-btn" (click)="removeLessonFile($event, i)">Удалить файл</button>
+          <p-confirmPopup/>
+          <button class="delete-course-btn" (click)="deleteLesson($event, i)">Удалить урок</button>
         </div>
       </div>
       <button class="add-module-btn" (click)="showAddDialog()">Добавить урок</button>
@@ -36,7 +39,7 @@
              class="test-container">
           <div class="test-header">
             <h5>Вопрос {{ qIndex + 1 }}</h5>
-            <button type="button" (click)="deleteQuestion(qIndex)"><i class="pi pi-times"></i></button>
+            <button type="button" (click)="deleteQuestion($event, qIndex)"><i class="pi pi-times"></i></button>
           </div>
           <div class="question">
             <p>Cұрақтың берілген</p>
@@ -99,3 +102,4 @@
     </div>
   </form>
 </p-dialog>
+

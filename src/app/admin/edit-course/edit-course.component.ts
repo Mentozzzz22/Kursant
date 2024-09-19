@@ -36,7 +36,7 @@ export class EditCourseComponent implements OnInit, OnDestroy {
   public selectedModuleId!: number;
   public addModuleForm!: FormGroup;
   public editModuleForm!: FormGroup;
-
+  public courseName!: string;
   private navigationSubscription: Subscription;
 
   constructor() {
@@ -89,6 +89,7 @@ export class EditCourseComponent implements OnInit, OnDestroy {
     this.moduleService.getCourseModules(this.courseId).subscribe({
       next: (data) => {
         this.modules = data.modules;
+        this.courseName = data.course.name
       },
       error: (err) => {
         console.error('Ошибка при загрузке модулей курса:', err);

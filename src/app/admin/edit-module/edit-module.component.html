@@ -2,7 +2,7 @@
   <div class="edit-course-header">
     <div class="header-text">
       <img src="assets/images/back-arrow.svg" alt="back" (click)="back()">
-      <h3>Бөлім 1. Қазақстандағы ежелгі адамдардың өмірі</h3>
+      <h3>Бөлім {{ moduleIndex }}. {{ moduleName }}</h3>
     </div>
     <div class="course-actions">
       <button class="delete-course-btn" (click)="deleteModule(moduleId)">Удалить модуль</button>
@@ -14,7 +14,7 @@
       <h4>Темы</h4>
       <div class="modules">
         <div class="module" *ngFor="let topic of topics; let i = index" (click)="navigateToEditTema(topic.id!)">
-          <span> <strong>Тақырып {{ i+1 }}.</strong> {{ topic.name }}</span>
+          <span> <strong>Тақырып {{ i + 1 }}.</strong> {{ topic.name }}</span>
           <button class="edit-module-btn" (click)="showEditDialog(topic.id!, topic.name); $event.stopPropagation()">
             <img src="assets/images/edit-icon.svg" alt="edit">
           </button>

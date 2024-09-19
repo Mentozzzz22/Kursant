@@ -37,7 +37,8 @@ export class EditModuleComponent implements OnInit, OnDestroy {
   public courseId!: number;
   public moduleId!: number;
   public selectedTopicId!: number;
-  public topicName: string = '';
+  public moduleName!: string;
+  public moduleIndex!: number;
   public addTopicForm!: FormGroup;
   public editTopicForm!: FormGroup;
 
@@ -100,6 +101,7 @@ export class EditModuleComponent implements OnInit, OnDestroy {
     this.topicService.getTopics(this.moduleId).subscribe({
       next: (data) => {
         this.topics = data.topics;
+        this.moduleName = data.module.name
       },
       error: (err) => {
         console.error('Ошибка при загрузке тем:', err);
