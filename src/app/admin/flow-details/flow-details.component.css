@@ -1,0 +1,134 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.edit-course-header {
+  height: 77px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+}
+
+.header-text {
+  display: flex;
+  gap: 10px;
+}
+
+.header-text img {
+  cursor: pointer;
+}
+
+.edit-course-header h3 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.course-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.edit-course-btn {
+  height: 41px;
+  font-size: 10px;
+  font-weight: 600;
+  background-color: #00ADEF;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  border: none;
+}
+
+.edit-course-page {
+  background: #F9FAFC;
+  padding: 20px;
+}
+
+.flow-page-container {
+  padding: 30px;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flow-page-container h4 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.flow-card-header {
+  display: flex;
+  max-width: 500px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flow-card-button {
+  background-color: #DCF7FF;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.flow-page-container p {
+  color: #B3B3B3;
+  font-size: 16px;
+}
+
+.flow-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.curator-list {
+  display: flex;
+  gap: 30px;
+}
+.curator-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+::ng-deep .flow-dropdown .p-dropdown {
+  background-color: #F9FAFC !important;
+  height: 38px !important;
+  max-width: 198px;
+}
+
+::ng-deep .flow-dropdown .p-dropdown .p-dropdown-trigger .p-dropdown-trigger-icon {
+  transform: rotate(-90deg);
+  transition: transform 0.3s ease-in-out;
+}
+
+::ng-deep .flow-dropdown .p-dropdown.p-dropdown-open .p-dropdown-trigger .p-dropdown-trigger-icon {
+  transform: rotate(0deg);
+}
+
+
+.delete-curator {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.add-curator {
+  border: 1.5px solid #444444;
+  background: none;
+  color: #444444;
+  height: 37px;
+  width: 100%;
+  max-width: 244px;
+  font-size: 13px;
+  border-radius: 10px;
+}

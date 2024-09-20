@@ -1,3 +1,7 @@
+:host ::ng-deep .p-dialog-content {
+  padding: 0px 54px 33px 45px;
+}
+
 .supplier-container {
   background-color: #fff;
   padding: 28px 32px 15px;
@@ -51,7 +55,7 @@
 
 .main-content {
   padding: 20px;
-  max-width:1300px;
+  max-width: 1300px;
 }
 
 .content-buttons {
@@ -97,7 +101,6 @@
   text-align: left;
   color: #BABABA;
 }
-
 
 
 .content-items {
@@ -378,7 +381,6 @@ client-edit__header {
 }
 
 
-
 /**ПОТОКИ**/
 
 .flow-item {
@@ -388,6 +390,7 @@ client-edit__header {
   margin-bottom: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
+  cursor: pointer;
 }
 
 .flow-item::before {
@@ -396,20 +399,24 @@ client-edit__header {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 5px;
+  width: 10px;
   background-color: #00b0ff;
   border-radius: 8px 0 0 8px;
 }
 
+.flow-item:hover {
+  transform: translateY(-5px);
+}
+
 .flow-header {
   display: flex;
-  gap:40px;
+  gap: 40px;
 }
 
 .flow-title {
   font-weight: 600;
   font-size: 23px;
-  color:#444444;
+  color: #444444;
 }
 
 .flow-tags {
@@ -426,3 +433,24 @@ client-edit__header {
   font-size: 0.9em;
   display: inline-block;
 }
+
+/*ЦВЕТА ПОТОКОВ*/
+.flow-item.flow-color-1::before {
+  background-color: #00b0ff;
+}
+
+.flow-tag.flow-color-1 {
+  background-color: #B5E8F9;
+  color: #00b0ff;
+}
+
+.flow-item.flow-color-2::before {
+  background-color: #6E63E5;
+}
+
+.flow-tag.flow-color-2 {
+  background-color: #CCC7FF;
+  color: #6E63E5;
+}
+
+

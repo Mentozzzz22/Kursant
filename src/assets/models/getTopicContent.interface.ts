@@ -7,6 +7,7 @@ export interface GetTopicContent {
     id: number;
     name: string;
     module_id: number;
+    index: number;
   },
   lessons: Lesson[],
   test: Test,

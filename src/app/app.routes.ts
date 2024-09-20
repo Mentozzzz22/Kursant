@@ -22,6 +22,7 @@ import {EditModuleComponent} from "./admin/edit-module/edit-module.component";
 import {EditTopicComponent} from "./admin/edit-topic/edit-topic.component";
 import {SalesComponent} from "./sales/sales.component";
 import {ApplicationSalesComponent} from "./sales/application-sales/application-sales.component";
+import {FlowDetailsComponent} from "./admin/flow-details/flow-details.component";
 
 export const routes: Routes = [
   {
@@ -66,6 +67,9 @@ export const routes: Routes = [
             ]
           }
         ]
+      },
+      {
+        path: 'flow-details/:flowId', component: FlowDetailsComponent
       }
     ]
   },

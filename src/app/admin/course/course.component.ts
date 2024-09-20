@@ -1,12 +1,14 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {CourseService} from "../../service/course.service";
 import {DialogModule} from "primeng/dialog";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {EditorModule} from "primeng/editor";
 import {MessageService} from "primeng/api";
 import {Course} from "../../../assets/models/course.interface";
+import {FlowService} from "../../service/flow.service";
+import {GetFlows} from "../../../assets/models/getFlows.interface";
 
 @Component({
   selector: 'app-course',
@@ -18,7 +20,8 @@ import {Course} from "../../../assets/models/course.interface";
     DialogModule,
     ReactiveFormsModule,
     EditorModule,
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './course.component.html',
   styleUrl: './course.component.css'
@@ -26,6 +29,7 @@ import {Course} from "../../../assets/models/course.interface";
 export class CourseComponent implements OnInit {
 
   private courseService = inject(CourseService);
+  private flowService = inject(FlowService);
   private router = inject(Router);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder)
@@ -35,9 +39,12 @@ export class CourseComponent implements OnInit {
   public selectedBigPosterName: string | undefined;
   public selectedPosterFile: File | null = null;
   public selectedBigPosterFile: File | null = null;
-  public visibleAddModal: boolean = false;
+  public visibleAddCourseModal: boolean = false;
+  public visibleAddFlowModal: boolean = false;
   public courses: Course[] = [];
+  public flows: GetFlows[] = [];
   public courseAddForm!: FormGroup;
+  public flowAddForm!: FormGroup;
 
   flowWorks = [
     {
@@ -67,6 +74,7 @@ export class CourseComponent implements OnInit {
 
 
   ngOnInit() {
+    this.loadFlows()
     this.loadCourses()
 
     this.courseService.courseUpdated$.subscribe(() => {
@@ -82,6 +90,11 @@ export class CourseComponent implements OnInit {
       poster: [null, Validators.required],
       big_poster: [null, Validators.required]
     });
+
+    this.flowAddForm = this.fb.group({
+      name: ['', [Validators.required]],
+      starts_at: ['', [Validators.required]],
+    })
   }
 
   private loadCourses() {
@@ -90,6 +103,12 @@ export class CourseComponent implements OnInit {
         ...course,
         poster: `http://127.0.0.1:8000${course.poster}`
       }));
+    })
+  }
+
+  private loadFlows() {
+    this.flowService.getFlows().subscribe(data => {
+      this.flows = data
     })
   }
 
@@ -130,7 +149,7 @@ export class CourseComponent implements OnInit {
 
     this.courseService.saveCourse(formData).subscribe({
       next: (response) => {
-        this.visibleAddModal = false;
+        this.visibleAddCourseModal = false;
         this.loadCourses();
       },
       error: (err) => {
@@ -140,11 +159,15 @@ export class CourseComponent implements OnInit {
   }
 
   public onCancel(): void {
-    this.visibleAddModal = false;
+    this.visibleAddCourseModal = false;
   }
 
-  public showAddDialog() {
-    this.visibleAddModal = true;
+  public showAddCourseDialog() {
+    this.visibleAddCourseModal = true;
+  }
+
+  public showAddFlowDialog() {
+    this.visibleAddFlowModal = true;
   }
 
   public triggerFileInput(fileInputId: string): void {
@@ -187,5 +210,14 @@ export class CourseComponent implements OnInit {
 
   public navigateToEditCourse(courseId: number): void {
     this.router.navigate(['/admin/edit-course', courseId]);
+  }
+
+  public navigateToFlowDetails(flowId: number): void {
+    this.router.navigate(['/admin/flow-details', flowId]);
+  }
+
+  public getFlowColorClass(flowId: number): string {
+    const colors = ['flow-color-1', 'flow-color-2'];
+    return colors[flowId];
   }
 }

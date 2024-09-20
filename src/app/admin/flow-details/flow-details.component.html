@@ -1,0 +1,43 @@
+<div class="edit-course-header">
+  <div class="header-text">
+    <img src="assets/images/back-arrow.svg" alt="back">
+    <h3> Поток #1 </h3>
+  </div>
+  <div class="course-actions">
+    <button class="edit-course-btn">Редактировать</button>
+  </div>
+</div>
+
+<div class="edit-course-page">
+  <div class="flow-page-container" *ngFor="let course of courses">
+
+    <div class="flow-card-header">
+      <h4>{{ course.name }}</h4>
+      <button class="flow-card-button">
+        <img src="assets/images/settings-icon.svg" alt="settings">
+        Настроить дедлайны
+      </button>
+    </div>
+    <div class="flow-card">
+      <p>Кураторы</p>
+      <div class="curator-list">
+        <div class="curator-inputs">
+          <p-dropdown
+            class="flow-dropdown"
+            [editable]="true"
+            optionLabel="name"/>
+          <button class="delete-curator"><i class="pi pi-times"></i></button>
+        </div>
+        <div class="curator-inputs">
+          <p-dropdown
+            class="flow-dropdown"
+            [editable]="true"
+            optionLabel="name"/>
+          <button class="delete-curator"><i class="pi pi-times"></i></button>
+        </div>
+      </div>
+      <button class="add-curator">Добавить куратора</button>
+    </div>
+
+  </div>
+</div>

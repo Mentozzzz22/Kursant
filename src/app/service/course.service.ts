@@ -34,7 +34,7 @@ export class CourseService {
     if (ids && ids.length > 0) {
       params.ids = JSON.stringify(ids);
     }
-    return this.http.get<Course[]>(`${this.apiUrl}get_courses/`, { params });
+    return this.http.get<Course[]>(`${this.apiUrl}get_courses/`, {params});
   }
 
   public getCourse(id: number): Observable<Course> {
@@ -52,7 +52,7 @@ export class CourseService {
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);  // Без установки Content-Type
 
     // Отправляем запрос с FormData
-    return this.http.post(`${this.apiUrl}save_course/`, courseData, { headers }).pipe(
+    return this.http.post(`${this.apiUrl}save_course/`, courseData, {headers}).pipe(
       catchError(error => {
         console.error('Save course failed:', error);
         return throwError(error);

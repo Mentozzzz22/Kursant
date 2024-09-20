@@ -9,8 +9,11 @@
           <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input"/>
           <button type="submit" class="search-button">Поиск</button>
         </div>
-        <button class="add-course-btn" (click)="showAddDialog()">
+        <button class="add-course-btn" (click)="showAddCourseDialog()" *ngIf="activeTab === 'courseContent'">
           Добавить курс
+        </button>
+        <button class="add-course-btn" (click)="showAddFlowDialog()" *ngIf="activeTab === 'flowWorks'">
+          Добавить поток
         </button>
       </div>
     </div>
@@ -23,14 +26,14 @@
         <img src="assets/images/time_icon.svg" alt="Courses" class="logo"/>
         <div class="content-button-names">
           <h3>Курстар</h3>
-          <p>14 курс</p>
+          <p>{{ courses.length }} курс</p>
         </div>
       </button>
       <button class="content-button" (click)="setActiveTab('flowWorks')" [class.active]="activeTab === 'flowWorks'">
         <img src="assets/images/potok_icon.svg" alt="Courses" class="logo"/>
         <div class="content-button-names">
           <h3>Поток</h3>
-          <p>14 курс</p>
+          <p>{{ flows.length }} поток</p>
         </div>
       </button>
     </div>
@@ -68,14 +71,16 @@
 
 
     <ng-container *ngIf="activeTab === 'flowWorks'">
-      <div class="flow-item" *ngFor="let flow of flowWorks">
+      <div class="flow-item" [ngClass]="getFlowColorClass(i)" *ngFor="let flow of flows; let i = index"
+      (click)="navigateToFlowDetails(flow.flow_id)">
         <div class="flow-header">
-          <span class="flow-stream">Поток #{{ flow.stream }}</span>
-          <span class="flow-date">Дата: {{ flow.date }}</span>
+          <span class="flow-stream">Поток #{{ i + 1 }}</span>
+          <span class="flow-date">Дата: {{ flow.starts_at }}</span>
         </div>
-        <div class="flow-title">{{ flow.title }}</div>
+        <div class="flow-title">{{ flow.name }}</div>
         <div class="flow-tags">
-          <span class="flow-tag" *ngFor="let tag of flow.tags">{{ tag.name }}</span>
+          <span class="flow-tag" [ngClass]="getFlowColorClass(i)"
+                *ngFor="let tag of flow.courses">{{ tag.name }} | {{ tag.teacher_fullname }}</span>
         </div>
       </div>
     </ng-container>
@@ -84,11 +89,11 @@
   </div>
 </div>
 
-<p-dialog header="client-edit" [modal]="true" [(visible)]="visibleAddModal" [style]="{width: '996px'}"
+<p-dialog header="client-edit" [modal]="true" [(visible)]="visibleAddCourseModal" [style]="{width: '996px'}"
           [draggable]="false">
   <ng-template pTemplate="header">
     <div class="client-edit__header">
-      <h3 class="client-edit__title">Добавить сотрудника</h3>
+      <h3 class="client-edit__title">Добавить курс</h3>
     </div>
   </ng-template>
 
@@ -139,4 +144,30 @@
   </form>
 
 
+</p-dialog>
+
+<p-dialog header="client-edit" [modal]="true" [(visible)]="visibleAddFlowModal" [style]="{width: '600px'}"
+          [draggable]="false">
+  <ng-template pTemplate="header">
+    <div class="client-edit__header">
+      <h3 class="client-edit__title">Добавить поток</h3>
+    </div>
+  </ng-template>
+
+  <form class="client-edit__form" [formGroup]="flowAddForm">
+    <div class="form-group">
+      <label for="name1" class="form-label">Название</label>
+      <input type="text" id="name1" class="form-input" formControlName="name">
+    </div>
+
+    <div class="form-group">
+      <label for="startDate" class="form-label">Цена</label>
+      <input type="text" id="startDate" class="form-input" formControlName="starts_at">
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn--primary" (click)="onSubmitAddCourse()">Добавить</button>
+      <button type="button" class="btn btn--secondary" (click)="onCancel()">Отмена</button>
+    </div>
+  </form>
 </p-dialog>

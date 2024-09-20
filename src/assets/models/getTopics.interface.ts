@@ -5,6 +5,7 @@ export interface GetTopic {
     id: number,
     name: string,
     course_id: number
+    index: number
   }
   topics: Topic[]
 }

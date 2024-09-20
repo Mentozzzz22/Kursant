@@ -67,6 +67,7 @@ export class EditTopicComponent implements OnInit {
   public homeworkFileName: string | undefined;
   public homeworkDescription?: string;
   public topicName?: string;
+  public topicIndex!: number;
   public lessons: Lesson[] = [];
   public test!: Test;
   public homework!: Homework;
@@ -184,6 +185,7 @@ export class EditTopicComponent implements OnInit {
         }));
         this.test = data.test;
         this.topicName = data.topic.name
+        this.topicIndex = data.topic.index
         console.log(this.topicName)
         this.initializeForm(data.test);
 

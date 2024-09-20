@@ -102,6 +102,7 @@ export class EditModuleComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.topics = data.topics;
         this.moduleName = data.module.name
+        this.moduleIndex = data.module.index
       },
       error: (err) => {
         console.error('Ошибка при загрузке тем:', err);
