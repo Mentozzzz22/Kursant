@@ -100,21 +100,13 @@
   gap: 10px;
 }
 
-::ng-deep .flow-dropdown .p-dropdown {
-  background-color: #F9FAFC !important;
-  height: 38px !important;
-  max-width: 198px;
+.curator {
+  width: 200px; /* Полная ширина контейнера */
+  padding: 8px 12px; /* Подушечка для текста */
+  border: 1px solid #E3E3E3; /* Граница */
+  border-radius: 10px; /* Скругление углов */
+  background-color: #F9FAFC; /* Фоновый цвет */
 }
-
-::ng-deep .flow-dropdown .p-dropdown .p-dropdown-trigger .p-dropdown-trigger-icon {
-  transform: rotate(-90deg);
-  transition: transform 0.3s ease-in-out;
-}
-
-::ng-deep .flow-dropdown .p-dropdown.p-dropdown-open .p-dropdown-trigger .p-dropdown-trigger-icon {
-  transform: rotate(0deg);
-}
-
 
 .delete-curator {
   border: none;
@@ -131,4 +123,90 @@
   max-width: 244px;
   font-size: 13px;
   border-radius: 10px;
+}
+
+.client-edit__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #fff;
+  border-radius: 20px;
+}
+
+.form-label {
+  display: block;
+  color: #444;
+  font-size: 13px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  width: 100%;
+  max-width: 276px;
+  height: 38px;
+  padding: 12px 14px;
+  border: 1px solid #e3e3e3;
+  border-radius: 9px;
+  background-color: #f9fafc;
+  font-size: 11px;
+  color: #444;
+  font-weight: 500;
+}
+
+:host ::ng-deep .modal-footer {
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+:host ::ng-deep .p-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.edit-course-footer {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+}
+
+.back-btn {
+  background-color: #fff;
+  color: #000000;
+  border: 1px solid #444;
+  font-size: 13px;
+}
+
+.start-btn {
+  background-color: #444;
+  color: #fff;
+  border: none;
+  font-size: 13px;
+}
+
+.btn {
+  padding: 10px 58px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+
+.flow-dropdown {
+  max-width: 250px; /* Полная ширина контейнера */
+  padding: 8px 12px; /* Подушечка для текста */
+  border: 1px solid #E3E3E3; /* Граница */
+  border-radius: 10px; /* Скругление углов */
+  background-color: #F9FAFC; /* Фоновый цвет */
+}
+
+.flow-dropdown option {
+  padding: 6px
+}
+
+.flow-dropdown:focus {
+  border-color: #66afe9; /* Цвет границы при фокусе */
+  outline: 0; /* Убрать стандартный outline браузера */
 }

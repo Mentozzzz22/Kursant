@@ -21,23 +21,34 @@
     <div class="flow-card">
       <p>Кураторы</p>
       <div class="curator-list">
-        <div class="curator-inputs">
-          <p-dropdown
-            class="flow-dropdown"
-            [editable]="true"
-            optionLabel="name"/>
-          <button class="delete-curator"><i class="pi pi-times"></i></button>
-        </div>
-        <div class="curator-inputs">
-          <p-dropdown
-            class="flow-dropdown"
-            [editable]="true"
-            optionLabel="name"/>
-          <button class="delete-curator"><i class="pi pi-times"></i></button>
+        <div class="curator-inputs" *ngFor="let curator of course.curators; let i = index">
+          <div class="curator">
+            {{ curator.fullname }}
+          </div>
+          <button class="delete-curator" (click)="removeCurator(curator.curator_id)">
+            <i class="pi pi-times"></i>
+          </button>
         </div>
       </div>
-      <button class="add-curator">Добавить куратора</button>
+      <button class="add-curator" (click)="showAddDialog(course.course_id)">Добавить куратора</button>
     </div>
 
   </div>
 </div>
+<p-dialog class="test-modal" header="Добавить урок" [modal]="true"
+          [(visible)]="AddCuratorVisible" draggable="false">
+  <form [formGroup]="addCuratorForm" class="client-edit__form">
+    <div class="form-group">
+      <label class="form-label">Куратор</label>
+      <select class="flow-dropdown" formControlName="curator_id">
+        <option *ngFor="let curator of curators" [value]="curator.id">
+          {{ curator.fullname }}
+        </option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn start-btn" (click)="addCurator()">Добавить</button>
+      <button class="btn back-btn" (click)="AddCuratorVisible = false">Отмена</button>
+    </div>
+  </form>
+</p-dialog>

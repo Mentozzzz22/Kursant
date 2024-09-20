@@ -1,12 +1,15 @@
-export interface curator {
+export interface Curator {
   curator_id: number;
+  id: number;
   fullname: string;
+  phone_number: string;
+  is_active: boolean;
 }
 
 export interface flowCourses {
   course_id: number;
   name: string;
-  curators: curator[];
+  curators: Curator[];
 }
 
 export interface GetFlow {
