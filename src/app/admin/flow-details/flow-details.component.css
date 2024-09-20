@@ -50,10 +50,12 @@
 .flow-page-container {
   padding: 30px;
   background: white;
-  border-radius: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  border-bottom: 1px solid #E8E8E8;
 }
 
 .flow-page-container h4 {
@@ -91,10 +93,12 @@
   flex-direction: column;
   gap: 12px;
 }
+
 .curator-list {
   display: flex;
   gap: 30px;
 }
+
 .curator-inputs {
   display: flex;
   gap: 10px;
@@ -195,15 +199,19 @@
 }
 
 .flow-dropdown {
-  max-width: 250px; /* Полная ширина контейнера */
-  padding: 8px 12px; /* Подушечка для текста */
-  border: 1px solid #E3E3E3; /* Граница */
-  border-radius: 10px; /* Скругление углов */
-  background-color: #F9FAFC; /* Фоновый цвет */
+  max-width: 250px;
+  padding: 8px 12px;
+  border: 1px solid #E3E3E3;
+  border-radius: 10px;
+  background-color: #F9FAFC;
+  font-size: 15px;
+  color: #000000;
 }
 
-.flow-dropdown option {
-  padding: 6px
+.flow-options {
+  height: 40px; /* Высота каждой опции */
+  padding: 8px 12px; /* Паддинг внутри опций */
+  border-bottom: 1px solid #f0f0f0; /* Разделитель между опциями */
 }
 
 .flow-dropdown:focus {

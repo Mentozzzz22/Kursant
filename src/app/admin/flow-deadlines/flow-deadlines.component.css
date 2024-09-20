@@ -1,0 +1,160 @@
+* {
+  margin: 0;
+  padding: 0;
+  color: #444444;
+}
+
+.edit-course-header {
+  height: 77px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+}
+
+.header-text {
+  display: flex;
+  gap: 10px;
+}
+
+.header-text img {
+  cursor: pointer;
+}
+
+.edit-course-header h3 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.course-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.edit-course-btn {
+  height: 41px;
+  font-size: 10px;
+  font-weight: 600;
+  background-color: #00ADEF;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  border: none;
+}
+
+.edit-course-page {
+  background: #F9FAFC;
+  padding: 20px;
+}
+
+.courseName {
+  padding: 30px;
+  background: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.courseName h4 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.flow-page-container {
+  padding: 30px;
+  background: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-bottom: 1px solid #E8E8E8;
+}
+
+.flow-page-container h4 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flowTopics {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.topic {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.flow-page-container h5 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.flowLessons {
+  display: flex;
+  gap: 15px;
+}
+
+.flowLessons input {
+  width: 100%;
+  max-width: 175px;
+  border: 1px solid #E3E3E3;
+  background: #F9FAFC;
+  height: 38px;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #444444;
+}
+
+.flowLessons label {
+  font-size: 13px;
+}
+
+.lesson {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-footer {
+  padding: 0  30px 30px 30px;
+  background: white;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.back-btn {
+  background-color: #fff;
+  color: #000000;
+  border: 1px solid #444;
+  font-size: 13px;
+}
+
+.start-btn {
+  background-color: #444;
+  color: #fff;
+  border: none;
+  font-size: 13px;
+}
+
+.btn {
+  padding: 10px 58px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}

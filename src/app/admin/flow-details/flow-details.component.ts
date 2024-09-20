@@ -3,13 +3,14 @@ import {DropdownModule} from "primeng/dropdown";
 import {ModuleService} from "../../service/module.service";
 import {FlowService} from "../../service/flow.service";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from "@angular/router";
 import {Curator, flowCourses, GetFlow} from "../../../assets/models/getFlow.interface";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {CuratorService} from "../../service/curator.service";
 import {DialogModule} from "primeng/dialog";
 import {PaginatorModule} from "primeng/paginator";
 import {MessageService} from "primeng/api";
+import {filter, Subscription} from "rxjs";
 
 @Component({
   selector: 'app-flow-details',
@@ -19,7 +20,9 @@ import {MessageService} from "primeng/api";
     NgForOf,
     DialogModule,
     PaginatorModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgIf,
+    RouterOutlet
   ],
   templateUrl: './flow-details.component.html',
   styleUrl: './flow-details.component.css'
@@ -32,7 +35,8 @@ export class FlowDetailsComponent implements OnInit {
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
 
-
+  public flowIndex!: number;
+  public isDeadlinesOpened: boolean = false;
   public flow!: GetFlow;
   public curators: Curator[] = [];
   public courses: flowCourses[] = [];
@@ -41,6 +45,20 @@ export class FlowDetailsComponent implements OnInit {
   public AddCuratorVisible: boolean = false;
   public addCuratorForm!: FormGroup;
   public selectedCourseId!: number;
+  private navigationSubscription: Subscription;
+
+  constructor() {
+    this.navigationSubscription = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.checkModuleOpened();
+    });
+  }
+
+  private checkModuleOpened() {
+    // Здесь мы проверяем URL или параметры роута, чтобы определить, должен ли быть открыт модуль
+    this.isDeadlinesOpened = this.route.firstChild != null;
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -49,6 +67,7 @@ export class FlowDetailsComponent implements OnInit {
     });
     this.loadCurators()
     this.initAddCuratorForm();
+    this.checkModuleOpened();
   }
 
   private initAddCuratorForm() {
@@ -68,9 +87,6 @@ export class FlowDetailsComponent implements OnInit {
     this.curatorService.getCurators().subscribe({
       next: (data) => {
         this.curators = data
-        // this.curators = data.map((curator: Curator) =>
-        //   ({label: curator.fullname, value: curator.id}));
-        // console.log(this.curators)
       },
       error: (err) => console.error('Error loading curators:', err)
     });
@@ -81,6 +97,7 @@ export class FlowDetailsComponent implements OnInit {
     this.flowService.getFlow(flowId).subscribe(data => {
       this.flow = data;
       this.courses = data.courses
+      this.flowIndex = data.index
     });
   }
 
@@ -111,6 +128,15 @@ export class FlowDetailsComponent implements OnInit {
         this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Не удалось удалить куратора'});
       }
     });
+  }
+
+  public navigateToDeadlines(courseId: number) {
+    this.router.navigate([`/admin/flow-details/${this.flowId}/flow-deadlines/`, courseId]);
+    this.isDeadlinesOpened = true;
+  }
+
+  public navigateToCourses() {
+    this.router.navigate(['/admin/course']);
   }
 
 }

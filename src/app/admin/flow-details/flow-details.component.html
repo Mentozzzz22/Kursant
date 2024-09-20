@@ -1,7 +1,8 @@
+<div *ngIf="!isDeadlinesOpened">
 <div class="edit-course-header">
   <div class="header-text">
-    <img src="assets/images/back-arrow.svg" alt="back">
-    <h3> Поток #1 </h3>
+    <img src="assets/images/back-arrow.svg" alt="back" (click)="navigateToCourses()">
+    <h3> Поток #{{ flowIndex }} </h3>
   </div>
   <div class="course-actions">
     <button class="edit-course-btn">Редактировать</button>
@@ -13,7 +14,7 @@
 
     <div class="flow-card-header">
       <h4>{{ course.name }}</h4>
-      <button class="flow-card-button">
+      <button class="flow-card-button" (click)="navigateToDeadlines(course.course_id)">
         <img src="assets/images/settings-icon.svg" alt="settings">
         Настроить дедлайны
       </button>
@@ -32,17 +33,16 @@
       </div>
       <button class="add-curator" (click)="showAddDialog(course.course_id)">Добавить куратора</button>
     </div>
-
   </div>
 </div>
-<p-dialog class="test-modal" header="Добавить урок" [modal]="true"
+<p-dialog class="test-modal" header="Добавить куратора" [modal]="true"
           [(visible)]="AddCuratorVisible" draggable="false">
   <form [formGroup]="addCuratorForm" class="client-edit__form">
     <div class="form-group">
       <label class="form-label">Куратор</label>
       <select class="flow-dropdown" formControlName="curator_id">
-        <option *ngFor="let curator of curators" [value]="curator.id">
-          {{ curator.fullname }}
+        <option *ngFor="let curator of curators" [value]="curator.id" class="flow-options">
+          <div class="flow-options">{{ curator.fullname }}</div>
         </option>
       </select>
     </div>
@@ -52,3 +52,7 @@
     </div>
   </form>
 </p-dialog>
+</div>
+<div *ngIf="isDeadlinesOpened">
+  <router-outlet></router-outlet>
+</div>

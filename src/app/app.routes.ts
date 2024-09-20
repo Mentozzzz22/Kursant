@@ -23,6 +23,7 @@ import {EditTopicComponent} from "./admin/edit-topic/edit-topic.component";
 import {SalesComponent} from "./sales/sales.component";
 import {ApplicationSalesComponent} from "./sales/application-sales/application-sales.component";
 import {FlowDetailsComponent} from "./admin/flow-details/flow-details.component";
+import {FlowDeadlinesComponent} from "./admin/flow-deadlines/flow-deadlines.component";
 
 export const routes: Routes = [
   {
@@ -69,7 +70,10 @@ export const routes: Routes = [
         ]
       },
       {
-        path: 'flow-details/:flowId', component: FlowDetailsComponent
+        path: 'flow-details/:flowId', component: FlowDetailsComponent,
+        children: [
+          {path: 'flow-deadlines/:courseId', component: FlowDeadlinesComponent},
+        ]
       }
     ]
   },

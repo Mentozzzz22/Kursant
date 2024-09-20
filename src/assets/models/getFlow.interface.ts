@@ -16,5 +16,6 @@ export interface GetFlow {
   flow_id: number;
   starts_at: string;
   name: string;
+  index: number;
   courses: flowCourses[]
 }

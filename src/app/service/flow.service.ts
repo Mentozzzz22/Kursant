@@ -6,6 +6,7 @@ import {UserService} from "./user.service";
 import {Course} from "../../assets/models/course.interface";
 import {GetFlows} from "../../assets/models/getFlows.interface";
 import {GetFlow} from "../../assets/models/getFlow.interface";
+import {GetDeadlines} from "../../assets/models/getDeadlines.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -45,5 +46,20 @@ export class FlowService {
     console.log(curatorId)
 
     return this.http.post(`${this.apiUrl}/remove_curator/`, { flow_curator_id: curatorId }, { headers });
+  }
+
+  getCourseDeadlines(flowCourseId: number): Observable<GetDeadlines> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+    return this.http.get<GetDeadlines>(`${this.apiUrl}/get_course_deadlines/`, {
+      headers,
+      params: new HttpParams().set('flow_course_id', flowCourseId)
+    });
+  }
+
+  saveCourseDeadlines(data: any): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+    return this.http.post(`${this.apiUrl}/save_course_deadlines/`, data, { headers });
   }
 }
