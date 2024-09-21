@@ -80,7 +80,26 @@ export class OrderService {
     return this.http.post(`${this.apiUrl}reject_sales_manager_order/`, payload, { headers });
   }
 
+  getRegions(): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
+
+    return this.http.get<any>(`${this.apiUrl}get_regions/`, { headers});
+  }
+
+
+  acceptAdminOrder(order_id: number, flow_id: number): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    const payload = {
+      order_id: order_id,
+      flow_id: flow_id
+    };
+
+    return this.http.post(`${this.apiUrl}accept_admin_order/`, payload, { headers });
+  }
 
 
 }

@@ -2,12 +2,22 @@ import {Component, inject, OnInit} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {ApplicationService} from "../../service/application.service";
 import {TableModule} from "primeng/table";
-import {NgClass} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
 import {Button} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
 import {MessageService} from "primeng/api";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
+import {CourseService} from "../../service/course.service";
+import {OrderService} from "../../service/order.service";
+import {UserService} from "../../service/user.service";
+import {SalesApplication} from "../../../assets/models/salesApplication.interface";
+import {Course} from "../../../assets/models/course.interface";
+import {DropdownModule} from "primeng/dropdown";
+import {OverlayPanelModule} from "primeng/overlaypanel";
+import {PaginatorModule} from "primeng/paginator";
+import {GetFlows} from "../../../assets/models/getFlows.interface";
+import {FlowService} from "../../service/flow.service";
 
 @Component({
   selector: 'app-application',
@@ -19,44 +29,212 @@ import {FormBuilder} from "@angular/forms";
     NgClass,
     DialogModule,
     Button,
-    InputTextModule
+    InputTextModule,
+    DropdownModule,
+    NgForOf,
+    NgIf,
+    OverlayPanelModule,
+    PaginatorModule,
+    ReactiveFormsModule
   ],
   templateUrl: './application.component.html',
   styleUrl: './application.component.css'
 })
-export class ApplicationComponent implements OnInit {
-  applications: any[] = [];
-  visible: boolean = false;
-  private applicationService = inject(ApplicationService);
+export class ApplicationComponent implements OnInit{
+  private superAdminService = inject(CourseService);
+  private courseService = inject(CourseService);
+  private orderService = inject(OrderService);
   private messageService = inject(MessageService);
+  private userService = inject(UserService);
   private fb = inject(FormBuilder);
+  private flowService = inject(FlowService);
+
+  status: string | null = null;
+  applications: SalesApplication[] = [];
+  public coursesList: Course[] = [];
+  visible: boolean = false;
+  visibleAdd: boolean = false;
+  public courses: Course[] = [];
+  public selectedApplication: SalesApplication | null = null;
+  activeStatus: string = '';
+  searchText: string = '';
+  selectedCourse: any = null;
+  coursesAddList: Course[] = [];
+  public flows: GetFlows[] = [];
+  selectedFile: File | null = null;
+  selectedFileName: string | null = null;
+  selectedApplicationType: any;
+  public selectedFlow: number | null = null;
+
   ngOnInit(): void {
-    this.applicationService.getApplications().subscribe(data => {
-      this.applications = data;
+    this.getApplications();
+  }
+
+
+
+  public applicationsForm = this.fb.group({
+    learner_fullname: [''],
+    learner_phone_number: [''],
+    learner_region: [''],
+    comments:['']});
+
+
+  get isVisible(): boolean {
+    return this.visible || this.visibleAdd;
+  }
+
+  set isVisible(value: boolean) {
+    if (this.visible) {
+      this.visible = value;
+    } else if (this.visibleAdd) {
+      this.visibleAdd = value;
+    }
+  }
+  showAddDialog() {
+    this.visibleAdd  = true;
+    this.loadCourses();
+  }
+
+  private loadCourses() {
+    this.superAdminService.getCourses().subscribe(data => {
+      this.courses = data.map((course: Course) => ({
+        ...course,
+        poster: `http://127.0.0.1:8000${course.poster}`
+      }));
+    })
+  }
+
+  loadFlows(){
+    this.flowService.getFlows().subscribe(data=>{
+      this.flows = data;
+    })
+  }
+
+  showDialog(application: SalesApplication) {
+    this.visible  = true;
+    this.coursesList = [];
+    this.loadFlows();
+
+    this.orderService.getApplicationById(application.order_id).subscribe(data => {
+      this.selectedApplication = data;
+      this.selectedApplicationType = { ...application, showAccess: false };
+
+      this.status = data.status;
+
+      this.applicationsForm.patchValue({
+        learner_fullname: data.learner_fullname,
+        learner_phone_number: data.learner_phone_number,
+        learner_region: data.learner_region
+      });
+
+      if (data.courses && data.courses.length > 0) {
+        data.courses.forEach((courseId: number) => {
+          this.courseService.getCourse(courseId).subscribe(course => {
+            this.coursesList.push(course);
+          });
+        });
+      }
     });
   }
 
-  public appForm = this.fb.group({
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
 
-  })
-
-  showDialog() {
-    this.visible = true;
+    if (file) {
+      this.selectedFile = file;
+      this.selectedFileName = file.name;
+    } else {
+      console.error('No file was selected');
+      this.selectedFileName = null;
+    }
   }
 
+  triggerFileInputFirst() {
+    const fileInput = document.getElementById('fileInput1') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+
+  filterApplications(status: string) {
+    this.activeStatus = status;
+    this.getApplications(status, this.searchText);
+  }
+
+  searchApplications() {
+    this.getApplications(this.activeStatus, this.searchText);
+  }
+  getApplications(status: string = '', search: string = '') {
+    this.orderService.getApplications(status, search).subscribe(data => {
+      this.applications = data.orders;
+    });
+  }
+
+
+
+  saveDialog() {
+
+    if (this.visible && this.selectedApplication && this.selectedFlow) {
+      const order_Id = this.selectedApplication.order_id;
+      const flow_Id = this.selectedFlow;
+
+      this.orderService.acceptAdminOrder(order_Id, flow_Id).subscribe(
+        response => {
+          if (response.success) {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Успешно',
+              detail: 'Доступ к курсам успешно предоставлен'
+            });
+          }
+        },
+        error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось предоставить доступ к курсам'
+          });
+        }
+      );
+    }
+  }
+
+
+  saveCancelDialog() {
+  }
+
+
+  onDialogHide() {
+    this.applicationsForm.reset();
+  }
+
+
+  removeCourse(index: number) {
+    this.coursesList.splice(index, 1);
+    this.calculateTotalPrice();
+  }
+
+
+  calculateTotalPrice(): number {
+    return this.coursesList.reduce((total, course) => total + course.current_price, 0);
+  }
+
+
   closeDialog() {
-    this.visible = false;
+    this.visible  = false;
+    this.visibleAdd = false;
+    if (this.selectedApplication) {
+      this.selectedApplicationType.showAccess = false;
+    }
     this.messageService.add({severity:'info', summary:'Отмена', detail:'Никаких изменений'});
   }
 
-  cancelDialog(){
-    this.visible = false;
-    this.messageService.add({severity:'custom', summary:'Отклонить', detail:'Заявка отклонена',icon: 'pi-file-excel'});
+  cancelDialog() {
+    if (this.selectedApplication) {
+      this.selectedApplicationType.showAccess = true;
+      this.visibleAdd = false;
+    }
   }
-
-  saveDialog(){
-    this.visible = false;
-    this.messageService.add({severity:'success', summary:'Открыть доступ', detail:'Доступ открыт',icon: 'pi-lock-open'});
-  }
-
 }
+

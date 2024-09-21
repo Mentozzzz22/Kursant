@@ -1,0 +1,221 @@
+<div class="supplier-header">
+  <div class="supplier-container">
+    <h1 class="supplier-title">Сотрудники</h1>
+    <hr style="transform: scaleY(0.3);">
+    <div class="supplier-actions">
+      <div class="search-form">
+        <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
+        <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input" [(ngModel)]="searchText" />
+        <button type="submit" class="search-button" (click)="searchEmployees()">Поиск</button>
+      </div>
+      <button class="add-course-btn" (click)="showDialog()">
+        Добавить Cотрудника
+      </button>
+    </div>
+  </div>
+</div>
+<div class="main-content">
+
+  <div class="content-table-container">
+
+    <p-table [value]="employees" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th>ФИО</th>
+          <th>Телефон</th>
+          <th>Статусы</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-employee >
+        <tr (click)="getEmployeeById(employee.id)">
+          <td>{{ employee.id }}</td>
+          <td>{{ employee.fullname }}</td>
+          <td>{{ employee.phone_number }}</td>
+          <td>{{ employee.job_title }}</td>
+          <td><p-checkbox
+            [(ngModel)]="employee.is_active"
+            [binary]="true"
+            readonly
+            inputId="binary" /></td>
+        </tr>
+
+      </ng-template>
+    </p-table>
+
+  </div>
+</div>
+
+<p-dialog
+  header="Header"
+  [(visible)]="isVisible"
+  [modal]="true"
+  [style]="{ width: '55rem' }"
+  [contentStyle]="{height: '655px'}"
+  draggable="false">
+  <ng-template pTemplate="header">
+    <ng-container *ngIf="!visibleShow">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Добавить сотрудника</h3>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="visibleShow">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Обновить сотрудника</h3>
+      </div>
+    </ng-container>
+
+  </ng-template>
+
+  <ng-container *ngIf="!visibleShow">
+    <form  [formGroup]="employeeForm">
+      <div class="modal-content">
+        <div class="block-two">
+
+          <div class="form-group">
+            <label for="fullName">ФИО</label>
+            <div class="input-container">
+              <input type="text" id="fullName" class="form-control" formControlName="fullname">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Телефон номер</label>
+            <div class="input-container">
+              <input type="text" id="phone" class="form-control" formControlName="phone_number">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="region">Название Должности</label>
+            <div class="input-container">
+              <input type="text" id="region" class="form-control" formControlName="job_title">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="region">Доступы</label>
+            <div >
+              <div class="input-container">
+                <p-multiSelect
+                  formControlName="permissions"
+                  [options]="availableAccesses"
+                  defaultLabel="Выберите доступы"
+                  display="chip"
+                  [filter]="false"
+                  [showToggleAll]="false"
+                  [showHeader]="false"
+                  [maxSelectedLabels]="5"
+                ></p-multiSelect>
+              </div>
+
+            </div>
+          </div>
+
+
+
+          <div class="form-group">
+            <label for="region">Активный?</label>
+            <p-checkbox id="is_active" formControlName="is_active" binary="true"></p-checkbox>
+          </div>
+
+        </div>
+
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container *ngIf="visibleShow">
+    <form  [formGroup]="employeeUpdateForm">
+      <div class="modal-content">
+        <div class="block-two">
+
+          <div class="form-group">
+            <label for="fullNameUpdate">ФИО</label>
+            <div class="input-container">
+              <input type="text" id="fullNameUpdate" class="form-control" formControlName="fullname">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phoneUpdate">Телефон номер</label>
+            <div class="input-container">
+              <input type="text" id="phoneUpdate" class="form-control" formControlName="phone_number">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="titleUpdate">Название Должности</label>
+            <div class="input-container">
+              <input type="text" id="titleUpdate" class="form-control" formControlName="job_title">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Доступы</label>
+            <div >
+              <div class="input-container">
+                <p-multiSelect
+                  formControlName="permissions"
+                  [options]="availableAccesses"
+                  defaultLabel="Выберите доступы"
+                  display="chip"
+                  [filter]="false"
+                  [showToggleAll]="false"
+                  [showHeader]="false"
+                  [maxSelectedLabels]="5"
+                ></p-multiSelect>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="is_activeUpdate">Активный?</label>
+            <p-checkbox id="is_activeUpdate" formControlName="is_active" binary="true"></p-checkbox>
+          </div>
+
+        </div>
+
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-template pTemplate="footer">
+    <ng-container *ngIf="!visibleShow">
+      <div class="button-group">
+        <button class="filled-button" (click)="onSubmit()" >Добавить сотрудника</button>
+
+        <button class="text-button" (click)="closeDialog()">Назад</button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="visibleShow">
+      <div class="button-group">
+        <button class="filled-button" (click)="onUpdate()" >Обновить сотрудника</button>
+
+        <button class="text-button" (click)="deleteEmployee()">Удалить сотрудника</button>
+      </div>
+    </ng-container>
+  </ng-template>
+</p-dialog>

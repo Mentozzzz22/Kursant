@@ -3,21 +3,27 @@
     <h1 class="supplier-title">Заявки</h1>
     <hr style="transform: scaleY(0.3);">
     <div class="supplier-actions">
-      <div class="search-form" >
+      <div class="search-form">
         <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
-        <input type="text" id="supplierSearch"  placeholder="ID, ФИО" class="search-input" />
-        <button type="submit" class="search-button" >Поиск</button>
+        <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input" [(ngModel)]="searchText" />
+        <button type="submit" class="search-button" (click)="searchApplications()">Поиск</button>
       </div>
+      <button class="add-course-btn" (click)="showAddDialog()">
+        Добавить Заявку
+      </button>
     </div>
   </div>
 </div>
 <div class="main-content">
-  <div class="content-buttons" >
-    <button class="content-button" routerLink="../picking/orders" routerLinkActive="active">Все заявки</button>
-    <button class="content-button" routerLink="../picking/in-progress" routerLinkActive="active">Новые заявки</button>
-    <button class="content-button" routerLink="../picking/in-progress" routerLinkActive="active">Получили доступ</button>
-    <button class="content-button" routerLink="../picking/in-progress" routerLinkActive="active">Отклонённые</button>
+  <div class="content-buttons">
+    <button class="content-button" [ngClass]="{'active': activeStatus === ''}" (click)="filterApplications('')">Все заявки</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'new'}" (click)="filterApplications('new')">Новые заявки</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'waiting_admin'}" (click)="filterApplications('waiting_admin')">На проверке у админа</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'accepted'}" (click)="filterApplications('accepted')">Получили доступ</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'rejected'}" (click)="filterApplications('rejected')">Отклонённые</button>
   </div>
+
+
   <div class="content-table-container">
 
     <p-table [value]="applications" [tableStyle]="{ 'min-width': '50rem' }">
@@ -31,134 +37,155 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-application >
-        <tr (click)="showDialog()">
-          <th>{{application.id}}</th>
-          <th>{{application.name}}</th>
-          <th>{{application.phone}}</th>
-          <td [ngClass]="{'new': application.status === 'Новая заявка', 'completed': application.status === 'Получил доступ', 'canceled': application.status === 'Отменён'}">{{ application.status }}</td>
-          <th>{{application.comment}}</th>
+        <tr *ngIf="application && application.order_id" (click)="showDialog(application)">
+          <td>{{ application.order_id }}</td>
+          <td>{{ application.learner_fullname }}</td>
+          <td>{{ application.learner_phone_number }}</td>
+          <td>{{ application.status_display }}</td>
+          <td>{{ application.comments }}</td>
         </tr>
+
       </ng-template>
     </p-table>
 
   </div>
 </div>
 
-
 <p-dialog
   header="Header"
-  [(visible)]="visible"
+  [(visible)]="isVisible"
   [modal]="true"
-  [style]="{ width: '70rem' }"
-  draggable="false">
+  [style]="{ width: selectedApplicationType?.showAccess ? '40rem' : '70rem' }"
+  draggable="false"
+  (onHide)="onDialogHide()">
   <ng-template pTemplate="header">
-    <div class="inline-flex align-items-center justify-content-center gap-2">
-      <h3>Заявка #0012</h3>
-      <h5 class="username">Арман</h5>
-    </div>
+    <ng-container *ngIf="!visibleAdd && !selectedApplicationType?.showAccess">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Заявка #0012</h3>
+        <h5 class="username">Арман</h5>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!visibleAdd && selectedApplicationType?.showAccess">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Выберите поток</h3>
+      </div>
+    </ng-container>
   </ng-template>
-  <div class="modal-content">
 
-    <div class="block-one">
-      <h5>В корзине</h5>
-      <ol class="cart-list">
-        <li>
-          <span class="item-name">Қазақстан тарихы</span>
-          <span class="price">50 000 тг</span>
-          <button class="delete-btn">
-            <i class="pi pi-trash"></i>
-          </button>
-        </li>
-        <li>
-          <span class="item-name">Мат. сау.</span>
-          <span class="price">50 000 тг</span>
-          <button class="delete-btn">
-            <i class="pi pi-trash"></i>
-          </button>
-        </li>
-        <li>
-          <span class="item-name">Оқу сау.</span>
-          <span class="price">50 000 тг</span>
-          <button class="delete-btn">
-            <i class="pi pi-trash"></i>
-          </button>
-        </li>
-        <li>
-          <span class="item-name">Математика</span>
-          <span class="price">50 000 тг</span>
-          <button class="delete-btn">
-            <i class="pi pi-trash"></i>
-          </button>
-        </li>
-        <li>
-          <span class="item-name">Физика</span>
-          <span class="price">50 000 тг</span>
-          <button class="delete-btn">
-            <i class="pi pi-trash"></i>
-          </button>
-        </li>
-      </ol>
-      <div class="total">
-        <strong>К оплате:</strong> <span class="total-price">250 000 тг</span>
-      </div>
-    </div>
+  <ng-container *ngIf="!visibleAdd && !selectedApplicationType?.showAccess">
+    <form  [formGroup]="applicationsForm">
+      <div class="modal-content">
 
-    <div class="block-two">
-      <div class="form-group">
-        <label for="fullName">ФИО</label>
-        <div class="input-container">
-          <input type="text" id="fullName" class="form-control" value="Адбікерім Ерлан" readonly>
-          <button class="edit-btn">
-            <i class="pi pi-pencil"></i>
-          </button>
+        <div class="block-one">
+          <h5>В корзине</h5>
+          <ol class="cart-list">
+            <li *ngFor="let course of coursesList let i = index">
+              <span class="item-name">{{ course.name }}</span>
+              <span class="price">{{ course.current_price}} тг</span>
+              <button class="delete-btn" (click)="removeCourse(i)">
+                <i class="pi pi-trash"></i>
+              </button>
+            </li>
+          </ol>
+          <div class="total">
+            <strong>К оплате:</strong> <span class="total-price">{{ calculateTotalPrice() }}</span>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="phone">Телефон</label>
-        <div class="input-container">
-          <input type="text" id="phone" class="form-control" value="87088084949" readonly>
-          <button class="edit-btn">
-            <i class="pi pi-pencil"></i>
-          </button>
+
+        <div class="block-two">
+
+          <div class="form-group">
+            <label for="fullName">ФИО</label>
+            <div class="input-container">
+              <input type="text" id="fullName" class="form-control" formControlName="learner_fullname">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Телефон</label>
+            <div class="input-container">
+              <input type="text" id="phone" class="form-control" formControlName="learner_phone_number">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="region">Регион</label>
+            <div class="input-container">
+              <input type="text" id="region" class="form-control" formControlName="learner_region">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="region">Регион</label>
-        <div class="input-container">
-          <input type="text" id="region" class="form-control" value="-" readonly>
-          <button class="edit-btn">
-            <i class="pi pi-pencil"></i>
-          </button>
+        <div class="block-three">
+          <label for="comment">Комментарий к админу</label>
+          <textarea id="comment" rows="4" formControlName="comments"></textarea>
         </div>
+
+        <div class="block-four">
+          <label for="fileInput1">Чек</label>
+          <div class="custom-file-upload">
+            <input type="file" id="fileInput1" class="file-input" (change)="onFileSelected($event)" hidden />
+            <span class="file-upload-button" (click)="triggerFileInputFirst()">Выберите файл</span>
+            <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
+          </div>
+        </div>
+
       </div>
-    </div>
+    </form>
+  </ng-container>
 
-
-
+  <ng-container *ngIf="selectedApplicationType?.showAccess">
     <div class="block-three">
-      <label for="comment">Комментарий к админу</label>
-      <textarea id="comment" rows="4"></textarea>
-    </div>
-
-      <div class="block-four">
-        <label for="check">Чек</label>
-        <button class="check" id="check">13221</button>
+      <div class="form-group">
+        <label for="flow">Выберите поток</label>
+        <div class="select-container">
+          <select id="flow" class="form-control" [(ngModel)]="selectedFlow">
+            <option *ngFor="let flow of flows" [value]="flow.flow_id">
+              Поток {{ flow.flow_id }} - {{ flow.name }}
+            </option>
+          </select>
+        </div>
       </div>
 
-  </div>
+    </div>
+  </ng-container>
+
   <ng-template pTemplate="footer">
-    <div class="button-group">
+    <ng-container  *ngIf="!selectedApplicationType?.showAccess">
+      <div class="button-group">
 
-      <div class="button-container">
-        <button class="filled-button" (click)="saveDialog()">Открыть доступ</button>
+        <div class="button-container" >
+          <button class="filled-button" (click)="this.selectedApplicationType.showAccess = true;" >Открыть доступ</button>
+          <button class="outlined-button" (click)="cancelDialog()" >Отклонить</button>
+        </div>
 
-        <button class="outlined-button" (click)="cancelDialog()">Отклонить</button>
+
+        <button class="text-button" (click)="closeDialog()">Назад</button>
       </div>
+    </ng-container>
 
-      <button class="text-button" (click)="closeDialog()">Назад</button>
-    </div>
+    <ng-container  *ngIf="selectedApplicationType?.showAccess">
+      <div class="button-group">
+
+        <div class="button-container" >
+          <button class="filled-button" (click)="saveDialog()" >Открыть доступ</button>
+        </div>
+      </div>
+    </ng-container>
+
   </ng-template>
+
 
 </p-dialog>

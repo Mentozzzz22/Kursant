@@ -1,0 +1,169 @@
+<div class="supplier-header">
+  <div class="supplier-container">
+    <h1 class="supplier-title">Кураторы</h1>
+    <hr style="transform: scaleY(0.3);">
+    <div class="supplier-actions">
+      <div class="search-form">
+        <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
+        <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input" [(ngModel)]="searchText" />
+        <button type="submit" class="search-button" (click)="searchCurator()">Поиск</button>
+      </div>
+      <button class="add-course-btn" (click)="showDialog()">
+        Добавить Куратора
+      </button>
+    </div>
+  </div>
+</div>
+<div class="main-content">
+
+  <div class="content-table-container">
+
+    <p-table [value]="curators" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th>ФИО</th>
+          <th>Телефон</th>
+          <th>Статусы</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-employee >
+        <tr (click)="getCuratorById(employee.id)">
+          <td>{{ employee.id }}</td>
+          <td>{{ employee.fullname }}</td>
+          <td>{{ employee.phone_number }}</td>
+          <td><p-checkbox
+            [(ngModel)]="employee.is_active"
+            [binary]="true"
+            readonly
+            inputId="binary" /></td>
+        </tr>
+
+      </ng-template>
+    </p-table>
+
+  </div>
+</div>
+
+<p-dialog
+  header="Header"
+  [(visible)]="isVisible"
+  [modal]="true"
+  [style]="{ width: '45rem' }"
+  draggable="false">
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <h3>Добавить Куратора</h3>
+    </div>
+  </ng-template>
+
+  <ng-container *ngIf="!visibleShow">
+    <form  [formGroup]="curatorForm">
+      <div class="modal-content">
+        <div class="block-two">
+
+          <div class="form-group">
+            <label for="fullName">ФИО</label>
+            <div class="input-container">
+              <input type="text" id="fullName" class="form-control" formControlName="fullname">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Телефон номер</label>
+            <div class="input-container">
+              <input type="text" id="phone" class="form-control" formControlName="phone_number" placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'" prefix="+7 ">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+
+
+
+          <div class="form-group">
+            <label for="is_active">Активный?</label>
+            <p-checkbox id="is_active" formControlName="is_active" binary="true"></p-checkbox>
+          </div>
+
+        </div>
+
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container *ngIf="visibleShow">
+    <form  [formGroup]="curatorUpdateForm">
+      <div class="modal-content">
+        <div class="block-two">
+
+          <div class="form-group">
+            <label for="fullNameUpdate">ФИО</label>
+            <div class="input-container">
+              <input type="text" id="fullNameUpdate" class="form-control" formControlName="fullname">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phoneUpdate">Телефон номер</label>
+            <div class="input-container">
+              <input type="text" id="phoneUpdate" class="form-control" formControlName="phone_number" placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'" prefix="+7 ">
+              <button class="edit-btn">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <label for="is_activeUpdate">Активный?</label>
+            <p-checkbox id="is_activeUpdate" formControlName="is_active" binary="true"></p-checkbox>
+          </div>
+
+        </div>
+
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-template pTemplate="footer">
+    <ng-container *ngIf="!visibleShow">
+      <div class="button-group">
+        <button class="filled-button" (click)="onSubmit()">Добавить сотрудника</button>
+
+        <button class="text-button" (click)="closeDialog()">Назад</button>
+      </div>
+
+
+
+
+    </ng-container>
+
+    <ng-container *ngIf="visibleShow">
+      <div class="button-group">
+        <button class="filled-button" (click)="onUpdate()" >Обновить сотрудника</button>
+
+        <button class="delete-button" (click)="confirm($event)">Удалить сотрудника</button>
+
+        <p-confirmPopup #confirmPopupRef>
+          <ng-template pTemplate="headless">
+            <div class="border-round p-3">
+              <span>Вы уверены что хотите удалить куратора ?</span>
+              <div class="flex align-items-center gap-2 mt-3">
+                <p-button (onClick)="deleteEmployee()" label="Удалить" size="small" severity="danger" />
+                <p-button (onClick)="reject()" label="Отмена" [outlined]="false" size="small" />
+              </div>
+            </div>
+          </ng-template>
+        </p-confirmPopup>
+      </div>
+    </ng-container>
+  </ng-template>
+</p-dialog>

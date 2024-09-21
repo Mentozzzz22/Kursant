@@ -3,6 +3,7 @@ import {catchError, Observable, throwError} from "rxjs";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {UserService} from "./user.service";
 import {GetModules} from "../../assets/models/getModules.interface";
+import {CuratorInterface} from "../../assets/models/curator.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +32,42 @@ export class CuratorService {
         })
       );
   }
+
+  public getCurator(search?: string): Observable<CuratorInterface[]> {
+    let params: any = {};
+    if (search) {
+      params.search = search;
+    }
+
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    return this.http.get<CuratorInterface[]>(`${this.apiUrl}/get_curators/`, {headers, params });
+  }
+
+  public saveCurator(curatorData: CuratorInterface): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    return this.http.post<any>(`${this.apiUrl}/save_curator/`, curatorData, { headers });
+  }
+
+  getCuratorById(id: number): Observable<CuratorInterface> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    const params = new HttpParams().set('id', id.toString());
+
+    return this.http.get<CuratorInterface>(`${this.apiUrl}/get_curator/`, { headers, params });
+  }
+
+
+  deleteCurator(id: number): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    return this.http.post<any>(`${this.apiUrl}/delete_curator/`, { id }, { headers });
+  }
+
 }
 

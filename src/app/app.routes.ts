@@ -24,6 +24,9 @@ import {SalesComponent} from "./sales/sales.component";
 import {ApplicationSalesComponent} from "./sales/application-sales/application-sales.component";
 import {FlowDetailsComponent} from "./admin/flow-details/flow-details.component";
 import {FlowDeadlinesComponent} from "./admin/flow-deadlines/flow-deadlines.component";
+import {EmployeeComponent} from "./admin/employee/employee.component";
+import {CuratorAddComponent} from "./admin/curator-add/curator-add.component";
+import {LearnerComponent} from "./admin/learner/learner.component";
 
 export const routes: Routes = [
   {
@@ -53,6 +56,15 @@ export const routes: Routes = [
       },
       {
         path: 'course', component: CourseComponent
+      },
+      {
+        path: 'employees', component: EmployeeComponent
+      },
+      {
+        path: 'curator-add', component: CuratorAddComponent
+      },
+      {
+        path: 'learner-add', component: LearnerComponent
       },
       {
         path: 'edit-course/:courseId', component: EditCourseComponent,

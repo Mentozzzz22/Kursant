@@ -40,7 +40,7 @@
 .add-course-btn {
   background-color: #00ADEF;
   height: 40px;
-  width: 120px;
+  width: 150px;
   border: none;
   color: white;
   border-radius: 5px;
@@ -61,33 +61,6 @@
   padding: 20px;
 }
 
-.content-buttons {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 10px;
-  max-width: 100%;
-  overflow-y: scroll;
-}
-
-.content-buttons::-webkit-scrollbar {
-  width: 0;
-  background: transparent;
-}
-
-.content-button {
-  padding: 9px 20px;
-  border: none;
-  background-color: #fff;
-  color: #1d1d42;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 15px;
-  white-space: nowrap;
-}
-
-.content-button.active {
-  border: 1px solid black;
-}
 
 
 .content-table-container {
@@ -159,73 +132,9 @@
   gap:20px;
 }
 
-.block-one {
-  background-color: #f7f7f7;
-  border-radius: 15px;
-  padding: 20px;
-  width: 100%;
-  max-width: 500px;
-  color: black;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 260px;
-}
-
-h5 {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.cart-list {
-  padding-left: 0;
-  list-style-type: none;
-  margin-bottom: auto;
-}
-
-.cart-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.item-name {
-  flex: 1;
-}
-
-.price {
-  width: 100px;
-  text-align: right;
-}
-
-.delete-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #888;
-}
-
-.delete-btn:hover {
-  color: #000;
-}
-
-.total {
-  display: flex;
-  justify-content:space-between;
-  font-size: 18px;
-  gap: 10px;
-  margin-top: auto;
-}
-
-.total-price {
-  font-weight: bold;
-}
-
 
 .block-two {
   width: 100%;
-  max-width: 500px;
 }
 
 .form-group {
@@ -241,6 +150,7 @@ h5 {
   display: flex;
   align-items: center;
   gap: 10px;
+  width:100%;
 }
 
 .input-container input {
@@ -269,94 +179,42 @@ h5 {
   color: #333;
 }
 
-.block-three {
+.p-multiselect {
   width: 100%;
-  max-width: 500px;
-  margin-bottom: 15px;
 }
 
-label {
-  display: block;
-  margin-bottom: 5px;
+:host ::ng-deep .p-multiselect .p-multiselect-label {
   font-size: 14px;
-  color: #444444;
-}
-
-textarea {
-  width: 100%;
-  padding: 15px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 15px;
-  background-color: #f7f7f7;
   color: #333;
-  resize: none;
-  box-shadow: none;
-  outline: none;
 }
 
-textarea:focus {
-  border-color: #ccc;
+:host ::ng-deep .p-multiselect .p-multiselect-token {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 12px;
+  padding: 5px 10px;
 }
 
-.block-four {
-  width: 100%;
-  max-width: 500px;
+:host ::ng-deep .p-multiselect .p-multiselect-token-icon {
+  color: #fff;
+}
+
+:host ::ng-deep .p-element .p-inputwrapper {
+  width: 97%;
+  max-width: 97%;
+}
+
+:host ::ng-deep .p-multiselect-item {
+  font-size: 14px;
+  padding: 10px;
+  transition: background-color 0.3s;
+}
+
+:host ::ng-deep .p-multiselect-item:hover {
+  background-color: #f0f0f0;
 }
 
 
-.custom-file-upload {
-  display: flex;
-  align-items: center;
-  border-radius: 9px;
-  overflow: hidden;
-  width: 70%;
-  background-color: #f9fafc;
-  border: 1px solid #e3e3e3;
-}
-
-.file-input {
-  display: none;
-}
-
-.file-upload-button {
-  background-color: #00adef;
-  color: white;
-  padding: 12px 16px;
-  font-weight: 500;
-  cursor: pointer;
-  border-radius: 9px 0 0 9px;
-  flex-shrink: 0;
-}
-
-.file-upload-filename {
-  padding: 12px 16px;
-  color: #444444;
-  width: 100%;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.custom-file-upload:hover .file-upload-button {
-  background-color: #009ed6;
-}
-
-.custom-file-upload input[type="file"] {
-  opacity: 0;
-  position: absolute;
-  left: 0;
-  width: 100%;
-  cursor: pointer;
-}
-
-.check{
-  background-color: white;
-  border: 1px solid;
-  padding:10px 60px;
-  border-radius:10px;
-}
 
 
 .button-group {
@@ -393,32 +251,9 @@ textarea:focus {
   background-color: transparent;
 }
 
-.select-container {
-  width: 100%;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 10px;
-  border: 1px solid #eaeaea;
-}
-
-.select-container select {
-  width: 100%;
-  border: none;
-  background-color: transparent;
-  font-size: 16px;
-  color: #333;
-  outline: none;
-  appearance: none;
-  padding: 5px;
-}
-
-.select-container select option {
-  font-size: 16px;
-  padding: 10px;
-}
 
 ::ng-deep .p-dropdown-items {
-  padding-left: 0;
+  padding-left: 0; /* Убираем отступы */
 }
 .flex {
   display: flex;
