@@ -59,10 +59,25 @@
   draggable="false"
   (onHide)="onDialogHide()">
   <ng-template pTemplate="header">
-    <div class="inline-flex align-items-center justify-content-center gap-2">
-      <h3>Заявка #0012</h3>
-      <h5 class="username">Арман</h5>
-    </div>
+    <ng-container *ngIf="visibleAdd && !selectedApplicationType?.showCancelReason">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3> Добавить заявку</h3>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!visibleAdd && !selectedApplicationType?.showCancelReason">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Заявка #{{courseId}}</h3>
+        <h5 class="username">{{learnerFullName}}</h5>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="selectedApplicationType?.showCancelReason && coursesList">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Причина</h3>
+      </div>
+    </ng-container>
+
   </ng-template>
 
   <ng-container *ngIf="!visibleAdd && !selectedApplicationType?.showCancelReason">
@@ -75,15 +90,37 @@
         <li *ngFor="let course of coursesList let i = index">
           <span class="item-name">{{ course.name }}</span>
           <span class="price">{{ course.current_price}} тг</span>
-          <button class="delete-btn" (click)="removeCourse(i)">
+          <button class="delete-btn" (click)="removeCourse(i)" *ngIf="status !== 'waiting_admin'">
             <i class="pi pi-trash"></i>
           </button>
         </li>
       </ol>
       <div class="total">
-        <strong>К оплате:</strong> <span class="total-price">{{ calculateTotalPrice() }}</span>
+        <div>
+          <strong>К оплате:</strong> <span class="total-price">{{ calculateTotalPrice() }}</span>
+        </div>
+
+        <div >
+          <button (click)="op.toggle($event)" class="add-btn-course" *ngIf="status !== 'waiting_admin'">Добавить курс </button>
+          <p-overlayPanel #op>
+            <div class="flex flex-line gap-3 w-20rem">
+              <p-dropdown
+                [options]="courses"
+                [(ngModel)]="selectedCourse"
+                optionLabel="name"
+                placeholder="Выберите курс"
+                [showClear]="true"
+                formControlName="course"/>
+
+              <button class="add-btn" (click)="addCourseToUpdate(); op.hide();"><i class="pi pi-check"></i></button>
+              <button class="close-btn" (click)="op.hide();"><i class="pi pi-times"></i></button>
+            </div>
+          </p-overlayPanel>
+        </div>
+
       </div>
     </div>
+
 
 
     <div class="block-two">
@@ -132,6 +169,18 @@
         <span class="file-upload-button" (click)="triggerFileInputFirst()">Выберите файл</span>
         <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
       </div>
+
+      <button (click)="openImageModal()" class="img-button">Просмотр изображения</button>
+
+
+      <div id="imageModal" class="modal" [ngClass]="{'show': isModalVisible}">
+        <div class="modal-image-content">
+          <span class="close" (click)="closeImageModal()">&times;</span>
+          <img [src]="imageUrl" alt="Uploaded Image" class="modal-image">
+        </div>
+      </div>
+
+
     </div>
 
   </div>
@@ -241,11 +290,12 @@
   </ng-container>
 
   <ng-template pTemplate="footer">
+
     <ng-container  *ngIf="!selectedApplicationType?.showCancelReason">
       <div class="button-group">
 
         <div class="button-container" >
-          <button class="filled-button" (click)="saveDialog()" *ngIf="status !== 'waiting_admin'">Открыть доступ</button>
+          <button class="filled-button" (click)="saveDialog()" *ngIf="status !== 'waiting_admin'">Передать админу</button>
           <button class="outlined-button" (click)="cancelDialog()" *ngIf="status !== 'waiting_admin'">Отклонить</button>
         </div>
 

@@ -110,6 +110,10 @@
   padding: 10px;
 }
 
+:host ::ng-deep .p-progressbar {
+  width:55px;
+}
+
 .new {
   color: #00B69B;
 }

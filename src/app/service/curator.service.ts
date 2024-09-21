@@ -69,5 +69,12 @@ export class CuratorService {
     return this.http.post<any>(`${this.apiUrl}/delete_curator/`, { id }, { headers });
   }
 
+  getCuratorFlow(): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    return this.http.get<any>(`${this.apiUrl}/get_my_flows/`, {headers });
+  }
+
 }
 

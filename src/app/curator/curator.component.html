@@ -8,14 +8,17 @@
       <hr class="divider">
     </div>
     <ul class="sidebar-menu">
-      <li ><a class="sidebar-menu-links" routerLink="curator-homework"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: false }"><img
-        src="assets/images/truck_icon.svg" alt="truck" width="14" height="14"/> Успеваемость</a></li>
+      <li>
+        <a class="sidebar-menu-links"
+           routerLink="/curator/curator-homework"
+           [class.active]="isHomeworkActive">
+          <img src="assets/images/truck_icon.svg" alt="truck" width="14" height="14"/> Успеваемость
+        </a>
+      </li>
       <li ><a class="sidebar-menu-links" routerLink="curator-students"
               routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: false }"><img
-        src="assets/images/boxs_icon.svg" alt="box" width="14" height="14"/> Ученики</a></li>
+              [routerLinkActiveOptions]="{ exact: false }">
+        <img src="assets/images/boxs_icon.svg" alt="box" width="14" height="14"/> Ученики</a></li>
 
     </ul>
     <div class="logout-container">

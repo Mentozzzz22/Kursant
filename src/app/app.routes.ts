@@ -27,6 +27,7 @@ import {FlowDeadlinesComponent} from "./admin/Courses/flow-deadlines/flow-deadli
 import {EmployeeComponent} from "./admin/employee/employee.component";
 import {CuratorAddComponent} from "./admin/curator-add/curator-add.component";
 import {LearnerComponent} from "./admin/learner/learner.component";
+import {TestDetailComponent} from "./curator/homeworks/test-detail/test-detail.component";
 
 export const routes: Routes = [
   {
@@ -97,7 +98,10 @@ export const routes: Routes = [
         path: 'curator-homework', component: HomeworksComponent
       },
       {
-        path: 'homework-detail', component: HomeworkDetailComponent
+        path: 'homework-detail/:id', component: HomeworkDetailComponent
+      },
+      {
+        path: 'test-detail/:id', component: TestDetailComponent
       },
       {
         path: 'curator-students', component: StudentsComponent

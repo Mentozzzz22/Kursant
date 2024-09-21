@@ -1,3 +1,5 @@
+
+
 <div class="supplier-header">
   <div class="supplier-container">
     <h1 class="supplier-title">Успеваемость</h1>
@@ -5,20 +7,20 @@
     <div class="supplier-actions">
       <div class="search-form" >
         <label for="supplierSearch" class="visually-hidden">Модуль или тема</label>
-        <input type="text" id="supplierSearch"  placeholder="Модуль или тема" class="search-input" />
-        <button type="submit" class="search-button" >Поиск</button>
+        <input type="text" id="supplierSearch"  placeholder="Модуль или тема" class="search-input" [(ngModel)]="searchText"/>
+        <button type="submit" class="search-button" (click)="searchApplications()">Поиск</button>
       </div>
     </div>
   </div>
 </div>
 <div class="main-content">
-  <div class="content-buttons" >
-    <button class="content-button"  routerLinkActive="active">Поток 1</button>
-    <button class="content-button" routerLinkActive="active">Поток 2</button>
-    <button class="content-button"  routerLinkActive="active">Поток 3</button>
-    <button class="content-button"  routerLinkActive="active">Поток 4</button>
+  <div class="content-buttons" *ngFor="let flows of flow let i = index">
+    <button class="content-button"
+            (click)="searchApplications()"
+            [class.active]="flows.id === activeFlowId">
+      Поток {{flows.index}}
+    </button>
   </div>
-
   <div class="content-buttons">
     <button class="content-button" (click)="setActiveTab('homeWorks')" [class.active]="activeTab === 'homeWorks'">
       Домашняя задания
@@ -31,44 +33,58 @@
   <div class="content-table-container">
 
     <ng-container *ngIf="activeTab === 'homeWorks'">
-      <p-table [value]="progress" [tableStyle]="{ 'min-width': '50rem' }">
+      <p-table [value]="homeWorks" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
           <tr>
             <th>Модуль</th>
             <th>Тема</th>
             <th>Дедлайн</th>
             <th>Сдали</th>
-            <th></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-progresses >
-          <tr routerLink="../homework-detail">
-            <td>{{progresses.module}}</td>
-            <td>{{progresses.topic}}</td>
+          <tr (click)="openDetails(progresses.flow_homework_id)">
+            <td>{{progresses.module_name}}</td>
+            <td>{{progresses.topic_name}}</td>
             <td>{{progresses.deadline}}</td>
-            <td>{{progresses.submitted}}</td>
+            <td>
+              {{ progresses.sent_count }} из {{ progresses.total_count }}
+              <p-progressBar
+                [value]="calculateProgress(progresses.sent_count , progresses.total_count)"
+                [style]="{ height: '3px' }"
+                showValue="false"
+                color="#00ADEF">
+              </p-progressBar>
+            </td>
           </tr>
         </ng-template>
       </p-table>
     </ng-container>
 
     <ng-container *ngIf="activeTab === 'testWorks'">
-      <p-table [value]="progress" [tableStyle]="{ 'min-width': '50rem' }">
+      <p-table [value]="testWorks" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
           <tr>
             <th>Модуль</th>
             <th>Тема</th>
             <th>Дедлайн</th>
             <th>Сдали</th>
-            <th></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-progresses >
-          <tr (click)="showDialog()">
-            <td>{{progresses.module}}</td>
-            <td>{{progresses.topic}}</td>
-            <td>{{progresses.deadline}}</td>
-            <td>{{progresses.submitted}}</td>
+          <tr (click)="openTestDetails(progresses.flow_test_id)">
+            <td><span style="font-weight: bold">Бөлім. {{progresses.module_index}}</span> {{progresses.module_name}}</td>
+            <td>{{progresses.topic_index}} тақырып. {{progresses.topic_name}}</td>
+            <td>{{progresses.deadline | date:'dd.MM.yyyy HH:mm'}}</td>
+            <td>
+              {{ progresses.passed_count }} из {{ progresses.total_count }}
+              <p-progressBar
+                [value]="calculateProgress(progresses.passed_count , progresses.total_count)"
+                [style]="{ height: '3px' }"
+                showValue="false"
+                color="#00ADEF">
+              </p-progressBar>
+            </td>
           </tr>
         </ng-template>
       </p-table>
@@ -78,122 +94,3 @@
 
   </div>
 </div>
-
-
-<p-dialog
-  header="Header"
-  [(visible)]="visible"
-  [modal]="true"
-  [style]="{ width: '70rem' }"
-  draggable="false">
-  <ng-template pTemplate="header">
-    <div class="inline-flex align-items-center justify-content-center gap-2">
-      <h3>Заявка #0012</h3>
-      <h5 class="username">Арман</h5>
-    </div>
-  </ng-template>
-  <div class="modal-content">
-
-    <div class="block-one">
-      <h5>В корзине</h5>
-      <ol class="cart-list">
-        <li>
-          <span class="item-name">Қазақстан тарихы</span>
-          <span class="price">50 000 тг</span>
-          <button class="delete-btn">
-            <i class="pi pi-trash"></i>
-          </button>
-        </li>
-        <li>
-          <span class="item-name">Мат. сау.</span>
-          <span class="price">50 000 тг</span>
-          <button class="delete-btn">
-            <i class="pi pi-trash"></i>
-          </button>
-        </li>
-        <li>
-          <span class="item-name">Оқу сау.</span>
-          <span class="price">50 000 тг</span>
-          <button class="delete-btn">
-            <i class="pi pi-trash"></i>
-          </button>
-        </li>
-        <li>
-          <span class="item-name">Математика</span>
-          <span class="price">50 000 тг</span>
-          <button class="delete-btn">
-            <i class="pi pi-trash"></i>
-          </button>
-        </li>
-        <li>
-          <span class="item-name">Физика</span>
-          <span class="price">50 000 тг</span>
-          <button class="delete-btn">
-            <i class="pi pi-trash"></i>
-          </button>
-        </li>
-      </ol>
-      <div class="total">
-        <strong>К оплате:</strong> <span class="total-price">250 000 тг</span>
-      </div>
-    </div>
-
-    <div class="block-two">
-      <div class="form-group">
-        <label for="fullName">ФИО</label>
-        <div class="input-container">
-          <input type="text" id="fullName" class="form-control" value="Адбікерім Ерлан" readonly>
-          <button class="edit-btn">
-            <i class="pi pi-pencil"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="phone">Телефон</label>
-        <div class="input-container">
-          <input type="text" id="phone" class="form-control" value="87088084949" readonly>
-          <button class="edit-btn">
-            <i class="pi pi-pencil"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="region">Регион</label>
-        <div class="input-container">
-          <input type="text" id="region" class="form-control" value="-" readonly>
-          <button class="edit-btn">
-            <i class="pi pi-pencil"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-
-
-    <div class="block-three">
-      <label for="comment">Комментарий к админу</label>
-      <textarea id="comment" rows="4"></textarea>
-    </div>
-
-    <div class="block-four">
-      <label for="check">Чек</label>
-      <button class="check" id="check">13221</button>
-    </div>
-
-  </div>
-  <ng-template pTemplate="footer">
-    <div class="button-group">
-
-      <div class="button-container">
-        <button class="filled-button" (click)="saveDialog()">Открыть доступ</button>
-
-        <button class="outlined-button" (click)="cancelDialog()">Отклонить</button>
-      </div>
-
-      <button class="text-button" (click)="closeDialog()">Назад</button>
-    </div>
-  </ng-template>
-
-</p-dialog>

@@ -8,7 +8,6 @@ html, body {
 
 .admin-container {
   display: flex;
-  background-color: #f0f0f0;
   overflow: hidden;
 }
 
@@ -141,7 +140,6 @@ html, body {
 }
 
 .content {
-  background-color: #F9FAFC;
   margin-left: 240px;
   width: calc(100% - 240px);
   box-sizing: border-box;
