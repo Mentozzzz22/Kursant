@@ -220,11 +220,6 @@ client-edit__header {
   border-radius: 20px;
 }
 
-.form-row {
-  display: flex;
-  gap: 30px;
-}
-
 .form-label {
   display: block;
   color: #444;
@@ -245,21 +240,6 @@ client-edit__header {
   font-weight: 500;
 }
 
-.toggle-button {
-  padding: 12px 14px;
-  border: 1px solid #e3e3e3;
-  border-radius: 9px;
-  background-color: #f9fafc;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.toggle-button.active {
-  background-color: #00adef;
-  color: #fff;
-}
-
 .form-actions {
   display: flex;
   gap: 14px;
@@ -274,29 +254,6 @@ client-edit__header {
   cursor: pointer;
 }
 
-.access-container {
-  border: 1px solid #e3e3e3;
-  border-radius: 9px;
-  max-width: 290px;
-  padding: 10px
-}
-
-.toggle-buttons {
-  color: black;
-  display: flex;
-  justify-content: space-between;
-
-}
-
-.toggle-buttons span {
-  align-content: center;
-}
-
-.access-btns {
-  display: flex;
-  gap: 10px;
-}
-
 .form-actions {
   display: flex;
   justify-content: flex-start;
@@ -307,12 +264,6 @@ client-edit__header {
   background-color: #fff;
   color: #444;
   border: 1px solid #444;
-}
-
-.btn--delete {
-  background-color: red;
-  color: white;
-  border: none;
 }
 
 .btn--primary {
@@ -406,6 +357,25 @@ client-edit__header {
 
 .flow-item:hover {
   transform: translateY(-5px);
+}
+
+.flow-head {
+  display: flex;
+  justify-content: space-between;
+}
+
+.delete-curator {
+  display: flex;
+  align-items: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.delete-curator:hover {
+  border-radius: 5px;
+  background: #F5F6FB;
+
 }
 
 .flow-header {

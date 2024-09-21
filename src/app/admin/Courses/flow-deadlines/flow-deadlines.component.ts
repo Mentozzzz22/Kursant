@@ -7,23 +7,31 @@ import {
   FlowTest,
   FlowTopics,
   GetDeadlines
-} from "../../../assets/models/getDeadlines.interface";
-import {FlowService} from "../../service/flow.service";
-import {NgForOf, NgIf} from "@angular/common";
+} from "../../../../assets/models/getDeadlines.interface";
+import {FlowService} from "../../../service/flow.service";
+import {JsonPipe, NgForOf, NgIf} from "@angular/common";
 import {
   AbstractControl,
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
-  ReactiveFormsModule, ValidatorFn,
+  ReactiveFormsModule, ValidationErrors, ValidatorFn,
   Validators
 } from "@angular/forms";
+import {DialogModule} from "primeng/dialog";
+import {MessageService, PrimeTemplate} from "primeng/api";
 
 function dateTimeValidator(): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
+  return (control: AbstractControl): ValidationErrors | null => {
     const valid = /^(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})$/.test(control.value);
-    return valid ? null : {'invalidDateTime': {value: control.value}};
+    if (!valid) return {'invalidDateTime': true};
+
+    const [day, month, year, hour, minute] = control.value.split(/\D/).map(Number);
+    const date = new Date(year, month - 1, day, hour, minute);
+    if (isNaN(date.getTime())) return {'invalidDateTime': true};
+
+    return null;
   };
 }
 
@@ -33,7 +41,10 @@ function dateTimeValidator(): ValidatorFn {
   imports: [
     NgForOf,
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    JsonPipe,
+    DialogModule,
+    PrimeTemplate
   ],
   templateUrl: './flow-deadlines.component.html',
   styleUrl: './flow-deadlines.component.css'
@@ -44,14 +55,17 @@ export class FlowDeadlinesComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private flowService = inject(FlowService);
   private fb = inject(FormBuilder);
-  public deadlines!: GetDeadlines;
+  private messageService = inject(MessageService);
+
   public modules!: FlowModules[];
-  public topics!: FlowTopics[];
-  public lessons!: FlowLessons[];
   public test!: any;
   public homework!: any;
   public deadlineForm!: FormGroup;
-
+  public flowEditForm!: FormGroup;
+  public initialFormData: any;
+  public flow_course_name!: string;
+  public flow_index!: number;
+  public visibleEditFlowModal: boolean = false;
   public flowId!: number;
   public courseId!: number;
 
@@ -65,6 +79,10 @@ export class FlowDeadlinesComponent implements OnInit {
       this.loadDeadlines(this.courseId);
     });
 
+    this.flowEditForm = this.fb.group({
+      name: ['', [Validators.required]],
+      starts_at: ['', [Validators.required]],
+    })
   }
 
   get modulesControls(): FormArray {
@@ -79,16 +97,14 @@ export class FlowDeadlinesComponent implements OnInit {
     return this.getTopicControls(moduleIndex).at(topicIndex).get('lessons') as FormArray;
   }
 
-  getTestControls(moduleIndex: number, topicIndex: number): any {
-    console.log(this.getTopicControls(moduleIndex).at(topicIndex).get('test')!.get('testDeadline')?.value);
-    return this.getTopicControls(moduleIndex).at(topicIndex).get('test')
-  }
-
   private loadDeadlines(courseId: number) {
     this.flowService.getCourseDeadlines(courseId).subscribe({
       next: (data) => {
         this.modules = data.modules;
         this.initForm(data.modules);
+        this.initialFormData = data.modules;
+        this.flow_index = data.flow_index
+        this.flow_course_name = data.flow_course_name
       },
       error: (error) => console.error('Failed to load deadlines', error)
     });
@@ -138,6 +154,7 @@ export class FlowDeadlinesComponent implements OnInit {
         }
       });
     }
+    console.log(this.deadlineForm.getRawValue())
   }
 
   private formatDataForSave(formData: any): any {
@@ -164,8 +181,52 @@ export class FlowDeadlinesComponent implements OnInit {
     };
   }
 
+  public cancelChanges(): void {
+    this.initForm(this.initialFormData);  // Инициализация формы с начальными данными
+  }
+
   public back() {
     this.router.navigate([`/admin/flow-details/${this.flowId}`])
+  }
+
+  public onCancel(): void {
+    this.visibleEditFlowModal = false;
+  }
+
+  public showEditFlowDialog() {
+    this.visibleEditFlowModal = true;
+  }
+
+  public onSubmitAddFlow(flowId :number) {
+    if (!this.flowEditForm.valid) {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Необходимо заполнить все поля!'});
+      return;
+    }
+
+    const formattedDate = this.formatDate(this.flowEditForm.get('starts_at')!.value);
+
+    const flowData = {
+      flow_id: flowId,
+      name: this.flowEditForm.get('name')!.value,
+      starts_at: formattedDate
+    };
+
+    this.flowService.saveFlow(flowData).subscribe({
+      next: (response) => {
+        this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Поток успешно изменен'});
+        this.visibleEditFlowModal = false;
+        this.loadDeadlines(this.courseId);
+      },
+      error: (error) => {
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка при редактировании потока'});
+      }
+    });
+  }
+
+  private formatDate(dateStr: string): string {
+    const [datePart, timePart] = dateStr.split('T');
+    const [year, month, day] = datePart.split('-');
+    return `${day}.${month}.${year}`;
   }
 
 }

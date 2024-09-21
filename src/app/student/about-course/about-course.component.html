@@ -4,17 +4,17 @@
       <img src="assets/images/subject-carousel.svg" alt="subject-carousel">
     </div>
     <div class="bolimder">
-      @for (bolim of bolimder; track i; let i = $index) {
+      @for (module of modules; track i; let i = $index) {
         <div class="bolim-container">
           <div class="bolim">
             <div class="left-bolim">
-              <p><strong>Бөлім {{ bolim.id }}.</strong> {{ bolim.bolimName }}</p>
+              <p><strong>Бөлім {{ i + 1 }}.</strong> {{ module.name }}</p>
+              <p class="sabak">
+                <img src="../../../assets/images/sabak.svg" alt="sabak"> {{ module.topics.length }} тақырып
+              </p>
             </div>
-            <p class="sabak">
-              <img src="../../../assets/images/sabak.svg" alt="sabak"> {{ bolim.temaCount }} тақырып
-            </p>
             <div class="right-bolim" (click)="toggleBolim(i)">
-              <img [src]="getTemaStatusIcon(bolim.status)" alt="status">
+              <img [src]="getTemaStatusIcon(module.status)" alt="status">
               <img src="assets/images/right-arrow.svg" alt="right" class="right-arrow"
                    [ngClass]="{'rotated': isOpen[i]}">
             </div>
@@ -22,30 +22,30 @@
           <!-- Раскрывающийся список тем -->
           @if (isOpen[i]) {
             <div class="tema-list">
-              @for (tema of bolim.tema; track j; let j = $index) {
+              @for (topic of module.topics; track j; let j = $index) {
                 <div class="tema-item" (click)="toggleTema(i, j)">
-                  <img [src]="getTemaStatusIcon(tema.temaStatus)" alt="tema-status">
-                  <p><strong>{{ tema.id }} тақырып.</strong> {{ tema.temaName }}</p>
+                  <img [src]="getTemaStatusIcon(topic.status)" alt="tema-status">
+                  <p><strong>{{ j + 1 }} тақырып.</strong> {{ topic.name }}</p>
                 </div>
-                <div *ngIf="isOpenTema[i][j]" class="details-list">
-                  <div *ngIf="tema.sabak.length" class="details-sublist">
-                    <div *ngFor="let sabak of tema.sabak" class="details-item" (click)="goToSabak(sabak.id)">
-                      <img [src]="getTemaStatusIcon(sabak.status)" alt="sabak-status">
-                      <p><strong>{{ sabak.id }} сабақ.</strong> {{ sabak.sabakName }}</p>
+                <div *ngIf="isOpenTopic[i][j]" class="details-list">
+                  <div *ngIf="topic.lessons.length" class="details-sublist">
+                    <div *ngFor="let lesson of topic.lessons; let l = index" class="details-item"
+                         (click)="goToLesson(lesson.id)">
+                      <img [src]="getTemaStatusIcon(lesson.status)" alt="sabak-status">
+                      <p><strong>{{ l + 1 }} сабақ.</strong> {{ lesson.name }}</p>
+                    </div>
+                  </div>
+                  <div *ngIf="topic.test" class="details-sublist">
+                    <div class="details-item" (click)="goToTest(topic.test.id)">
+                      <img [src]="getTemaStatusIcon(topic.test.status)" alt="test-status">
+                      <p><strong>Тақырыптық тест</strong></p>
                     </div>
                   </div>
 
-                  <div *ngIf="tema.test.length" class="details-sublist">
-                    <div *ngFor="let test of tema.test" class="details-item" (click)="goToTest(test.id)">
-                      <img [src]="getTemaStatusIcon(test.status)" alt="test-status">
-                      <p><strong>{{ test.testName }}</strong></p>
-                    </div>
-                  </div>
-
-                  <div *ngIf="tema.homework.length" class="details-sublist">
-                    <div *ngFor="let homework of tema.homework" class="details-item">
-                      <img [src]="getTemaStatusIcon(homework.status)" alt="homework-status">
-                      <p><strong>{{ homework.homeworkName }}</strong></p>
+                  <div *ngIf="topic.homework" class="details-sublist">
+                    <div class="details-item">
+                      <img [src]="getTemaStatusIcon(topic.homework.status)" alt="homework-status">
+                      <p><strong>Үй жұмысы</strong></p>
                     </div>
                   </div>
                 </div>

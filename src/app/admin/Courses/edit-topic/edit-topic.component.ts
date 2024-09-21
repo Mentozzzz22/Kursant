@@ -1,10 +1,10 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
-import {TopicService} from "../../service/topic.service";
-import {Lesson} from "../../../assets/models/lesson.interface";
-import {Answer, Question, Test} from "../../../assets/models/test.interface";
-import {Homework} from "../../../assets/models/homework.interface";
+import {TopicService} from "../../../service/topic.service";
+import {Lesson} from "../../../../assets/models/lesson.interface";
+import {Answer, Question, Test} from "../../../../assets/models/test.interface";
+import {Homework} from "../../../../assets/models/homework.interface";
 import {DialogModule} from "primeng/dialog";
 import {
   FormArray,
@@ -21,19 +21,19 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
 
 type FormAnswer = FormGroup<{
-  text: FormControl<string>
-  is_correct: FormControl<boolean>
-}>
+  text: FormControl<string>;
+  is_correct: FormControl<boolean>;  // Булевое значение для правильного ответа
+}>;
 
 type FormQuestion = FormGroup<{
   text: FormControl<string>;
   answers: FormArray<FormAnswer>;
-}>
+}>;
 
 type Form = FormGroup<{
   duration: FormControl<number>;
-  questions: FormArray<FormQuestion>
-}>
+  questions: FormArray<FormQuestion>;
+}>;
 
 @Component({
   selector: 'app-edit-topic',
@@ -113,24 +113,17 @@ export class EditTopicComponent implements OnInit {
     }
   }
 
-  private generateQuestion(questionData?: Question): FormQuestion {
-    const defaultAnswers = new Array(4).fill({}).map((_, i) => {
-      return {
-        text: questionData?.answers[i]?.text || '',
-        is_correct: questionData?.answers[i]?.is_correct || false
-      };
-    });
-
-    return this.fb.group({
-      text: [questionData?.text || '', Validators.required],
-      answers: this.fb.array(defaultAnswers.map(answer => this.generateAnswer(answer)))
-    });
-  }
-
   private generateAnswer(answerData?: Answer): FormAnswer {
     return this.fb.group({
       text: [answerData?.text || '', Validators.required],
-      is_correct: [answerData?.is_correct || false]
+      is_correct: [answerData?.is_correct || false]  // Булевое значение
+    });
+  }
+
+  private generateQuestion(questionData?: Question): FormQuestion {
+    return this.fb.group({
+      text: [questionData?.text || '', Validators.required],
+      answers: this.fb.array(questionData?.answers.map(answer => this.generateAnswer(answer)) || [])
     });
   }
 
@@ -156,15 +149,14 @@ export class EditTopicComponent implements OnInit {
         this.questions().removeAt(index);
       }
     });
-
   }
 
   public setCorrectAnswer(questionIndex: number, correctAnswerIndex: number): void {
-    console.log(questionIndex, correctAnswerIndex)
     const answers = this.answers(questionIndex) as FormArray;
+
     answers.controls.forEach((ctrl, index) => {
-      const ctrlIsCorrect = ctrl.get('is_correct') as FormControl;
-      ctrlIsCorrect.setValue(index === correctAnswerIndex);
+      const isCorrectControl = ctrl.get('is_correct') as FormControl;
+      isCorrectControl.setValue(index === correctAnswerIndex);  // Устанавливаем true для выбранного, false для остальных
     });
   }
 
@@ -293,7 +285,13 @@ export class EditTopicComponent implements OnInit {
     formData.append('test', JSON.stringify(this.testForm.value));
 
     this.topicService.saveTopicContent(formData).subscribe({
-      next: response => console.log('Content saved successfully:', response),
+      next: response => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Успешно',
+          detail: `Успешно сохранено!`
+        });
+      },
       error: error => console.error('Failed to save content:', error)
     });
   }

@@ -1,8 +1,10 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {NgForOf} from "@angular/common";
 import {kurs} from "../../non-authorized/main-page/main-page.component";
 import {ProgressBarModule} from "primeng/progressbar";
 import {Router} from "@angular/router";
+import {LearnerCourseService} from "../../service/learner-course.service";
+import {LearnerCourses} from "../../../assets/models/learner_courses.interface";
 
 @Component({
   selector: 'app-courses',
@@ -14,97 +16,32 @@ import {Router} from "@angular/router";
   templateUrl: './courses.component.html',
   styleUrl: './courses.component.css'
 })
-export class CoursesComponent {
+export class CoursesComponent implements OnInit {
 
+  private learnerCourseService = inject(LearnerCourseService)
   private router = inject(Router);
 
-  public progress: number = 76;
+  public progress: number = 10;
+  public courses: LearnerCourses[] = [];
 
-  public subjectAndTeacher: any = [
-    {
-      subject: 'Физика',
-      teacher: 'Мендыбаев Абай'
-    }, {
-      subject: 'Физика',
-      teacher: 'Мендыбаев Абай'
-    }, {
-      subject: 'Информатика',
-      teacher: 'Мендыбаев Абай'
-    }, {
-      subject: 'Информатика',
-      teacher: 'Мендыбаев Абай'
-    }, {
-      subject: 'Математика',
-      teacher: 'Мендыбаев Абай'
-    }, {
-      subject: 'Математика',
-      teacher: 'Мендыбаев Абай'
-    }, {
-      subject: 'Тарих',
-      teacher: 'Мендыбаев Абай'
-    }, {
-      subject: 'Тарих',
-      teacher: 'Мендыбаев Абай'
-    },
-  ]
+  ngOnInit() {
+    this.getCourses()
+  }
 
-  public kurstar: kurs[] = [
-    {
-      id: 1,
-      img: 'assets/images/subject1.svg',
-      subjectName: 'Қазақстан тарихы',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      progress: 76,
-      price: 70000,
-    }, {
-      id: 2,
-      img: 'assets/images/subject2.svg',
-      subjectName: 'Математика',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      progress: 76,
-      price: 70000,
-    }, {
-      id: 3,
-      img: 'assets/images/subject3.svg',
-      subjectName: 'Физика',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      progress: 76,
-      price: 70000,
-    }, {
-      id: 4,
-      img: 'assets/images/subject4.svg',
-      subjectName: 'Информатика',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      progress: 76,
-      price: 70000,
-    }, {
-      id: 5,
-      img: 'assets/images/subject5.svg',
-      subjectName: 'География',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      progress: 76,
-      price: 70000,
-    }, {
-      id: 6,
-      img: 'assets/images/subject6.svg',
-      subjectName: 'Ағылшын тілі',
-      bolim: 10,
-      sabak: 70,
-      closestPotok: '22/09/2024',
-      progress: 76,
-      price: 70000,
-    },
-  ]
+  public getCourses() {
+    this.learnerCourseService.getCourses().subscribe((data) => {
+        this.courses = data.map(course => ({
+          ...course,
+          poster: `http://127.0.0.1:8000${course.poster}`
+        }));
+        console.log(this.courses)
+      },
+      (error) => {
+        console.error('Error fetching courses:', error);
+      });
+  }
+
+
   // Метод для перехода на страницу курса
   goToCourse(courseId: number): void {
     this.router.navigate(['/student/courses', courseId]);

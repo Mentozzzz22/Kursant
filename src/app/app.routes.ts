@@ -12,18 +12,18 @@ import {AccessDeniedComponent} from "./login/access-denied/access-denied.compone
 import {TestPageComponent} from "./student/test-page/test-page.component";
 import {ApplicationComponent} from "./admin/application/application.component";
 import {AdminComponent} from "./admin/admin.component";
-import {CourseComponent} from "./admin/course/course.component";
+import {CourseComponent} from "./admin/Courses/course/course.component";
 import {CuratorComponent} from "./curator/curator.component";
 import {HomeworksComponent} from "./curator/homeworks/homeworks.component";
 import {HomeworkDetailComponent} from "./curator/homeworks/homework-detail/homework-detail.component";
 import {StudentsComponent} from "./curator/students/students.component";
-import {EditCourseComponent} from "./admin/edit-course/edit-course.component";
-import {EditModuleComponent} from "./admin/edit-module/edit-module.component";
-import {EditTopicComponent} from "./admin/edit-topic/edit-topic.component";
+import {EditCourseComponent} from "./admin/Courses/edit-course/edit-course.component";
+import {EditModuleComponent} from "./admin/Courses/edit-module/edit-module.component";
+import {EditTopicComponent} from "./admin/Courses/edit-topic/edit-topic.component";
 import {SalesComponent} from "./sales/sales.component";
 import {ApplicationSalesComponent} from "./sales/application-sales/application-sales.component";
-import {FlowDetailsComponent} from "./admin/flow-details/flow-details.component";
-import {FlowDeadlinesComponent} from "./admin/flow-deadlines/flow-deadlines.component";
+import {FlowDetailsComponent} from "./admin/Courses/flow-details/flow-details.component";
+import {FlowDeadlinesComponent} from "./admin/Courses/flow-deadlines/flow-deadlines.component";
 import {EmployeeComponent} from "./admin/employee/employee.component";
 import {CuratorAddComponent} from "./admin/curator-add/curator-add.component";
 import {LearnerComponent} from "./admin/learner/learner.component";
@@ -42,7 +42,7 @@ export const routes: Routes = [
     path: 'student', component: StudentComponent, children: [
       {path: 'courses', component: CoursesComponent, children: []},
       {path: 'courses/:courseId', component: AboutCourseComponent},
-      {path: 'sabak/:sabakId', component: SabakPageComponent},
+      {path: 'lesson/:lessonId', component: SabakPageComponent},
       {path: 'test/:testId', component: TestPageComponent},
       {path: 'homework-list', component: HomeWorkComponent},
     ]

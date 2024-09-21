@@ -1,16 +1,17 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {DropdownModule} from "primeng/dropdown";
-import {ModuleService} from "../../service/module.service";
-import {FlowService} from "../../service/flow.service";
+import {ModuleService} from "../../../service/module.service";
+import {FlowService} from "../../../service/flow.service";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from "@angular/router";
-import {Curator, flowCourses, GetFlow} from "../../../assets/models/getFlow.interface";
+import {Curator, flowCourses, GetFlow} from "../../../../assets/models/getFlow.interface";
 import {NgForOf, NgIf} from "@angular/common";
-import {CuratorService} from "../../service/curator.service";
+import {CuratorService} from "../../../service/curator.service";
 import {DialogModule} from "primeng/dialog";
 import {PaginatorModule} from "primeng/paginator";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {filter, Subscription} from "rxjs";
+import {ConfirmPopupModule} from "primeng/confirmpopup";
 
 @Component({
   selector: 'app-flow-details',
@@ -22,7 +23,8 @@ import {filter, Subscription} from "rxjs";
     PaginatorModule,
     ReactiveFormsModule,
     NgIf,
-    RouterOutlet
+    RouterOutlet,
+    ConfirmPopupModule
   ],
   templateUrl: './flow-details.component.html',
   styleUrl: './flow-details.component.css'
@@ -34,6 +36,7 @@ export class FlowDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
 
   public flowIndex!: number;
   public isDeadlinesOpened: boolean = false;
@@ -41,8 +44,11 @@ export class FlowDetailsComponent implements OnInit {
   public curators: Curator[] = [];
   public courses: flowCourses[] = [];
   public flowId!: number;
+  public flowName!: string;
   public flowForm!: FormGroup;
+  public flowEditForm!: FormGroup;
   public AddCuratorVisible: boolean = false;
+  public visibleEditFlowModal: boolean = false;
   public addCuratorForm!: FormGroup;
   public selectedCourseId!: number;
   private navigationSubscription: Subscription;
@@ -65,6 +71,12 @@ export class FlowDetailsComponent implements OnInit {
       this.flowId = +params.get('flowId')!;
       this.loadFlow(this.flowId)
     });
+
+    this.flowEditForm = this.fb.group({
+      name: ['', [Validators.required]],
+      starts_at: ['', [Validators.required]],
+    })
+
     this.loadCurators()
     this.initAddCuratorForm();
     this.checkModuleOpened();
@@ -98,6 +110,7 @@ export class FlowDetailsComponent implements OnInit {
       this.flow = data;
       this.courses = data.courses
       this.flowIndex = data.index
+      this.flowName = data.name
     });
   }
 
@@ -117,15 +130,24 @@ export class FlowDetailsComponent implements OnInit {
     }
   }
 
-  public removeCurator(curatorId: number) {
-    console.log(curatorId)
-    this.flowService.removeCuratorFromCourse(curatorId).subscribe({
-      next: (response) => {
-        this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Куратор удален'});
-        this.loadFlow(this.flowId); // Перезагрузить данные потока
-      },
-      error: (error) => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Не удалось удалить куратора'});
+  public removeCurator(event: Event, curatorId: number) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Вы действительно хотите удалить этого куратора?',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Нет',
+      acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      accept: () => {
+        this.flowService.removeCuratorFromCourse(curatorId).subscribe({
+          next: (response) => {
+            this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Куратор удален'});
+            this.loadFlow(this.flowId); // Перезагрузить данные потока
+          },
+          error: (error) => {
+            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Не удалось удалить куратора'});
+          }
+        });
       }
     });
   }
@@ -137,6 +159,46 @@ export class FlowDetailsComponent implements OnInit {
 
   public navigateToCourses() {
     this.router.navigate(['/admin/course']);
+  }
+
+  public showEditFlowDialog() {
+    this.visibleEditFlowModal = true;
+  }
+
+  public onCancel(): void {
+    this.visibleEditFlowModal = false;
+  }
+
+  public onSubmitAddFlow(flowId: number) {
+    if (!this.flowEditForm.valid) {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Необходимо заполнить все поля!'});
+      return;
+    }
+
+    const formattedDate = this.formatDate(this.flowEditForm.get('starts_at')!.value);
+
+    const flowData = {
+      flow_id: flowId,
+      name: this.flowEditForm.get('name')!.value,
+      starts_at: formattedDate
+    };
+
+    this.flowService.saveFlow(flowData).subscribe({
+      next: (response) => {
+        this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Поток успешно изменен'});
+        this.visibleEditFlowModal = false;
+        this.loadFlow(this.flowId)
+      },
+      error: (error) => {
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка при редактировании потока'});
+      }
+    });
+  }
+
+  private formatDate(dateStr: string): string {
+    const [datePart, timePart] = dateStr.split('T');
+    const [year, month, day] = datePart.split('-');
+    return `${day}.${month}.${year}`;
   }
 
 }

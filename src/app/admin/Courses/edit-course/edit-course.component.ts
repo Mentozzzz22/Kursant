@@ -3,10 +3,12 @@ import {NgForOf, NgIf} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from "@angular/router";
-import {ModuleService} from "../../service/module.service";
-import {Module} from "../../../assets/models/module.interface";
-import {CourseService} from "../../service/course.service";
+import {ModuleService} from "../../../service/module.service";
+import {Module} from "../../../../assets/models/module.interface";
+import {CourseService} from "../../../service/course.service";
 import {filter, Subscription} from "rxjs";
+import {ConfirmationService, MessageService} from "primeng/api";
+import {ConfirmPopupModule} from "primeng/confirmpopup";
 
 @Component({
   selector: 'app-edit-course',
@@ -17,7 +19,8 @@ import {filter, Subscription} from "rxjs";
     FormsModule,
     RouterOutlet,
     NgIf,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ConfirmPopupModule
   ],
   templateUrl: './edit-course.component.html',
   styleUrl: './edit-course.component.css'
@@ -27,6 +30,8 @@ export class EditCourseComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private moduleService = inject(ModuleService);
   private courseService = inject(CourseService);
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
   private fb = inject(FormBuilder);
   public EditModuleVisible: boolean = false;
   public AddModuleVisible: boolean = false;
@@ -132,13 +137,32 @@ export class EditCourseComponent implements OnInit, OnDestroy {
     });
   }
 
-  public deleteCourse(courseId: number) {
-    this.courseService.deleteCourse(courseId).subscribe({
-      next: () => {
-        this.router.navigate(['/admin/course']);
-      },
-      error: (err) => {
-        console.error('Ошибка при удалении курса:', err);
+  public deleteCourse(event: Event, courseId: number) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Вы действительно хотите удалить этот курс?',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Нет',
+      acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      accept: () => {
+        this.courseService.deleteCourse(courseId).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Успешно',
+              detail: 'Курс успешно удален!'
+            });
+            this.router.navigate(['/admin/course']);
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Ошибка при удалении курса'
+            });
+          }
+        });
       }
     });
   }

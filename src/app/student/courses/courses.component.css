@@ -21,12 +21,13 @@
 }
 
 .lil-cards {
-  display: flex;
-  justify-content: space-between;
-  gap: 25px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 25px;
 }
 
 .lil-card {
+  max-width: 300px;
   padding: 13px 30px;
   background-color: white;
   border-radius: 20px;

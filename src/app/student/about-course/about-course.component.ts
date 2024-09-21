@@ -1,40 +1,9 @@
 import {Component, inject, input, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {LearnerCourseService} from "../../service/learner-course.service";
+import {LearnerModules} from "../../../assets/models/learner_course.interface";
 
-export interface sabak {
-  id: number,
-  sabakName: string,
-  status: string,
-}
-
-export interface test {
-  id: number,
-  testName: string,
-  status: string,
-}
-
-export interface homework {
-  homeworkName: string,
-  status: string,
-}
-
-export interface tema {
-  id: number,
-  temaName: string,
-  temaStatus: string,
-  sabak: sabak[],
-  test: test[],
-  homework: homework[]
-}
-
-export interface bolim {
-  id: number,
-  temaCount: number,
-  bolimName: string,
-  status: string,
-  tema: tema[]
-}
 
 @Component({
   selector: 'app-about-course',
@@ -49,142 +18,47 @@ export interface bolim {
 })
 export class AboutCourseComponent implements OnInit {
 
+  private learnerCourseService = inject(LearnerCourseService)
   private router = inject(Router)
+  private route = inject(ActivatedRoute)
+  public courseId!: number;
+  public modules: LearnerModules[] = []
+  public isOpen: boolean[] = [];
+  public isOpenTopic: boolean[][] = [];
 
-  courseId = input.required<string>()
-
-  ngOnInit(){
+  ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      this.courseId = +params.get('courseId')!;
+      this.getCourse(this.courseId)
+    });
   }
 
-  public bolimder: bolim[] = [
-    {
-      id: 1,
-      temaCount: 3,
-      bolimName: 'Қазақстандағы ежелгі адамдардың өмірі',
-      status: 'opened',
-      tema: [
-        {
-          id: 1,
-          temaName: 'Адамзаттың пайда болуы',
-          temaStatus: 'finished',
-          sabak: [
-            {id: 1, sabakName: 'Қазақстан тарихын зерттеуші отандық тарихшылар', status: 'finished'},
-            {id: 2, sabakName: 'Қазақстан тарихын зерттеуші отандық тарихшылар', status: 'opened'},
-          ],
-          test: [
-            {id: 1, testName: 'Тақырыптық тест', status: 'closed'},
-          ],
-          homework: [
-            {homeworkName: 'Үй жұмысы', status: 'closed'},
-          ]
-        },
-        {
-          id: 2,
-          temaName: 'Адамзаттың пайда болуы',
-          temaStatus: 'opened',
-          sabak: [],
-          test: [],
-          homework: []
-        },
-        {
-          id: 3,
-          temaName: 'Адамзаттың пайда болуы',
-          temaStatus: 'closed',
-          sabak: [],
-          test: [],
-          homework: []
-        },
-      ]
-    },
-    {
-      id: 2,
-      temaCount: 3,
-      bolimName: 'Қазақстандағы ежелгі адамдардың өмірі',
-      status: 'closed',
-      tema: [
-        {
-          id: 1,
-          temaName: 'Адамзаттың пайда болуы',
-          temaStatus: 'closed',
-          sabak: [],
-          test: [],
-          homework: []
-        },
-        {
-          id: 2,
-          temaName: 'Адамзаттың пайда болуы',
-          temaStatus: 'closed',
-          sabak: [],
-          test: [],
-          homework: []
-        },
-        {
-          id: 3,
-          temaName: 'Адамзаттың пайда болуы',
-          temaStatus: 'closed',
-          sabak: [],
-          test: [],
-          homework: []
-        },
-      ]
-    },
-    {
-      id: 3,
-      temaCount: 3,
-      bolimName: 'Қазақстандағы ежелгі адамдардың өмірі',
-      status: 'closed',
-      tema: [
-        {
-          id: 1,
-          temaName: 'Адамзаттың пайда болуы',
-          temaStatus: 'closed',
-          sabak: [],
-          test: [],
-          homework: []
-        },
-        {
-          id: 2,
-          temaName: 'Адамзаттың пайда болуы',
-          temaStatus: 'closed',
-          sabak: [],
-          test: [],
-          homework: []
-        },
-        {
-          id: 3,
-          temaName: 'Адамзаттың пайда болуы',
-          temaStatus: 'closed',
-          sabak: [],
-          test: [],
-          homework: []
-        },
-      ]
-    },
-  ]
-  isOpen: boolean[] = [];
-  isOpenTema: boolean[][] = [];
-
-  constructor() {
-    // Инициализация всех bolim как закрытых
-    this.isOpen = new Array(this.bolimder.length).fill(false);
-    this.isOpenTema = this.bolimder.map(bolim => new Array(bolim.tema.length).fill(false));
+  public getCourse(courseId: number) {
+    this.learnerCourseService.getCourse(courseId).subscribe((data) => {
+      this.modules = data.modules
+      console.log('Data received:', data);
+      this.isOpen = new Array(this.modules.length).fill(false);
+      this.isOpenTopic = this.modules.map(module => new Array(module.topics.length).fill(false));
+    })
   }
 
-  // Метод для переключения состояния раскрытия bolim
   toggleBolim(index: number) {
     this.isOpen[index] = !this.isOpen[index];
   }
 
   toggleTema(bolimIndex: number, temaIndex: number) {
-    this.isOpenTema[bolimIndex][temaIndex] = !this.isOpenTema[bolimIndex][temaIndex];
+    this.isOpenTopic[bolimIndex][temaIndex] = !this.isOpenTopic[bolimIndex][temaIndex];
   }
 
-  // Метод для получения иконки статуса темы
   getTemaStatusIcon(status: string): string {
-    if (status === 'finished') {
+    if (status === 'passed') {
       return 'assets/images/finished.svg';
     } else if (status === 'opened') {
       return 'assets/images/opened.svg';
+    } else if (status === 'expired') {
+      return 'assets/images/expired.svg';
+    } else if (status === 'opened_retake') {
+      return 'assets/images/opened-retake.svg';
     } else {
       return 'assets/images/closed.svg';
     }
@@ -194,8 +68,8 @@ export class AboutCourseComponent implements OnInit {
     this.router.navigate(['/student/test', testId]);
   }
 
-  goToSabak(sabakId: number): void {
-    this.router.navigate(['/student/sabak', sabakId]);
+  goToLesson(lessonId: number): void {
+    this.router.navigate(['/student/lesson', lessonId]);
   }
 
 }

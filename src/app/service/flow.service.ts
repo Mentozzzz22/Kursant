@@ -7,6 +7,7 @@ import {Course} from "../../assets/models/course.interface";
 import {GetFlows} from "../../assets/models/getFlows.interface";
 import {GetFlow} from "../../assets/models/getFlow.interface";
 import {GetDeadlines} from "../../assets/models/getDeadlines.interface";
+import {tap} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -35,20 +36,48 @@ export class FlowService {
     );
   }
 
-  addCuratorToCourse(data: { flow_course_id: number; curator_id: number }): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Token ${this.userService.token}`);
-    return this.http.post(`${this.apiUrl}/add_curator/`, data, { headers });
+  public saveFlow(flowData: any): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    return this.http.post(`${this.apiUrl}/save_flow/`, flowData, {headers}).pipe(
+      catchError(error => {
+        console.error('Save flow failed:', error);
+        return throwError(error);
+      })
+    );
   }
 
-  removeCuratorFromCourse(curatorId: number): Observable<any> {
+  public deleteFlow(flowId: number): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    return this.http.post<any>(`${this.apiUrl}/delete_flow/`, {flow_id: flowId},
+      {headers}
+    )
+      .pipe(
+        catchError((error) => {
+          console.error('Error deleting course:', error);
+          return throwError(error);
+        })
+      )
+  }
+
+
+  public addCuratorToCourse(data: { flow_course_id: number; curator_id: number }): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Token ${this.userService.token}`);
+    return this.http.post(`${this.apiUrl}/add_curator/`, data, {headers});
+  }
+
+  public removeCuratorFromCourse(curatorId: number): Observable<any> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
     console.log(curatorId)
 
-    return this.http.post(`${this.apiUrl}/remove_curator/`, { flow_curator_id: curatorId }, { headers });
+    return this.http.post(`${this.apiUrl}/remove_curator/`, {flow_curator_id: curatorId}, {headers});
   }
 
-  getCourseDeadlines(flowCourseId: number): Observable<GetDeadlines> {
+  public getCourseDeadlines(flowCourseId: number): Observable<GetDeadlines> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
     return this.http.get<GetDeadlines>(`${this.apiUrl}/get_course_deadlines/`, {
@@ -57,9 +86,9 @@ export class FlowService {
     });
   }
 
-  saveCourseDeadlines(data: any): Observable<any> {
+  public saveCourseDeadlines(data: any): Observable<any> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
-    return this.http.post(`${this.apiUrl}/save_course_deadlines/`, data, { headers });
+    return this.http.post(`${this.apiUrl}/save_course_deadlines/`, data, {headers});
   }
 }

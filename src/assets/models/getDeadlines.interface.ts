@@ -26,4 +26,6 @@ export interface FlowTopics {
 export interface GetDeadlines {
   flow_course_id: number;
   modules: FlowModules[]
+  flow_index: number;
+  flow_course_name: string;
 }

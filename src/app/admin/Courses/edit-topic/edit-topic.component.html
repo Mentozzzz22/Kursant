@@ -1,6 +1,6 @@
 <div class="edit-course-header">
   <div class="header-text">
-    <img src="assets/images/back-arrow.svg" alt="back" (click)="back()">
+    <img src="../../../../assets/images/back-arrow.svg" alt="back" (click)="back()">
     <h3>Тақырып {{ topicIndex }}. {{ topicName }}</h3>
   </div>
   <div class="course-actions">
@@ -39,6 +39,7 @@
              class="test-container">
           <div class="test-header">
             <h5>Вопрос {{ qIndex + 1 }}</h5>
+            <p-confirmPopup/>
             <button type="button" (click)="deleteQuestion($event, qIndex)"><i class="pi pi-times"></i></button>
           </div>
           <div class="question">
@@ -48,11 +49,11 @@
           <div class="answers" formArrayName="answers">
             <p>Нұсқалар</p>
             <div class="answer-inputs">
-              <div class="answer" *ngFor="let answer of answers(qIndex).controls; let aIndex = index"
-                   [formGroupName]="aIndex">
-                <label [for]="'answer-' + qIndex + '-' + aIndex" class="answer-label">
-                  <input type="radio" [id]="'answer-' + qIndex + '-' + aIndex"
-                         [attr.name]="'answer-' + qIndex" formControlName="is_correct"
+              <div class="answer" *ngFor="let answer of answers(qIndex).controls; let aIndex = index" [formGroupName]="aIndex">
+                <label class="answer-label">
+                  <input type="radio"
+                         [attr.name]="'answer-' + qIndex"
+                         [checked]="answer.get('is_correct')?.value"
                          (change)="setCorrectAnswer(qIndex, aIndex)">
                   <span class="radio-custom"></span>
                   <input type="text" class="answer-text" formControlName="text" placeholder="Введите текст ответа">

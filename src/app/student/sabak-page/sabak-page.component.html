@@ -1,25 +1,18 @@
 <div class="test-container">
   <div class="test-content">
 
-    <div class="breadcrumb-container">
-      <p-breadcrumb class="max-w-full" [model]="items">
-        <ng-template pTemplate="item" let-item>
-          <ng-container *ngIf="item.route">
-            <a [routerLink]="item.route" class="breadcrumb-menu-link">
-              <span class="breadcrumb-label-text">{{ item.label }}</span>
-            </a>
-          </ng-container>
-        </ng-template>
-        <ng-template pTemplate="separator"> /</ng-template>
-      </p-breadcrumb>
+    <div class="breadcrumb-container" (click)="back()">
+      <img src="assets/images/back-arrow.svg" alt="back">
+      <span class="breadcrumb-label-text">{{ courseName }} / {{ topicName }}
+        / {{ lessonName }}</span>
     </div>
 
     <div class="test-header">
       <div class="header-text">
-        <h2><strong>Мезолит. Орта тас дәуірі</strong>/ 4 сабақ</h2>
-        <p>Мұғалім: Ирисбеков Мақсат</p>
+        <h2><strong>{{ topicName }}. {{ lessonName }}</strong>/ {{ lessonIndex }} сабақ</h2>
+        <p>Мұғалім: {{ teacherName }}</p>
       </div>
-      <button class="next-sabak-button">Келесі сабақ</button>
+      <button class="next-sabak-button" (click)="nextLesson()">Келесі сабақ</button>
     </div>
 
     <div class="test-video-container">
@@ -39,16 +32,16 @@
       </div>
 
       <div class="test-right">
-        <h3><strong>Мезолит. Орта тас дәуірі</strong></h3>
+        <h3><strong>{{ topicName }}. {{ lessonName }}</strong></h3>
         <div class="progress-wrappper">
           <p>Тақырып прогрессі</p>
           <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
         </div>
         <div class="sabaktar">
-          @for (sabak of sabaktar; track sabak.id) {
+          @for (lesson of lessons; track i; let i = $index) {
             <div class="sabak">
-              <img [src]="getTemaStatusIcon(sabak.status)" alt="status">
-              <p>{{ sabak.id }} сабақ. {{ sabak.tema }}. {{ sabak.sabakName }}</p>
+              <img [src]="getTemaStatusIcon(lesson.status)" alt="status">
+              <p>{{ i + 1 }} сабақ. {{ topicName }}. {{ lesson.name }}</p>
             </div>
           }
         </div>

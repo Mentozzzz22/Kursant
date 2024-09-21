@@ -55,6 +55,7 @@
   padding: 36px;
   border: 1px solid #BBBBBB;
   border-radius: 30px;
+  max-width: 420px;
 }
 
 .test-right h3 {
@@ -83,6 +84,8 @@ p-progressBar {
 
 .sabak p {
   font-size: 15px;
+  font-weight: 600;
+  color: #000000;
 }
 
 .progress-wrappper {
@@ -93,15 +96,17 @@ p-progressBar {
 
 .progress-wrappper p {
   font-size: 13px;
+  color: #000000;
+  font-weight: 500;
 }
 
-::ng-deep .p-breadcrumb{
+::ng-deep .p-breadcrumb {
   margin: 0;
   padding: 0;
   border: none;
 }
 
-::ng-deep .p-breadcrumb-list  {
+::ng-deep .p-breadcrumb-list {
   margin: 0;
   padding: 0;
 }
@@ -116,8 +121,12 @@ p-progressBar {
 }
 
 .breadcrumb-container {
-
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
 }
+
 ::ng-deep a {
   text-decoration: none;
 }

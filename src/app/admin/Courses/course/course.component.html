@@ -6,8 +6,8 @@
       <div class="supplier-actions">
         <div class="search-form">
           <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
-          <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input"/>
-          <button type="submit" class="search-button">Поиск</button>
+          <input type="text" id="supplierSearch" placeholder="Название" class="search-input"/>
+          <button type="submit" class="search-button" (click)="onSearch()">Поиск</button>
         </div>
         <button class="add-course-btn" (click)="showAddCourseDialog()" *ngIf="activeTab === 'courseContent'">
           Добавить курс
@@ -23,14 +23,14 @@
     <div class="content-buttons">
       <button class="content-button" (click)="setActiveTab('courseContent')"
               [class.active]="activeTab === 'courseContent'">
-        <img src="assets/images/time_icon.svg" alt="Courses" class="logo"/>
+        <img src="../../../../assets/images/time_icon.svg" alt="Courses" class="logo"/>
         <div class="content-button-names">
           <h3>Курстар</h3>
           <p>{{ courses.length }} курс</p>
         </div>
       </button>
       <button class="content-button" (click)="setActiveTab('flowWorks')" [class.active]="activeTab === 'flowWorks'">
-        <img src="assets/images/potok_icon.svg" alt="Courses" class="logo"/>
+        <img src="../../../../assets/images/potok_icon.svg" alt="Courses" class="logo"/>
         <div class="content-button-names">
           <h3>Поток</h3>
           <p>{{ flows.length }} поток</p>
@@ -45,11 +45,11 @@
           <div class="kurs-card-content">
             <div class="kurs-info">
               <p class="bolim">
-                <img src="../../../assets/images/bolim.svg" alt="bolim">
+                <img src="../../../../assets/images/bolim.svg" alt="bolim">
                 {{ course.modules_count }} бөлім
               </p>
               <p class="sabak">
-                <img src="../../../assets/images/sabak.svg" alt="sabak">
+                <img src="../../../../assets/images/sabak.svg" alt="sabak">
                 {{ course.lessons_count }} сабақ
               </p>
             </div>
@@ -72,10 +72,16 @@
 
     <ng-container *ngIf="activeTab === 'flowWorks'">
       <div class="flow-item" [ngClass]="getFlowColorClass(i)" *ngFor="let flow of flows; let i = index"
-      (click)="navigateToFlowDetails(flow.flow_id)">
-        <div class="flow-header">
-          <span class="flow-stream">Поток #{{ i + 1 }}</span>
-          <span class="flow-date">Дата: {{ flow.starts_at }}</span>
+           (click)="navigateToFlowDetails(flow.flow_id)">
+        <div class="flow-head">
+          <div class="flow-header">
+            <span class="flow-stream">Поток #{{ i + 1 }}</span>
+            <span class="flow-date">Дата: {{ flow.starts_at }}</span>
+          </div>
+          <p-confirmPopup/>
+          <button class="delete-curator" (click)="removeFlow($event, flow.flow_id); $event.stopPropagation()">
+            <i class="pi pi-trash"></i>
+          </button>
         </div>
         <div class="flow-title">{{ flow.name }}</div>
         <div class="flow-tags">
@@ -156,17 +162,17 @@
 
   <form class="client-edit__form" [formGroup]="flowAddForm">
     <div class="form-group">
-      <label for="name1" class="form-label">Название</label>
+      <label for="name1" class="form-label">Название потока</label>
       <input type="text" id="name1" class="form-input" formControlName="name">
     </div>
 
     <div class="form-group">
-      <label for="startDate" class="form-label">Цена</label>
-      <input type="text" id="startDate" class="form-input" formControlName="starts_at">
+      <label for="startDate" class="form-label">Дата</label>
+      <input type="date" id="startDate" class="form-input" formControlName="starts_at">
     </div>
 
     <div class="form-actions">
-      <button type="button" class="btn btn--primary" (click)="onSubmitAddCourse()">Добавить</button>
+      <button type="button" class="btn btn--primary" (click)="onSubmitAddFlow()">Добавить</button>
       <button type="button" class="btn btn--secondary" (click)="onCancel()">Отмена</button>
     </div>
   </form>

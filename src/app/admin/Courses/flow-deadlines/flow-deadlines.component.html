@@ -1,0 +1,97 @@
+<div class="edit-course-header">
+  <div class="header-text">
+    <img src="../../../../assets/images/back-arrow.svg" alt="back" (click)="back()">
+    <h3> Поток #{{ flow_index }} / {{ flow_course_name }} </h3>
+  </div>
+  <div class="course-actions">
+    <button class="edit-course-btn" (click)="showEditFlowDialog()">Редактировать</button>
+  </div>
+</div>
+<div class="edit-course-page" *ngIf="deadlineForm">
+  <div class="courseName">
+    <h4> {{ flow_course_name }}</h4>
+  </div>
+  <form [formGroup]="deadlineForm" (ngSubmit)="save()">
+    <div class="flow-page-container" formArrayName="modules"
+         *ngFor="let moduleControl of modulesControls.controls; let moduleIndex=index">
+      <div [formGroupName]="moduleIndex" class="module">
+        <h4>Модуль {{ moduleIndex + 1 }}</h4>
+        <div class="flowTopics" formArrayName="topics"
+             *ngFor="let topicControl of getTopicControls(moduleIndex).controls; let topicIndex=index">
+          <div [formGroupName]="topicIndex" class="topic">
+            <h5>Тема {{ topicIndex + 1 }}</h5>
+
+            <div class="flowLessons">
+              <div formArrayName="lessons"
+                   *ngFor="let lessonControl of getLessonControls(moduleIndex, topicIndex).controls; let lessonIndex=index">
+                <div [formGroupName]="lessonIndex" class="lesson">
+                  <label for="lesson{{ moduleIndex }}{{ topicIndex }}{{ lessonIndex }}">Дедлайн
+                    урока {{ lessonIndex + 1 }}</label>
+                  <input id="lesson{{ moduleIndex }}{{ topicIndex }}{{ lessonIndex }}" type="text"
+                         formControlName="deadline">
+                  <small *ngIf="lessonControl.get('deadline')?.errors?.['invalidDateTime'] &&
+                lessonControl.get('deadline')?.dirty && lessonControl.get('deadline')?.touched"
+                         class="error-deadline">
+                    Неверный формат даты!
+                  </small>
+                </div>
+              </div>
+
+              <div formGroupName="test" class="lesson">
+                <label for="test{{ moduleIndex }}{{ topicIndex }}">Дедлайн теста:</label>
+                <input id="test{{ moduleIndex }}{{ topicIndex }}" type="text" formControlName="deadline">
+                <small *ngIf="topicControl.get('test')!.get('deadline')!.errors?.['invalidDateTime'] &&
+                topicControl.get('test')!.get('deadline')?.dirty && topicControl.get('test')!.get('deadline')?.touched"
+                       class="error-deadline">
+                  Неверный формат даты!
+                </small>
+              </div>
+
+              <div formGroupName="homework" class="lesson">
+                <label for="homework{{ moduleIndex }}{{ topicIndex }}">Дедлайн домашнего задания:</label>
+                <input id="homework{{ moduleIndex }}{{ topicIndex }}" type="text" formControlName="deadline">
+                <small *ngIf="topicControl.get('homework')!.get('deadline')!.errors?.['invalidDateTime'] &&
+                topicControl.get('homework')!.get('deadline')?.dirty && topicControl.get('homework')!.get('deadline')?.touched"
+                       class="error-deadline">
+                  Неверный формат даты!
+                </small>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn start-btn" [disabled]="!deadlineForm.valid">Сохранить</button>
+      <button type="button" class="btn back-btn" (click)="cancelChanges()">Отмена</button>
+    </div>
+  </form>
+</div>
+
+<p-dialog header="client-edit" [modal]="true" [(visible)]="visibleEditFlowModal" [style]="{width: '600px'}"
+          [draggable]="false">
+  <ng-template pTemplate="header">
+    <div class="client-edit__header">
+      <h3 class="client-edit__title">Редактировать поток</h3>
+    </div>
+  </ng-template>
+
+  <form class="client-edit__form" [formGroup]="flowEditForm">
+    <div class="form-group">
+      <label for="name1" class="form-label">Название потока</label>
+      <input type="text" id="name1" class="form-input" formControlName="name">
+    </div>
+
+    <div class="form-group">
+      <label for="startDate" class="form-label">Дата</label>
+      <input type="date" id="startDate" class="form-input" formControlName="starts_at">
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn start-btn" (click)="onSubmitAddFlow(flowId)">Сохранить</button>
+      <button type="button" class="btn back-btn" (click)="onCancel()">Отмена</button>
+    </div>
+  </form>
+</p-dialog>

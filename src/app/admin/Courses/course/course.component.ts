@@ -1,14 +1,15 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {CourseService} from "../../service/course.service";
+import {CourseService} from "../../../service/course.service";
 import {DialogModule} from "primeng/dialog";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {EditorModule} from "primeng/editor";
-import {MessageService} from "primeng/api";
-import {Course} from "../../../assets/models/course.interface";
-import {FlowService} from "../../service/flow.service";
-import {GetFlows} from "../../../assets/models/getFlows.interface";
+import {ConfirmationService, MessageService} from "primeng/api";
+import {Course} from "../../../../assets/models/course.interface";
+import {FlowService} from "../../../service/flow.service";
+import {GetFlows} from "../../../../assets/models/getFlows.interface";
+import {ConfirmPopupModule} from "primeng/confirmpopup";
 
 @Component({
   selector: 'app-course',
@@ -21,7 +22,8 @@ import {GetFlows} from "../../../assets/models/getFlows.interface";
     ReactiveFormsModule,
     EditorModule,
     NgIf,
-    NgClass
+    NgClass,
+    ConfirmPopupModule
   ],
   templateUrl: './course.component.html',
   styleUrl: './course.component.css'
@@ -33,7 +35,7 @@ export class CourseComponent implements OnInit {
   private router = inject(Router);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder)
-
+  private confirmationService = inject(ConfirmationService);
   public activeTab: string = 'courseContent';
   public selectedPosterName: string | undefined;
   public selectedBigPosterName: string | undefined;
@@ -45,33 +47,6 @@ export class CourseComponent implements OnInit {
   public flows: GetFlows[] = [];
   public courseAddForm!: FormGroup;
   public flowAddForm!: FormGroup;
-
-  flowWorks = [
-    {
-      stream: 1,
-      date: '22.09.2024',
-      title: 'ҰБТ-ға 3 профильді пән бойынша дайындық',
-      tags: [
-        {name: 'Физика | Ирисбеков Максат'},
-        {name: 'Тарих | Ирисбеков Максат'},
-        {name: 'Математика | Ирисбеков Максат'},
-        {name: 'Информатика | Ирисбеков Максат'}
-      ]
-    },
-    {
-      stream: 2,
-      date: '22.09.2024',
-      title: 'ҰБТ-ға 3 профильді пән бойынша дайындық',
-      tags: [
-        {name: 'Физика | Ирисбеков Максат'},
-        {name: 'Тарих | Ирисбеков Максат'},
-        {name: 'Математика | Ирисбеков Максат'},
-        {name: 'Информатика | Ирисбеков Максат'}
-      ]
-    },
-
-  ];
-
 
   ngOnInit() {
     this.loadFlows()
@@ -220,4 +195,107 @@ export class CourseComponent implements OnInit {
     const colors = ['flow-color-1', 'flow-color-2'];
     return colors[flowId];
   }
+
+  public onSubmitAddFlow() {
+    if (!this.flowAddForm.valid) {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Необходимо заполнить все поля!'});
+      return;
+    }
+
+    const formattedDate = this.formatDate(this.flowAddForm.get('starts_at')!.value);
+
+    const flowData = {
+      name: this.flowAddForm.get('name')!.value,
+      starts_at: formattedDate
+    };
+
+    this.flowService.saveFlow(flowData).subscribe({
+      next: (response) => {
+        this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Поток успешно добавлен'});
+        this.visibleAddFlowModal = false;
+        this.loadFlows();
+      },
+      error: (error) => {
+        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка при добавлении потока'});
+      }
+    });
+  }
+
+  private formatDate(dateStr: string): string {
+    const [datePart, timePart] = dateStr.split('T');
+    const [year, month, day] = datePart.split('-');
+    return `${day}.${month}.${year}`;
+  }
+
+  public removeFlow(event: Event, flowId: number): void {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Вы действительно хотите удалить этот поток?',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Нет',
+      acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      accept: () => {
+        this.flowService.deleteFlow(flowId).subscribe({
+          next: () => {
+            this.flows = this.flows.filter(flow => flow.flow_id !== flowId); // Удаление потока из списка на клиенте
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Успешно',
+              detail: 'Поток успешно удален!'
+            });
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Ошибка при удалении потока'
+            });
+          }
+        });
+      }
+    });
+  }
+
+  public onSearch(): void {
+    const searchText = (document.getElementById('supplierSearch') as HTMLInputElement).value;
+    if (this.activeTab === 'courseContent') {
+      this.courseService.getCourses(searchText).subscribe({
+        next: (courses) => {
+          this.courses = courses;
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Результаты поиска',
+            detail: `Найдено курсов: ${courses.length}`
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка поиска',
+            detail: 'Произошла ошибка при поиске курсов'
+          });
+        }
+      });
+    } else if (this.activeTab === 'flowWorks') {
+      this.flowService.getFlows(searchText).subscribe({
+        next: (flows) => {
+          this.flows = flows;
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Результаты поиска',
+            detail: `Найдено потоков: ${flows.length}`
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка поиска',
+            detail: 'Произошла ошибка при поиске потоков'
+          });
+        }
+      });
+    }
+  }
+
 }

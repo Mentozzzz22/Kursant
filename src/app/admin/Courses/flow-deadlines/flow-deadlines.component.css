@@ -127,10 +127,12 @@
 .lesson {
   display: flex;
   flex-direction: column;
+  gap: 5px;
+  position: relative;
 }
 
 .modal-footer {
-  padding: 0  30px 30px 30px;
+  padding: 0 30px 30px 30px;
   background: white;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
@@ -150,6 +152,48 @@
   font-size: 13px;
 }
 
+.error-deadline {
+  white-space: nowrap;
+  position: absolute; /* Абсолютное позиционирование для сообщений об ошибках */
+  bottom: -20px; /* Смещение вниз относительно основного положения инпута */
+  left: 0; /* Выравнивание по левому краю родителя */
+  width: 100%; /* Занимает всю ширину элемента .lesson */
+  color: red;
+}
+
+.client-edit__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #fff;
+  border-radius: 20px;
+}
+
+.form-label {
+  display: block;
+  color: #444;
+  font-size: 13px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  width: 100%;
+  max-width: 276px;
+  padding: 12px 14px;
+  border: 1px solid #e3e3e3;
+  border-radius: 9px;
+  background-color: #f9fafc;
+  font-size: 11px;
+  color: #444;
+  font-weight: 500;
+}
+
+.form-actions {
+  display: flex;
+  gap: 14px;
+}
+
 .btn {
   padding: 10px 58px;
   border-radius: 9px;
@@ -158,3 +202,10 @@
   text-align: center;
   cursor: pointer;
 }
+
+.form-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+

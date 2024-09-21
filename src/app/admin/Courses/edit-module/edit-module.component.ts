@@ -3,11 +3,12 @@ import {DialogModule} from "primeng/dialog";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Location, NgForOf, NgIf} from "@angular/common";
 import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from "@angular/router";
-import {TopicService} from "../../service/topic.service";
-import {Topic} from "../../../assets/models/topic.interface";
-import {Module} from "../../../assets/models/module.interface";
-import {ModuleService} from "../../service/module.service";
+import {TopicService} from "../../../service/topic.service";
+import {Topic} from "../../../../assets/models/topic.interface";
+import {ModuleService} from "../../../service/module.service";
 import {filter, Subscription} from "rxjs";
+import {ConfirmationService, MessageService} from "primeng/api";
+import {ConfirmPopupModule} from "primeng/confirmpopup";
 
 @Component({
   selector: 'app-edit-module',
@@ -18,7 +19,8 @@ import {filter, Subscription} from "rxjs";
     NgForOf,
     NgIf,
     RouterOutlet,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ConfirmPopupModule
   ],
   templateUrl: './edit-module.component.html',
   styleUrl: './edit-module.component.css'
@@ -29,7 +31,8 @@ export class EditModuleComponent implements OnInit, OnDestroy {
   private topicService = inject(TopicService);
   private moduleService = inject(ModuleService);
   private fb = inject(FormBuilder);
-
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
   public EditTopicVisible: boolean = false;
   public AddTopicVisible: boolean = false;
   public isTopicOpened: boolean = false;
@@ -145,16 +148,34 @@ export class EditModuleComponent implements OnInit, OnDestroy {
     });
   }
 
-  public deleteModule(moduleId: number) {
-    this.moduleService.deleteCourseModule(moduleId).subscribe({
-      next: () => {
-        this.router.navigate([`/admin/edit-course/${this.courseId}`]);
-      },
-      error: (err) => {
-        console.error('Ошибка при удалении модуля:', err);
+  public deleteModule(event: Event, moduleId: number) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Вы действительно хотите удалить этот модуль?',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Нет',
+      acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      accept: () => {
+        this.moduleService.deleteCourseModule(moduleId).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Успешно',
+              detail: 'Модуль успешно удален!'
+            });
+            this.router.navigate([`/admin/edit-course/${this.courseId}`]);
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Ошибка при удалении модуля'
+            });
+          }
+        });
       }
     });
-
   }
 
   public showEditDialog(topicId: number, topicName: string) {

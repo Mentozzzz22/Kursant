@@ -12,7 +12,6 @@
   width: 84px;
   background-color: #FFFFFF;
   height: 100vh;
-  transition: width 0.2s ease;
   position: fixed;
 }
 

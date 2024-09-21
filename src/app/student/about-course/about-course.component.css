@@ -55,6 +55,7 @@
 
 .left-bolim {
   display: flex;
+  gap: 35px;
 }
 
 .left-bolim h3 {
@@ -64,6 +65,8 @@
 }
 
 .left-bolim p {
+  display: flex;
+  align-items: center;
   color: #000000;
   font-size: 13px;
   font-weight: 400;
