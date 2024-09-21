@@ -1,22 +1,23 @@
-<div class="supplier-header">
+<div class="supplier-header" *ngIf="homeWorkDetails">
   <div class="supplier-container">
-    <h1 class="supplier-title"><i class="pi pi-angle-left"></i> <span style="font-weight: bold">1 тақырып. </span> ыавваыаывваыаыв</h1>
+    <h1 class="supplier-title"><i class="pi pi-angle-left" (click)="goBack()"></i> <span style="font-weight: bold">{{homeWorkDetails.topic_index}} тақырып. </span>
+      {{homeWorkDetails.topic_name}}</h1>
   </div>
 </div>
 <div class="main-content">
 
-  <div class="content-buttons" >
-    <div class="content-description" routerLink="../picking/orders" routerLinkActive="active">
+  <div class="content-buttons" *ngIf="homeWorkDetails">
+    <div class="content-description" routerLinkActive="active">
       <div class="description">
 
-        <span style="font-weight: bold">Описание ДЗ:</span> ыавваыавыавываываываываыавываыавыааавы
-        аывва ываываы ыаваываы<br> выаваы выаваы аыв ываавы авыаыв авывыа авыавыавы авываы авыавы ываваыавы авы авыавы.
+        <span style="font-weight: bold">Описание ДЗ:</span>
+        <span> {{ homeWorkDetails.description }} </span>
 
       </div>
 
-      <div class="description-deadline"> Дедлайн: 09/09/2024      23:59 </div>
+      <div class="description-deadline"> Дедлайн: {{homeWorkDetails.deadline}} </div>
 
-      <button class="description-button" (click)="showRetakeDialog()">
+      <button class="description-button" (click)="downloadFile(homeWorkDetails.file)">
         <img src="assets/images/download_icon.svg" width="15" height="15">
         Үй жұмысының берілгені
       </button>
@@ -26,9 +27,9 @@
 
   <div class="content-buttons" >
 
-    <button class="content-button" routerLink="../picking/orders" routerLinkActive="active">Все (191)</button>
-    <button class="content-button" routerLink="../picking/in-progress" routerLinkActive="active">Сдали (171)</button>
-    <button class="content-button" routerLink="../picking/in-progress" routerLinkActive="active">Не сдали (20)</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === ''}" (click)="filterApplications('')">Все ({{homeWorkDetails?.total_count}})</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'passed'}"  (click)="filterApplications('passed')">Сдали ({{homeWorkDetails?.sent_count}})</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'not_passed'}" (click)="filterApplications('not_passed')">Не сдали (20)</button>
 
   </div>
 
@@ -36,7 +37,7 @@
 
   <div class="content-table-container">
 
-    <p-table [value]="progress" [tableStyle]="{ 'min-width': '50rem' }">
+    <p-table [value]="learnerHomeWorks"  [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template pTemplate="header">
         <tr>
           <th>ФИО ученика</th>
@@ -47,11 +48,40 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-progresses >
-        <tr (click)="showDialog()">
-          <td>{{progresses.module}}</td>
-          <td>{{progresses.topic}}</td>
-          <td>{{progresses.deadline}}</td>
-          <td>{{progresses.submitted}}</td>
+        <tr >
+
+          <td>{{progresses.learner_fullname}}</td>
+
+          <td>
+            <ng-container *ngIf="progresses.uploaded_file; else noFile">
+              <a (click)="downloadFile(progresses.uploaded_file)" style="color:#00BE5F">Скачать файл</a>
+            </ng-container>
+            <ng-template #noFile>____</ng-template>
+          </td>
+
+          <td>{{ progresses.passed_at | date:'dd.MM.yyyy HH:mm' }}</td>
+
+          <td>
+            <ng-container *ngIf="progresses.status === 'opened_retake'">
+              <span style="color: #F93C65"> Пересдача </span>
+            </ng-container>
+            <ng-container *ngIf="progresses.status === 'passed'">
+              <ng-container *ngIf="progresses.mark !== null; else giveMarkBtn">
+                {{ progresses.mark }}/100
+              </ng-container>
+              <ng-template #giveMarkBtn>
+                <button (click)="giveMark(progresses.learner_homework_id)" class="submit-mark">Ставить оценку</button>
+              </ng-template>
+            </ng-container>
+            <ng-container *ngIf="progresses.status === 'passed_retake'">
+              <button (click)="giveMark(progresses.learner_homework_id)" class="submit-mark">Ставить оценку</button>
+              <span style="color: #F93C65"> Пересдача </span>
+            </ng-container>
+            <ng-container *ngIf="progresses.status === ''">
+              ____
+            </ng-container>
+          </td>
+
         </tr>
       </ng-template>
     </p-table>
@@ -62,40 +92,72 @@
 
 <p-dialog
   header="Header"
-  [(visible)]="visible"
+  [(visible)]="isVisible"
   [modal]="true"
   [style]="{ width: '40rem' }"
   draggable="false">
   <ng-template pTemplate="header">
-    <div class="inline-flex align-items-center justify-content-center gap-2">
-      <h3>Ставить оценку</h3>
-    </div>
+
+    <ng-container *ngIf="visible">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Ставить оценку</h3>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!visible && visibleRetake">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>На пересдачу</h3>
+      </div>
+    </ng-container>
   </ng-template>
   <div class="modal-content">
 
-    <div class="block-two">
-      <div class="form-group">
-        <label for="fullName">Оценка (0-100 баллов)</label>
-        <div class="input-container">
-          <input type="text" id="fullName" class="form-control" placeholder="70" readonly>
-          <div class="edit-btn">
-            Пересдача
+    <ng-container *ngIf="visible">
+      <div class="block-two">
+        <div class="form-group">
+          <label for="fullName">Оценка (0-100 баллов)</label>
+          <div class="input-container">
+            <input type="text" id="fullName" class="form-control" placeholder="70" [(ngModel)]="mark">
+            <a class="edit-btn" (click)="openRetakeDialog()">
+              Пересдача
+            </a>
           </div>
         </div>
       </div>
+    </ng-container>
 
-    </div>
+    <ng-container *ngIf="!visible && visibleRetake">
+      <div class="block-three">
+        <div class="form-group">
+          <label for="comment">Комментарий</label>
+          <textarea id="comment" rows="8" [(ngModel)]="retakeText"></textarea>
+        </div>
+
+      </div>
+    </ng-container>
+
 
 
   </div>
   <ng-template pTemplate="footer">
     <div class="button-group">
 
-      <div class="button-container">
-        <button class="filled-button" >Поставить</button>
+      <ng-container *ngIf="visible">
+        <div class="button-container">
+          <button class="filled-button" (click)="sendMark()">Поставить</button>
 
-        <button class="outlined-button" >Отмена</button>
-      </div>
+          <button class="outlined-button" (click)="closeDialog()">Отмена</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="!visible && visibleRetake">
+        <div class="button-container">
+          <button class="filled-button" (click)="sendToRetake()">Отправить</button>
+
+          <button class="outlined-button" (click)="closeDialog()">Отмена</button>
+        </div>
+      </ng-container>
+
 
     </div>
   </ng-template>
@@ -103,39 +165,33 @@
 </p-dialog>
 
 
-<p-dialog
-  header="Header"
-  [(visible)]="visibleRetake"
-  [modal]="true"
-  [style]="{ width: '40rem' }"
-  draggable="false">
-  <ng-template pTemplate="header">
-    <div class="inline-flex align-items-center justify-content-center gap-2">
-      <h3>На пересдачу</h3>
-    </div>
-  </ng-template>
-  <div class="modal-content">
-
-    <div class="block-three">
-      <div class="form-group">
-        <label for="comment">Комментарий</label>
-        <textarea id="comment" rows="8"></textarea>
-      </div>
-
-    </div>
+<!--<p-dialog-->
+<!--  header="Header"-->
+<!--  [(visible)]="visibleRetake"-->
+<!--  [modal]="true"-->
+<!--  [style]="{ width: '40rem' }"-->
+<!--  draggable="false">-->
+<!--  <ng-template pTemplate="header">-->
+<!--    <div class="inline-flex align-items-center justify-content-center gap-2">-->
+<!--      <h3>На пересдачу</h3>-->
+<!--    </div>-->
+<!--  </ng-template>-->
+<!--  <div class="modal-content">-->
 
 
-  </div>
-  <ng-template pTemplate="footer">
-    <div class="button-group">
 
-      <div class="button-container">
-        <button class="filled-button" >Отправить</button>
 
-        <button class="outlined-button" >Отмена</button>
-      </div>
+<!--  </div>-->
+<!--  <ng-template pTemplate="footer">-->
+<!--    <div class="button-group">-->
 
-    </div>
-  </ng-template>
+<!--      <div class="button-container">-->
+<!--        <button class="filled-button" >Отправить</button>-->
 
-</p-dialog>
+<!--        <button class="outlined-button" >Отмена</button>-->
+<!--      </div>-->
+
+<!--    </div>-->
+<!--  </ng-template>-->
+
+<!--</p-dialog>-->

@@ -1,0 +1,38 @@
+<div class="supplier-header" *ngIf="test">
+  <div class="supplier-container">
+    <h1 class="supplier-title"><i class="pi pi-angle-left" ></i> <span style="font-weight: bold">{{test.topic_index}} тақырып. </span>{{test.topic_name}} / Тест</h1>
+  </div>
+</div>
+<div class="main-content">
+  <div class="content-buttons" >
+
+    <button class="content-button" [ngClass]="{'active': activeStatus === ''}" (click)="filterApplications('')">Все ({{test?.total_count}})</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'passed'}"  (click)="filterApplications('passed')">Сдали ({{test?.sent_count}})</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'not_passed'}" (click)="filterApplications('not_passed')">Не сдали (20)</button>
+
+  </div>
+
+
+  <div class="content-table-container">
+    <p-table   [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ФИО ученика</th>
+          <th>Сдал?</th>
+          <th>Дата сабмита</th>
+          <th>Результат</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-progresses >
+        <tr >
+
+          <td>{{progresses.learner_fullname}}</td>
+
+
+
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+</div>

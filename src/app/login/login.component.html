@@ -4,11 +4,13 @@
   </div>
 
   <div class="login-right" *ngIf="!loginSuccess">
-    <div class="login-header">
-      <img src="assets/images/left-arrow.svg" alt="left">
-      <p>Артқа</p>
+
+
+    <div class="left-arrow">
+      <img src="assets/images/left-arrow.svg" alt="left" width="20" height="20">Артқа
     </div>
     <div class="login-content">
+
       <div class="login-text">
         <h1>Авторизация</h1>
         <p>Қош келдіңіз, төмендегі ақпараттарды толтырыңыз.</p>
@@ -23,16 +25,17 @@
         </div>
         <button class="login-button" type="submit" [disabled]="loginForm.invalid">Енгізу</button>
       </form>
+
     </div>
     <div class="login-footer">
       <img src="assets/images/navbar-Kursant.svg" alt="Kursant">
     </div>
   </div>
 
+
   <div class="login-right" *ngIf="loginSuccess">
-    <div class="login-header">
-      <img src="assets/images/left-arrow.svg" alt="left">
-      <p>Артқа</p>
+    <div class="left-arrow">
+      <img src="assets/images/left-arrow.svg" alt="left" width="20" height="20">Артқа
     </div>
     <div class="login-content">
       <div class="login-text">

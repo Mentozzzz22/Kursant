@@ -42,6 +42,8 @@ export class ApplicationSalesComponent implements OnInit{
   private fb = inject(FormBuilder);
 
   status: string | null = null;
+  courseId : number | null= null;
+  learnerFullName:string|null=null;
   applications: SalesApplication[] = [];
   public coursesList: Course[] = [];
   visible: boolean = false;
@@ -56,7 +58,8 @@ export class ApplicationSalesComponent implements OnInit{
   selectedFile: File | null = null;
   selectedFileName: string | null = null;
   selectedApplicationType: any;
-
+  isModalVisible: boolean = false;
+  imageUrl: string | null = null;
   ngOnInit(): void {
     this.getApplications();
   }
@@ -67,6 +70,8 @@ export class ApplicationSalesComponent implements OnInit{
     learner_fullname: [''],
     learner_phone_number: [''],
     learner_region: [''],
+    course:[''],
+    paid_check: [null as File | null], // Allow File or null
     comments:['']});
 
   public applicationAddForm = this.fb.group({
@@ -106,6 +111,7 @@ export class ApplicationSalesComponent implements OnInit{
 
   showDialog(application: SalesApplication) {
     this.visible  = true;
+    this.loadCourses();
     this.coursesList = [];
 
     this.orderService.getApplicationById(application.order_id).subscribe(data => {
@@ -114,11 +120,28 @@ export class ApplicationSalesComponent implements OnInit{
 
       this.status = data.status;
 
+      this.courseId = data.order_id;
+      this.learnerFullName = data.learner_fullname;
+
       this.applicationsForm.patchValue({
         learner_fullname: data.learner_fullname,
         learner_phone_number: data.learner_phone_number,
-        learner_region: data.learner_region
+        learner_region: data.learner_region,
+        paid_check: data.paid_check as File | null
       });
+
+      if (data.paid_check) {
+        if (typeof data.paid_check === 'string') {
+          const urlParts = data.paid_check.split('/');
+          this.selectedFileName = urlParts[urlParts.length - 1];
+          this.imageUrl = `http://127.0.0.1:8000${data.paid_check}`;
+        } else if (data.paid_check instanceof File) {
+          this.selectedFileName = data.paid_check.name;
+        }
+      } else {
+        this.selectedFileName = 'Файл не выбран';
+        this.imageUrl = null;
+      }
 
       if (data.courses && data.courses.length > 0) {
         data.courses.forEach((courseId: number) => {
@@ -130,12 +153,41 @@ export class ApplicationSalesComponent implements OnInit{
     });
   }
 
+
   addCourseToCart() {
     if (this.selectedCourse) {
       this.coursesAddList.push(this.selectedCourse);
 
       this.selectedCourse = null;
     }
+  }
+
+  addCourseToUpdate() {
+    if (this.selectedCourse) {
+      const courseExists = this.coursesList.some(course => course.id === this.selectedCourse.id);
+
+      if (courseExists) {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Проверка',
+          detail: 'Курс уже добавлен в корзину',
+        });
+      } else {
+        this.coursesList.push(this.selectedCourse);
+      }
+
+      this.selectedCourse = null;
+    }
+  }
+
+  openImageModal() {
+    if (this.imageUrl) {
+      this.isModalVisible = true;
+    }
+  }
+
+  closeImageModal() {
+    this.isModalVisible = false;
   }
 
   onFileSelected(event: any) {
@@ -215,6 +267,7 @@ export class ApplicationSalesComponent implements OnInit{
       this.orderService.acceptSalesManagerOrder(form).subscribe(
         response => {
           this.visible = false;
+          this.getApplications();
           this.messageService.add({
             severity: 'success',
             summary: 'Открыть доступ',
@@ -265,6 +318,7 @@ export class ApplicationSalesComponent implements OnInit{
       this.orderService.acceptSalesManagerOrder(form).subscribe(
         response => {
           this.visibleAdd = false;
+          this.getApplications();
           this.applicationAddForm.reset();
           this.messageService.add({
             severity: 'success',
@@ -298,6 +352,7 @@ export class ApplicationSalesComponent implements OnInit{
       this.orderService.cancelSalesManagerOrder(payload).subscribe(
         response => {
           this.visible = false;
+          this.getApplications();
           this.messageService.add({
             severity: 'success',
             summary: 'Заявка отклонена',

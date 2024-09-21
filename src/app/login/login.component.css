@@ -10,33 +10,34 @@
 
 .login-container {
   display: flex;
-  justify-content: center;
-  gap: 58px;
+  gap:130px;
+}
+
+.left-arrow{
+  padding-top:5%;
+  cursor: pointer;
+}
+
+.login-footer {
+  margin-top: auto;
 }
 
 .login-left img {
-  width: 100%;
-  max-height: 650px;
+  width: 111%;
 }
 
 .login-right {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  gap: 50px;
+  gap: 100px;
 }
 
-.login-header {
-  display: flex;
-  gap: 7px;
-  cursor: pointer;
-}
 
 .login-content {
   display: flex;
   flex-direction: column;
-  gap: 30px;
 }
+
 
 .login-text h1 {
   font-size: 48px;
