@@ -30,6 +30,7 @@ import {LearnerComponent} from "./admin/learner/learner.component";
 import {TestDetailComponent} from "./curator/homeworks/test-detail/test-detail.component";
 import {ViewTestResultComponent} from "./student/view-test-result/view-test-result.component";
 import {LearnerHomeworkComponent} from "./student/learner-homework/learner-homework.component";
+import {AuthGuard} from "./service/auth.guard";
 
 export const routes: Routes = [
   {
@@ -42,7 +43,8 @@ export const routes: Routes = [
   {path: 'access-denied', component: AccessDeniedComponent},
 
   {
-    path: 'student', component: StudentComponent, children: [
+    path: 'student', component: StudentComponent, canActivate: [AuthGuard], data: { role: 'learner' },
+    children: [
       {path: 'courses', component: CoursesComponent, children: []},
       {path: 'courses/:courseId', component: AboutCourseComponent},
       {path: 'lesson/:lessonId', component: SabakPageComponent},
@@ -54,25 +56,25 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    component: AdminComponent,
+    component: AdminComponent,canActivate: [AuthGuard], data: { role: 'employee' },
     children: [
       {
-        path: 'applications', component: ApplicationComponent
+        path: 'applications', component: ApplicationComponent,canActivate: [AuthGuard], data: { role: 'employee' }
       },
       {
-        path: 'course', component: CourseComponent
+        path: 'course', component: CourseComponent,canActivate: [AuthGuard], data: { role: 'employee' }
       },
       {
-        path: 'employees', component: EmployeeComponent
+        path: 'employees', component: EmployeeComponent,canActivate: [AuthGuard], data: { role: 'employee' }
       },
       {
-        path: 'curator-add', component: CuratorAddComponent
+        path: 'curator-add', component: CuratorAddComponent,canActivate: [AuthGuard], data: { role: 'employee' }
       },
       {
-        path: 'learner-add', component: LearnerComponent
+        path: 'learner-add', component: LearnerComponent,canActivate: [AuthGuard], data: { role: 'employee' }
       },
       {
-        path: 'edit-course/:courseId', component: EditCourseComponent,
+        path: 'edit-course/:courseId', component: EditCourseComponent,canActivate: [AuthGuard], data: { role: 'employee' },
         children: [
           {
             path: 'edit-module/:moduleId',
@@ -96,7 +98,7 @@ export const routes: Routes = [
   },
   {
     path: 'curator',
-    component: CuratorComponent,
+    component: CuratorComponent,canActivate: [AuthGuard], data: { role: 'curator' },
     children: [
       {
         path: 'curator-homework', component: HomeworksComponent
@@ -118,7 +120,7 @@ export const routes: Routes = [
 
   {
     path: 'sales',
-    component: SalesComponent,
+    component: SalesComponent,canActivate: [AuthGuard], data: { role: 'sales' },
     children: [
       {
         path: 'application-sales', component: ApplicationSalesComponent

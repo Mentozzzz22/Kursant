@@ -64,7 +64,7 @@ export class UserService implements OnInit {
       'Authorization': `Token ${this.token}`
     });
 
-    return this.http.post<any>(`${this.userUrl}/user/logout/`, {}, {headers}).pipe(
+    return this.http.post<any>(`${this.userUrl}logout/`, {}, {headers}).pipe(
       tap(response => {
         if (response.success) {
           this.clearAuthData()
@@ -85,5 +85,44 @@ export class UserService implements OnInit {
     document.cookie.split(";").forEach((c) => {
       document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
+  }
+
+
+  getFullName(): string | null {
+    const userData = localStorage.getItem('user_data');
+    if (userData) {
+      const user = JSON.parse(userData);
+      return user.fullname;
+    }
+    return null;
+  }
+  verify(): Observable<any> {
+    if (!this.token || !this.role) {
+      return throwError({ status: 403, detail: 'User has no role' });
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${this.token}`
+    });
+
+    const params = {
+      token: this.token,
+      role: this.role
+    };
+
+    return this.http.get<any>(`${this.userUrl}verify/`, { headers, params }).pipe(
+      tap(response => {
+        if (response.verified) {
+          const userData = response.user_data;
+          if (userData) {
+            localStorage.setItem('user_data', JSON.stringify(userData));
+          }
+        }
+      }),
+      catchError(error => {
+        console.error('Ошибка верификации:', error);
+        return throwError(error);
+      })
+    );
   }
 }

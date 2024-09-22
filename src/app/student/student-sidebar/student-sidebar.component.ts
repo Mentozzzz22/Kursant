@@ -3,6 +3,7 @@ import {SidebarModule} from "primeng/sidebar";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Button, ButtonModule} from "primeng/button";
 import {RouterModule, Router} from "@angular/router";
+import {UserService} from "../../service/user.service";
 
 @Component({
   selector: 'app-student-sidebar',
@@ -12,7 +13,8 @@ import {RouterModule, Router} from "@angular/router";
   styleUrl: './student-sidebar.component.css'
 })
 export class StudentSidebarComponent {
-  private router = inject(Router)
+  private router = inject(Router);
+  private userService = inject(UserService);
   @Output() sidebarToggled = new EventEmitter<boolean>();
 
   isExpanded: boolean = false;
@@ -40,7 +42,18 @@ export class StudentSidebarComponent {
 
 
   navigate(link: string) {
-    this.router.navigate([link]);
+    if (link === '/logout') {
+      this.userService.logout().subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error('Ошибка при выходе:', error);
+        }
+      });
+    } else {
+      this.router.navigate([link]);
+    }
     this.isMobileSidebarOpen = false;
   }
 }

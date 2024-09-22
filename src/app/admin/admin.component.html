@@ -2,7 +2,7 @@
   <div class="sidebar" >
     <div class="sidebar-header">
       <div class="head">
-        <h3>Qwerty</h3>
+        <h3>{{ fullname || 'Пользователь' }}</h3>
       </div>
       <a routerLink="../catalog" target="_blank" rel="noopener noreferrer">Открыть сайт</a>
       <hr class="divider">
@@ -16,10 +16,6 @@
                                               routerLinkActive="active"
                                               [routerLinkActiveOptions]="{ exact: false }"><img
         src="assets/images/boxs_icon.svg" alt="box" width="14" height="14"/> Курсы</a></li>
-      <li ><a class="sidebar-menu-links" routerLink="supplier-debt"
-                                                 routerLinkActive="active"
-                                                 [routerLinkActiveOptions]="{ exact: false }"><img
-        src="assets/images/partner_icon.svg" alt="partner" width="14" height="14"/> История заказов</a></li>
       <li ><a class="sidebar-menu-links" routerLink="employees"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: false }"><img
@@ -35,7 +31,7 @@
 
     </ul>
     <div class="logout-container">
-      <a  routerLinkActive="active" class="logout"> <img src="assets/images/exit_icon.svg"
+      <a  (click)="logout()" class="logout"> <img src="assets/images/exit_icon.svg"
                                                                              alt="guide" width="14"
                                                                              height="14"/>Выйти</a>
     </div>

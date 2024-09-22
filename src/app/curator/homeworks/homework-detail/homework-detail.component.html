@@ -54,7 +54,7 @@
 
           <td>
             <ng-container *ngIf="progresses.uploaded_file; else noFile">
-              <a (click)="downloadFile(progresses.uploaded_file)" style="color:#00BE5F">Скачать файл</a>
+              <a (click)="downloadFile(progresses.uploaded_file)" style="color:#00BE5F; cursor:pointer">Скачать файл</a>
             </ng-container>
             <ng-template #noFile>____</ng-template>
           </td>

@@ -2,7 +2,7 @@ import {Component, ElementRef, inject, input, OnInit, ViewChild} from '@angular/
 import {ProgressBarModule} from "primeng/progressbar";
 import {BreadcrumbModule} from "primeng/breadcrumb";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {MenuItem} from "primeng/api";
+import {MenuItem, MessageService} from "primeng/api";
 import {LearnerCourseService} from "../../service/learner-course.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {LearnerLessons} from "../../../assets/models/learner_course.interface";
@@ -32,6 +32,7 @@ export class SabakPageComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private videoService = inject(VideoService)
+  private messageService = inject(MessageService);
 
   videoUrl!: string;
   public lessonId!: number;
@@ -48,27 +49,29 @@ export class SabakPageComponent implements OnInit {
   public checkProgressInterval: any;
   firstVideoStartTimeSaved: boolean = false;
   nextLessonIsAvailable: boolean = false;
+
   prevVideoTime: number = 0;
   videoStartTime: number = 0;
 
-  getTemaStatusIcon(status: string): { icon: string, color: string } {
+  getTemaStatusIcon(status: string): string {
     switch (status) {
       case 'passed':
-        return { icon: 'pi pi-check', color: 'green' }; // Урок пройден
+        return 'assets/images/finished.svg';
       case 'passed-retake':
-        return { icon: 'pi pi-refresh', color: 'orange' }; // Пересдача
+        return 'assets/images/passed-retake.svg';
       case 'opened':
-        return { icon: 'pi pi-unlock', color: 'blue' }; // Открыт
+        return 'assets/images/opened.svg';
       case 'expired':
-        return { icon: 'pi pi-times-circle', color: 'red' }; // Просрочен
+        return 'assets/images/expired.svg';
       case 'opened_retake':
-        return { icon: 'pi pi-undo', color: 'purple' }; // Открыт на пересдачу
+        return 'assets/images/opened-retake.svg';
       case 'completed':
-        return { icon: 'pi pi-check', color: 'green' }; // Завершен
+        return 'assets/images/completed.svg'; // Иконка для завершенного урока
       default:
-        return { icon: 'pi pi-lock', color: 'red' }; // Закрыт
+        return 'assets/images/closed.svg';
     }
   }
+
 
 
 
@@ -89,7 +92,7 @@ export class SabakPageComponent implements OnInit {
       console.log('Lesson ID from route params:', lessonIdParam);
 
       if (lessonIdParam) {
-        this.lessonId = +lessonIdParam;  // Convert to number
+        this.lessonId = +lessonIdParam;
         console.log('Assigned lessonId:', this.lessonId);
 
         this.getLesson(this.lessonId);
@@ -119,12 +122,10 @@ export class SabakPageComponent implements OnInit {
     })
   }
 
-  // Метод для вычисления прогресса
   public calculateProgress() {
     const totalLessons = this.lessons.length;
     const passedLessons = this.lessons.filter(lesson => lesson.status === 'passed').length; // Количество пройденных уроков
 
-    // Вычисляем процент
     if (totalLessons > 0) {
       this.progress = (passedLessons / totalLessons) * 100;
     }
@@ -145,27 +146,22 @@ export class SabakPageComponent implements OnInit {
 
   saveVideoTimeUpdate(): void {
     if (!this.nextLessonIsAvailable) {
-      const currentTime = this.player.currentTime; // Текущее время видео
+      const currentTime = this.player.currentTime;
 
-      // Если время не было зафиксировано ранее
       if (!this.firstVideoStartTimeSaved) {
         this.firstVideoStartTimeSaved = true;
-        this.videoStartTime = currentTime; // Фиксируем стартовое время
-        this.prevVideoTime = currentTime; // Изначально prev тоже равен текущему времени
+        this.videoStartTime = currentTime;
+        this.prevVideoTime = currentTime;
       }
 
-      // Проверка, перемотал ли пользователь видео больше чем на 2 секунды
       if (Math.abs(currentTime - this.prevVideoTime) > 2) {
-        // Если да, отправляем запрос на сервер
         this.videoService.sendVideoTimeUpdate(this.videoStartTime, this.prevVideoTime,this.lessonId).subscribe(() => {
           console.log(`Прогресс сохранён: start = ${this.videoStartTime}, prev = ${this.prevVideoTime}`);
         });
 
-        // Обновляем start, prev, и текущее время после отправки запроса
         this.videoStartTime = currentTime;
         this.prevVideoTime = currentTime;
       } else {
-        // Если разница меньше 2 секунд, просто обновляем prev
         this.prevVideoTime = currentTime;
       }
     }
@@ -184,18 +180,35 @@ export class SabakPageComponent implements OnInit {
 
 
   checkLessonProgress(lessonId: number): void {
-    this.videoService.checkProgress(lessonId).subscribe((response: any) => {
-      this.nextLessonIsAvailable = response.next_lesson_is_available;
+    this.videoService.checkProgress(lessonId).subscribe(
+      (response: any) => {
+        this.nextLessonIsAvailable = response.next_lesson_is_available;
 
-      if (this.nextLessonIsAvailable) {
-        console.log('Следующий урок доступен');
-      } else {
-        console.log('Следующий урок пока недоступен');
+        if (this.nextLessonIsAvailable) {
+          console.log('Следующий урок доступен');
+        } else {
+          console.log('Следующий урок пока недоступен');
+        }
+      },
+      (error) => {
+        console.error('Ошибка при проверке прогресса:', error);
+
+        if (error?.error?.detail === "Learner lesson not found") {
+          console.log('Урок ученика не найден, остановка проверок.');
+          if (this.checkProgressInterval) {
+            clearInterval(this.checkProgressInterval);
+          }
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Урок ученика не найден'
+          });
+        }
       }
-    }, (error) => {
-      console.error('Ошибка при проверке прогресса:', error);
-    });
+    );
   }
+
 
   loadLessonVideo(lessonId: number) {
     this.videoUrl = this.videoService.getLessonVideoUrl(lessonId, 720); // Default to 720p

@@ -92,8 +92,21 @@ export class HomeworkDetailComponent implements OnInit{
       link.href = downloadURL;
       link.download = this.getFileName(url);
       link.click();
+
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Успешно',
+        detail: 'Файл успешно скачан'
+      });
+    }, (error) => {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Ошибка при скачивании файла'
+      });
     });
   }
+
 
   getFileName(filePath: string): string {
     return filePath ? filePath.split('/').pop() || 'downloaded_file' : 'downloaded_file';

@@ -40,7 +40,6 @@ export class LoginComponent implements OnInit {
     let phone = this.loginForm.get('phone')?.value;
 
     if (phone) {
-      // Приводим номер к нужному формату
       phone = phone.replace(/\D/g, ''); // Убираем все символы, кроме цифр
       phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
     }
@@ -66,7 +65,6 @@ export class LoginComponent implements OnInit {
     let phone = this.loginForm.get('phone')?.value;
 
     if (phone) {
-      // Приводим номер к нужному формату
       phone = phone.replace(/\D/g, '');
       phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
     }
@@ -79,7 +77,22 @@ export class LoginComponent implements OnInit {
           console.log('Код успешно проверен', response);
           this.isCodeValid = true;
           this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Успешно авторизован'});
-          this.router.navigate(['/student']);
+          const userRole = response.role;
+          switch (userRole) {
+            case 'learner':
+              this.router.navigate(['/student']);
+              break;
+            case 'employee':
+              this.router.navigate(['/admin']);
+              break;
+            case 'curator':
+              this.router.navigate(['/curator']);
+              break;
+            default:
+              console.error('Неизвестная роль пользователя:', userRole);
+              this.router.navigate(['/login']);
+              break;
+          }
         },
         (error) => {
           console.error('Ошибка проверки кода', error);

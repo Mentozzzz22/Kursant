@@ -34,9 +34,7 @@
         <!-- Список уроков -->
         <div class="sabaktar">
           <div *ngFor="let lesson of lessons; let i = index" class="sabak">
-            <i [class]="getTemaStatusIcon(lesson.status).icon"
-               [style.color]="getTemaStatusIcon(lesson.status).color"
-               style="font-size: 20px;"></i>
+            <img [src]="getTemaStatusIcon(lesson.status)" alt="status">
             <p>{{ i + 1 }} сабақ. {{ topicName }}. {{ lesson.name }}</p>
           </div>
         </div>

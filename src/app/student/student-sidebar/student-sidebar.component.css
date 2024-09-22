@@ -13,8 +13,8 @@
   background-color: #FFFFFF;
   height: 100vh;
   position: fixed;
-  transition: width 0.3s ease, padding 0.3s ease; /* Transition added */
-
+  transition: width 0.3s ease, padding 0.3s ease;
+  box-shadow: 2px 0px 15px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar.expanded {
