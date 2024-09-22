@@ -1,0 +1,135 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.test-container {
+  background-color: white;
+  min-height: 100vh;
+  padding: 30px 100px 30px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.test-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.test-header h2 {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.test-header p {
+  font-size: 13px;
+  color: #000000;
+}
+
+.breadcrumb-container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+}
+
+::ng-deep a {
+  text-decoration: none;
+}
+
+.breadcrumb-label-text {
+  color: #444444;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.test-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.test-left {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  flex: 1;
+}
+
+.test-right {
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 36px;
+  border: 1px solid #BBBBBB;
+  border-radius: 30px;
+}
+
+.test-right h3 {
+  font-size: 20px;
+}
+
+p-progressBar {
+  height: 5px;
+}
+
+.sabaktar img {
+  width: 17px;
+  height: 17px;
+}
+
+.sabaktar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sabak {
+  display: flex;
+  gap: 15px;
+}
+
+.sabak p {
+  font-size: 15px;
+}
+
+.progress-wrappper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-wrappper p {
+  font-size: 13px;
+}
+
+.homework-info {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  border: 1px solid #BBBBBB;
+  border-radius: 20px;
+  padding: 25px 45px 45px 45px;
+  max-width: 855px;
+}
+
+.homework-info p {
+  color: #000000;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.download-hw {
+  padding: 12px 20px;
+  display: flex;
+  max-width: 276px;
+  background: none;
+  border: 1px solid #2A6DB3;
+  color: #2A6DB3;
+  align-items: center;
+  font-size: 16px;
+  justify-content: center;
+  border-radius: 10px;
+}

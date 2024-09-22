@@ -29,6 +29,7 @@ import {CuratorAddComponent} from "./admin/curator-add/curator-add.component";
 import {LearnerComponent} from "./admin/learner/learner.component";
 import {TestDetailComponent} from "./curator/homeworks/test-detail/test-detail.component";
 import {ViewTestResultComponent} from "./student/view-test-result/view-test-result.component";
+import {LearnerHomeworkComponent} from "./student/learner-homework/learner-homework.component";
 
 export const routes: Routes = [
   {
@@ -47,7 +48,7 @@ export const routes: Routes = [
       {path: 'lesson/:lessonId', component: SabakPageComponent},
       {path: 'test/:testId', component: TestPageComponent},
       {path: 'homework-list', component: HomeWorkComponent},
-      {path: 'homework/:homeworkId', component: HomeWorkComponent},
+      {path: 'homework/:homeworkId', component: LearnerHomeworkComponent},
       {path: 'results/:testId', component: ViewTestResultComponent},
     ]
   },
