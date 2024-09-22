@@ -11,7 +11,7 @@ import {tap} from "rxjs/operators";
 })
 export class CourseService {
   private apiUrl = 'http://127.0.0.1:8000/api/course/';
-  private http = inject(HttpClient)
+  private http = inject(HttpClient);
   private searchTextSubject = new BehaviorSubject<string>('');
   private userService = inject(UserService);
 

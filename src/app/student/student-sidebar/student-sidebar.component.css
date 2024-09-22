@@ -13,6 +13,8 @@
   background-color: #FFFFFF;
   height: 100vh;
   position: fixed;
+  transition: width 0.3s ease, padding 0.3s ease; /* Transition added */
+
 }
 
 .sidebar.expanded {
@@ -63,26 +65,26 @@
 
 /**burger**/
 .top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: white;
-  padding: 10px 20px;
-  z-index: 1000;
-  position: relative;
-}
-
-.burger-menu {
-  font-size: 30px;
-  cursor: pointer;
-  z-index: 1500;
+  display: none;
 }
 
 @media (max-width: 768px) {
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 10px 20px;
+    z-index: 1000;
+    position: relative;
+  }
+
   .sidebar {
     width: 0;
     padding: 0;
     overflow: hidden;
+
   }
 
   .sidebar.expanded {
@@ -92,6 +94,9 @@
 
   .burger-menu {
     display: block;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 1500;
   }
 
   .sidebar.expanded .sidebar-menu li span,

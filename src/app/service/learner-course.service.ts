@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {UserService} from "./user.service";
-import {LearnerCourses} from "../../assets/models/learner_courses.interface";
+import {LearnerCourses, OtherCourses} from "../../assets/models/learner_courses.interface";
 import {LearnerCourse, LearnerLessons} from "../../assets/models/learner_course.interface";
 import {LearnerLesson} from "../../assets/models/learner_lesson.interface";
 
@@ -16,12 +16,13 @@ export class LearnerCourseService {
   private http = inject(HttpClient)
 
   // Получение курсов ученика
-  public getCourses(): Observable<LearnerCourses[]> {
+  public getCourses(): Observable<{ learner_courses: LearnerCourses[]; other_courses: OtherCourses[] }> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-    return this.http.get<LearnerCourses[]>(`${this.apiUrl}/get_courses/`, {headers});
+    return this.http.get<{ learner_courses: LearnerCourses[]; other_courses: OtherCourses[] }>(`${this.apiUrl}/get_courses/`, { headers });
   }
+
 
   // Получение конкретного курса ученика
   public getCourse(learnerCourseId: number): Observable<LearnerCourse> {

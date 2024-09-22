@@ -1,10 +1,6 @@
-.layout {
-  display: flex;
-}
-
 .sidebar {
   width: 84px;
-  transition: width 0.3s ease;
+  transition: width 0.6s ease;
 }
 
 .sidebar-expanded {
@@ -12,8 +8,7 @@
 }
 
 .content {
-  flex-grow: 1;
-  transition: margin-left 0.3s ease;
+  transition: margin-left 0.4s ease;
   margin-left: 84px;
 }
 
@@ -22,6 +17,17 @@
 }
 
 @media (max-width: 768px) {
+  .sidebar {
+    width: 0;
+    position: fixed;
+    left: -250px;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar-expanded {
+    left: 0;
+  }
+
   .content {
     margin-left: 0;
   }

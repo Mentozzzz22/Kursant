@@ -64,4 +64,8 @@ export class TestDetailComponent implements OnInit{
     }
   }
 
+  goBack() {
+    window.history.back();
+  }
+
 }

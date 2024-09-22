@@ -20,5 +20,4 @@ export class StudentComponent {
   onSidebarToggled(isExpanded: boolean) {
     this.isSidebarExpanded = isExpanded;
   }
-
 }

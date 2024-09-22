@@ -4,7 +4,7 @@
       <img src="../../../assets/images/Carousel-orange.svg" alt="carousel">
     </div>
     <div class="lil-cards">
-      <div class="lil-card" *ngFor="let course of courses">
+      <div class="lil-card" *ngFor="let course of learnerCourses">
         <div>
           <div class="progress-wrapper">
             <div class="progress-text">
@@ -22,7 +22,7 @@
         <h2>Курстар</h2>
       </div>
       <div class="kurstar-cards">
-        <div class="kurstar-card" *ngFor="let course of courses" (click)="goToCourse(course.id)">
+        <div class="kurstar-card" *ngFor="let course of learnerCourses" (click)="goToCourse(course.id)">
           <img [src]="course.poster" alt="subject1" class="kurs-images">
           <div class="kurs-card-content">
             <div class="kurs-info">

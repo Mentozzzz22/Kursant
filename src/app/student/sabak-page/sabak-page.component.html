@@ -12,41 +12,37 @@
         <h2><strong>{{ topicName }}. {{ lessonName }}</strong>/ {{ lessonIndex }} сабақ</h2>
         <p>Мұғалім: {{ teacherName }}</p>
       </div>
-      <button class="next-sabak-button" (click)="nextLesson()">Келесі сабақ</button>
+      <button class="next-sabak-button" (click)="nextLesson()" *ngIf="nextLessonIsAvailable">Келесі сабақ</button>
     </div>
 
     <div class="test-video-container">
 
       <div class="video">
         <div class="video-container">
-          <iframe
-            width="845"
-            height="457"
-            src="https://www.youtube.com/embed/BHGdPxbvamw"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-          </iframe>
+          <video #plyrID id="plyrID" playsinline controls></video>
+
         </div>
       </div>
 
       <div class="test-right">
         <h3><strong>{{ topicName }}. {{ lessonName }}</strong></h3>
-        <div class="progress-wrappper">
+        <div class="progress-wrapper">
           <p>Тақырып прогрессі</p>
           <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
         </div>
+
+        <!-- Список уроков -->
         <div class="sabaktar">
-          @for (lesson of lessons; track i; let i = $index) {
-            <div class="sabak">
-              <img [src]="getTemaStatusIcon(lesson.status)" alt="status">
-              <p>{{ i + 1 }} сабақ. {{ topicName }}. {{ lesson.name }}</p>
-            </div>
-          }
+          <div *ngFor="let lesson of lessons; let i = index" class="sabak">
+            <i [class]="getTemaStatusIcon(lesson.status).icon"
+               [style.color]="getTemaStatusIcon(lesson.status).color"
+               style="font-size: 20px;"></i>
+            <p>{{ i + 1 }} сабақ. {{ topicName }}. {{ lesson.name }}</p>
+          </div>
         </div>
       </div>
 
     </div>
+
   </div>
 </div>

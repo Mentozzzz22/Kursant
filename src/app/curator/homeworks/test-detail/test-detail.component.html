@@ -1,20 +1,20 @@
 <div class="supplier-header" *ngIf="test">
   <div class="supplier-container">
-    <h1 class="supplier-title"><i class="pi pi-angle-left" ></i> <span style="font-weight: bold">{{test.topic_index}} тақырып. </span>{{test.topic_name}} / Тест</h1>
+    <h1 class="supplier-title"><i class="pi pi-angle-left" (click)="goBack()" ></i> <span style="font-weight: bold">{{test.topic_index}} тақырып. </span>{{test.topic_name}} / Тест</h1>
   </div>
 </div>
 <div class="main-content">
   <div class="content-buttons" >
 
     <button class="content-button" [ngClass]="{'active': activeStatus === ''}" (click)="filterApplications('')">Все ({{test?.total_count}})</button>
-    <button class="content-button" [ngClass]="{'active': activeStatus === 'passed'}"  (click)="filterApplications('passed')">Сдали ({{test?.sent_count}})</button>
-    <button class="content-button" [ngClass]="{'active': activeStatus === 'not_passed'}" (click)="filterApplications('not_passed')">Не сдали (20)</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'passed'}"  (click)="filterApplications('passed')">Сдали ({{test?.passed_count}})</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'not_passed'}" (click)="filterApplications('not_passed')">Не сдали ({{test?.not_passed_count}})</button>
 
   </div>
 
 
   <div class="content-table-container">
-    <p-table   [tableStyle]="{ 'min-width': '50rem' }">
+    <p-table [value]="testWorks"   [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template pTemplate="header">
         <tr>
           <th>ФИО ученика</th>
@@ -28,7 +28,34 @@
 
           <td>{{progresses.learner_fullname}}</td>
 
+          <td>
+            <ng-container *ngIf="progresses.mark !== null; else giveMarkBtn" style="text-decoration: underline">
+              {{ progresses.mark }}/100
+            </ng-container>
+            <ng-template #giveMarkBtn>
+              _ _ _ _ _
+            </ng-template>
+          </td>
 
+          <td>
+            <ng-container *ngIf="progresses.passed_at !== null; else giveMarkBtn" >
+                  <span [ngClass]="{'expired': progresses.is_expired === true}">
+                    {{ progresses.passed_at }}
+                  </span>
+            </ng-container>
+            <ng-template #giveMarkBtn>
+              _ _ _ _ _
+            </ng-template>
+          </td>
+
+          <td>
+            <ng-container *ngIf="progresses.mark !== null; else giveMarkBtn">
+              <a>Посмотреть</a>
+            </ng-container>
+            <ng-template #giveMarkBtn>
+              _ _ _ _ _
+            </ng-template>
+          </td>
 
         </tr>
       </ng-template>

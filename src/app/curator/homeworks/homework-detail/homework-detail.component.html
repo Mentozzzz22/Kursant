@@ -29,7 +29,7 @@
 
     <button class="content-button" [ngClass]="{'active': activeStatus === ''}" (click)="filterApplications('')">Все ({{homeWorkDetails?.total_count}})</button>
     <button class="content-button" [ngClass]="{'active': activeStatus === 'passed'}"  (click)="filterApplications('passed')">Сдали ({{homeWorkDetails?.sent_count}})</button>
-    <button class="content-button" [ngClass]="{'active': activeStatus === 'not_passed'}" (click)="filterApplications('not_passed')">Не сдали (20)</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'not_passed'}" (click)="filterApplications('not_passed')">Не сдали ({{homeWorkDetails?.not_passed_count}})</button>
 
   </div>
 

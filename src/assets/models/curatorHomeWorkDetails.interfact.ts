@@ -5,6 +5,7 @@ export interface HomeworkDetails {
   description: string;
   deadline: string;
   sent_count:number;
+  not_passed_count:number;
   total_count:number,
   file: string;
 }
