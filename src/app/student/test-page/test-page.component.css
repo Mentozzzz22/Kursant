@@ -85,7 +85,7 @@
 }
 
 .test-right {
-  max-width: 420px;
+  width: 420px;
   display: flex;
   flex-direction: column;
   gap: 30px;

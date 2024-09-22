@@ -6,6 +6,7 @@ import {CuratorHomeWorks} from "../../assets/models/curatorHomeWorks.interface";
 import {HomeworkDetails} from "../../assets/models/curatorHomeWorkDetails.interfact";
 import {LearnerHomework} from "../../assets/models/curatorLearnerHomeWork.interface";
 import {FlowTest} from "../../assets/models/curatorTestWork.interface";
+import {LearnerHomeworkDetails} from "../../assets/models/learnerHomework.ineteface";
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,25 @@ export class LearnerHomeworkService {
   private userService = inject(UserService);
 
   constructor() { }
+
+  public getLearnerHomework(learner_homework_id: number): Observable<LearnerHomeworkDetails> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+    const params = new HttpParams().set('learner_homework_id', learner_homework_id.toString());
+
+    return this.http.get<LearnerHomeworkDetails>(`${this.apiUrl}/get_homework/`, { headers, params });
+  }
+
+  public saveLearnerHomework(learner_homework_id: number, file: File): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    const formData = new FormData();
+    formData.append('learner_homework_id', learner_homework_id.toString());
+    formData.append('file', file);
+
+    return this.http.post(`${this.apiUrl}/save_homework/`, formData, { headers });
+  }
 
   public getFlowHomeWorks(id: number,search: string = '',): Observable<CuratorHomeWorks[]> {
     const token = this.userService.token;

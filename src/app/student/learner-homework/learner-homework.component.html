@@ -1,0 +1,41 @@
+<div class="test-container">
+
+  <div class="breadcrumb-container" (click)="back()">
+    <img src="assets/images/back-arrow.svg" alt="back">
+    <span class="breadcrumb-label-text">{{ courseName }} / {{ topicName }}</span>
+  </div>
+
+  <div class="test-header">
+    <h2>{{ topicName }} / Үй жұмысы</h2>
+    <p>Мұғалім: {{ teacherName }}</p>
+  </div>
+
+  <div class="test-content">
+    <div class="test-left">
+      <div class="homework-info">
+        <p><strong>Описание дз: {{ homework.description }}</strong></p>
+        <p>Дедлайн: {{ homework.deadline }}</p>
+        <button class="download-hw">
+          <img src="../../../assets/images/download-homework.svg" alt="download">
+          Үй жұмысының берілгені
+        </button>
+      </div>
+    </div>
+
+    <div class="test-right">
+      <h3><strong> {{ topicName }}. Тақырыптық тест</strong></h3>
+      <div class="progress-wrappper">
+        <p>Тақырып прогрессі</p>
+        <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
+      </div>
+      <div class="sabaktar">
+        @for (lesson of lessons; track i; let i = $index) {
+          <div class="sabak">
+            <img [src]="getTemaStatusIcon(lesson.status)" alt="status">
+            <p>{{ i + 1 }} сабақ. {{ topicName }}. {{ lesson.name }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

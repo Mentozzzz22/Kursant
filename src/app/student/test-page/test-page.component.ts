@@ -51,7 +51,7 @@ export class TestPageComponent implements OnInit {
   public teacherName!: string;
   public lessons: LearnerLessons[] = [];
 
-  public progress: number = 50;
+  public progress: number = 0;
   public startTestVisible: boolean = false;
   public endTestVisible: boolean = false;
   public isTestStarted: boolean = false; // Управление состоянием теста
@@ -83,6 +83,7 @@ export class TestPageComponent implements OnInit {
       this.teacherName = data.teacher_fullname
       this.learnerTest = data.test
       this.testStatus = data.test.status
+      this.calculateProgress();
     })
 
     // this.questions = this.getMockTestQuestions();
@@ -294,4 +295,15 @@ export class TestPageComponent implements OnInit {
   public back() {
     this.router.navigate([`/student/courses/${this.getLearnerTest.course_id}`]);
   }
+
+  public calculateProgress() {
+    const totalLessons = this.lessons.length; // Общее количество уроков
+    const passedLessons = this.lessons.filter(lesson => lesson.status === 'passed').length; // Количество пройденных уроков
+
+    // Вычисляем процент
+    if (totalLessons > 0) {
+      this.progress = (passedLessons / totalLessons) * 100;
+    }
+  }
+
 }
