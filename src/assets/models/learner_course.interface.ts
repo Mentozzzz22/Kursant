@@ -12,7 +12,7 @@ export interface LearnerLessons {
   id: number;
   status: string;
   name: string;
-  isAvailable: boolean;
+  isAvailable?: boolean;
 }
 
 export interface LearnerTopics {

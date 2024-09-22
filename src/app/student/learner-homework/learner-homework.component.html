@@ -13,12 +13,23 @@
   <div class="test-content">
     <div class="test-left">
       <div class="homework-info">
-        <p><strong>Описание дз: {{ homework.description }}</strong></p>
-        <p>Дедлайн: {{ homework.deadline }}</p>
-        <button class="download-hw">
+        <p><strong>Описание дз: {{ homework?.description }}</strong></p>
+        <p>Дедлайн: {{ homework?.deadline }}</p>
+        <button class="download-hw" (click)="downloadHomeworkFile()">
           <img src="../../../assets/images/download-homework.svg" alt="download">
           Үй жұмысының берілгені
         </button>
+      </div>
+      <div class="upload-hw">
+        <div>
+          <p>Жауабы</p>
+          <div class="custom-file-upload">
+            <input type="file" id="homeworkFile" class="file-input" (change)="onHomeworkFileSelected($event)"/>
+            <span class="file-upload-button" (click)="triggerHomeworkFileInput()">Выберите файл</span>
+            <span class="file-upload-filename">{{ homeworkFileName || 'Файл не выбран' }}</span>
+          </div>
+        </div>
+        <button *ngIf="homeworkFile" (click)="submitHomework()">Жіберу</button>
       </div>
     </div>
 

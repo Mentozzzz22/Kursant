@@ -133,3 +133,63 @@ p-progressBar {
   justify-content: center;
   border-radius: 10px;
 }
+
+.upload-hw {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+}
+
+.upload-hw button {
+  background-color: #2A6DB3;
+  width: 101px;
+  height: 40px;
+  color: white;
+  border-radius: 10px;
+  border: none;
+
+}
+
+.custom-file-upload {
+  max-width: 277px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  border-radius: 9px;
+  overflow: hidden;
+  width: 100%;
+  background-color: #f9fafc;
+  border: 1px solid #e3e3e3;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-upload-button {
+  font-size: 13px;
+  background-color: #00adef;
+  color: #444444;
+  padding: 12px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 9px 0 0 9px;
+  flex-shrink: 0;
+}
+
+.file-upload-filename {
+  width: 140px;
+  font-size: 13px;
+  padding: 12px 16px;
+  color: #444444;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: #E3E3E3;
+  border-radius: 0 9px 9px 0;
+}
+
+.custom-file-upload:hover .file-upload-button {
+  background-color: #009ed6;
+}

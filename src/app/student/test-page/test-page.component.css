@@ -40,7 +40,7 @@
 
 .test-details {
   display: flex;
-  justify-content: space-between;
+  /*justify-content: space-between;*/
   gap: 120px;
 }
 
@@ -332,3 +332,19 @@ input[type="radio"]:checked::before {
   background-color: #00B0EA;
 }
 
+@media (max-width: 768px) {
+
+  .test-container {
+    padding: 30px;
+  }
+
+  .test-content {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .test-right {
+    width: 100%;
+    max-width: 350px;
+  }
+}

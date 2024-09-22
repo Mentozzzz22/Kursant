@@ -1,5 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {LearnerHomeworkService} from "../../service/learner-homework.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {MessageService} from "primeng/api";
+import {LearnerHomework} from "../../../assets/models/curatorLearnerHomeWork.interface";
 
 interface Homework {
   subject: string;
@@ -22,6 +26,15 @@ interface Homework {
   styleUrl: './home-work.component.css'
 })
 export class HomeWorkComponent implements OnInit{
+
+  private learnerHomeworkService = inject(LearnerHomeworkService);
+  private router = inject(Router)
+  private route = inject(ActivatedRoute)
+  private messageService = inject(MessageService);
+
+  learnerHomeWorks:LearnerHomework[]=[];
+
+
   homeworks: Homework[] = [
     { subject: 'Тарих', description: 'Адамзаттың пайда болуы', date: '09/09/2024', time: '23:59', score: '89/100', status: 'completed' },
     { subject: 'Математика', description: 'Адамзаттың пайда болуы', date: '09/09/2024', time: '23:59', score: '--/100', status: 'incomplete' },
@@ -34,5 +47,12 @@ export class HomeWorkComponent implements OnInit{
   }
 
   ngOnInit(): void {
+
+  }
+
+  loadLearnerHomeWork(status:string, id:number){
+    this.learnerHomeworkService.getLearnerHomeWorkDetails(status,id).subscribe(data=>{
+      this.learnerHomeWorks = data;
+    })
   }
 }
