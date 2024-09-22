@@ -5,7 +5,6 @@ import {InputTextModule} from "primeng/inputtext";
 import {Button} from "primeng/button";
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {BreadcrumbModule} from "primeng/breadcrumb";
-import {MenuItem} from "primeng/api";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {
   FormArray,
@@ -14,6 +13,11 @@ import {
   ReactiveFormsModule,
   Validators
 } from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
+import {LearnerTestService} from "../../service/learner-test.service";
+import {getLearnerTest, Testing} from "../../../assets/models/getLearner_test.interface";
+import {LearnerLessons} from "../../../assets/models/learner_course.interface";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-test-page',
@@ -36,6 +40,15 @@ import {
 })
 export class TestPageComponent implements OnInit {
 
+  private learnerTestService = inject(LearnerTestService)
+  private router = inject(Router)
+  private route = inject(ActivatedRoute)
+  private messageService = inject(MessageService);
+
+  public courseName!: string;
+  public topicName!: string;
+  public teacherName!: string;
+  public lessons: LearnerLessons[] = [];
 
   public progress: number = 50;
   public startTestVisible: boolean = false;
@@ -44,20 +57,49 @@ export class TestPageComponent implements OnInit {
   public currentQuestionIndex: number = 0; // Отслеживает текущий выбранный вопрос
   public questions: any[] = [];
   public answeredQuestions: { [key: number]: boolean } = {}; // Используем объект для хранения состояний
-  public items: MenuItem[] | undefined;
   public testForm!: FormGroup;
+  public testId!: number;
+  public getLearnerTest!: getLearnerTest;
+  public learnerTest!: Testing;
 
-  testId = input.required<string>()
   private fb = inject(FormBuilder)
 
   ngOnInit() {
-    this.loadTest(this.testId);
-    this.items = [
-      {label: '< Қазақстан тарихы', route: '/#'},
-      {label: 'Қазақстандағы ежелгі адамдардың өмірі', route: '/#'},
-      {label: 'Қазақстан тарихын зерттеуші отандық тарихшылар', route: '/#'}
-    ];
+    this.route.paramMap.subscribe(params => {
+      this.testId = +params.get('testId')!;
+      this.loadTest(this.testId);
+    });
+
     this.initializeForm();
+  }
+
+  loadTest(testId: number) {
+
+    this.learnerTestService.getTest(testId).subscribe((data) => {
+      this.getLearnerTest = data;
+      this.lessons = data.lessons;
+      this.courseName = data.course_name;
+      this.topicName = data.topic_name;
+      this.teacherName = data.teacher_fullname
+      this.learnerTest = data.test
+    })
+
+    this.questions = this.getMockTestQuestions();
+    this.answeredQuestions = new Array(this.questions.length).fill(false);
+
+    this.testForm = this.fb.group({
+      answers: this.fb.array([]) // FormArray для вопросов
+    });
+
+    this.questions.forEach((question) => {
+      this.testForm.addControl(
+        'question_' + question.id,
+        this.fb.control(null, Validators.required)
+      );
+    });
+
+    // Восстановление состояния теста после перезагрузки
+    this.restoreSavedState();
   }
 
   // Метод для инициализации формы с вопросами
@@ -86,10 +128,28 @@ export class TestPageComponent implements OnInit {
   }
 
   // Старт теста
-  startTest() {
-    this.isTestStarted = true;
-    this.startTestVisible = false;
-    localStorage.setItem('isTestStarted', 'true'); // Сохранение состояния теста
+  startTest(testId: number): void {
+    this.learnerTestService.startTest(testId).subscribe(
+      response => {
+        if (response.success) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: 'Доступ к курсам успешно предоставлен'
+          });
+        }
+        this.isTestStarted = true;
+        this.startTestVisible = false;
+        localStorage.setItem('isTestStarted', 'true'); // Сохранение состояния теста
+      },
+      error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось предоставить доступ к курсам'
+        });
+      }
+    )
   }
 
   // Завершение теста
@@ -97,26 +157,6 @@ export class TestPageComponent implements OnInit {
     this.isTestStarted = false;
     this.endTestVisible = false;
     this.submitTest();
-  }
-
-  // Загрузка теста
-  loadTest(testId: InputSignal<string>) {
-    this.questions = this.getMockTestQuestions();
-    this.answeredQuestions = new Array(this.questions.length).fill(false);
-
-    this.testForm = this.fb.group({
-      answers: this.fb.array([]) // FormArray для вопросов
-    });
-
-    this.questions.forEach((question) => {
-      this.testForm.addControl(
-        'question_' + question.id,
-        this.fb.control(null, Validators.required)
-      );
-    });
-
-    // Восстановление состояния теста после перезагрузки
-    this.restoreSavedState();
   }
 
   // Сохранение ответа при выборе варианта
@@ -341,4 +381,8 @@ export class TestPageComponent implements OnInit {
     {id: 7, status: 'closed', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'},
     {id: 8, status: 'closed', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'}
   ]
+
+  public back() {
+    this.router.navigate([`/student/courses/${this.getLearnerTest.course_id}`]);
+  }
 }

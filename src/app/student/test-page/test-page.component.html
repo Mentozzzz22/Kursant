@@ -1,23 +1,15 @@
 <div class="test-container">
 
-  <div class="breadcrumb-container">
-    <p-breadcrumb class="max-w-full" [model]="items">
-      <ng-template pTemplate="item" let-item>
-        <ng-container *ngIf="item.route">
-          <a [routerLink]="item.route" class="breadcrumb-menu-link">
-            <span class="breadcrumb-label-text">{{ item.label }}</span>
-          </a>
-        </ng-container>
-      </ng-template>
-      <ng-template pTemplate="separator"> /</ng-template>
-    </p-breadcrumb>
+  <div class="breadcrumb-container" (click)="back()">
+    <img src="assets/images/back-arrow.svg" alt="back">
+    <span class="breadcrumb-label-text">{{ courseName }} / {{ topicName }}</span>
   </div>
 
   @if (!isTestStarted) {
 
     <div class="test-header">
       <h2>Тақырыптық тест</h2>
-      <p>Мұғалім: Ирисбеков Мақсат</p>
+      <p>Мұғалім: {{ teacherName }}</p>
     </div>
 
     <div class="test-content">
@@ -30,25 +22,27 @@
           </div>
 
           <div class="test-detail-right">
-            <p>10</p>
-            <p>15 минут</p>
-            <p>09/09/2024 &nbsp;&nbsp;&nbsp;&nbsp; 23:59</p>
+            <p>{{ learnerTest.questions_count }}</p>
+            <p>{{ learnerTest.duration }} минут</p>
+            <p>{{ learnerTest.deadline }}</p>
+            <p *ngIf="learnerTest.passed_at">{{ learnerTest.passed_at }}</p>
+            <p *ngIf="learnerTest.taken_marks">{{ learnerTest.taken_marks }}</p>
           </div>
         </div>
         <button class="start-test-btn" (click)="showStartTestDialog()">Тестті бастау</button>
       </div>
 
       <div class="test-right">
-        <h3><strong>Мезолит. Орта тас дәуірі</strong></h3>
+        <h3><strong>{{ topicName }}. Тақырыптық тест</strong></h3>
         <div class="progress-wrappper">
           <p>Тақырып прогрессі</p>
           <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
         </div>
         <div class="sabaktar">
-          @for (sabak of sabaktar; track sabak.id) {
+          @for (lesson of lessons; track i; let i = $index) {
             <div class="sabak">
-              <img [src]="getTemaStatusIcon(sabak.status)" alt="status">
-              <p>{{ sabak.id }} сабақ. {{ sabak.tema }}. {{ sabak.sabakName }}</p>
+              <img [src]="getTemaStatusIcon(lesson.status)" alt="status">
+              <p>{{ i + 1 }} сабақ. {{ topicName }}. {{ lesson.name }}</p>
             </div>
           }
         </div>
@@ -104,7 +98,7 @@
   <span class="modal-text">Тестілеуді бастау батырмасы басылғасын уақыт есептегіш қосылады.</span>
   <div class="modal-footer">
     <button class="back-btn" (click)="startTestVisible = false">Артқа</button>
-    <button class="start-btn" (click)="startTest()">Тестті бастау</button>
+    <button class="start-btn" (click)="startTest(testId)">Тестті бастау</button>
   </div>
 </p-dialog>
 

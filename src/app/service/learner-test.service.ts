@@ -1,10 +1,11 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {UserService} from "./user.service";
-import {Observable} from "rxjs";
+import {catchError, Observable, throwError} from "rxjs";
 import {FlowTest} from "../../assets/models/curatorTestWork.interface";
 import {LearnerHomework} from "../../assets/models/curatorLearnerHomeWork.interface";
 import {LearnerTest} from "../../assets/models/curatorLearnerTest.interface";
+import {getLearnerTest} from "../../assets/models/getLearner_test.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,22 @@ export class LearnerTestService {
   private userService = inject(UserService);
 
   constructor() { }
+
+  public getTest(learnerTestId: number): Observable<getLearnerTest> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    const params = {learner_test_id: learnerTestId};
+    return this.http.get<getLearnerTest>(`${this.apiUrl}/get_test/`, {headers, params});
+  }
+
+  public startTest(learnerTestId: number): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    const params = {learner_test_id: learnerTestId};
+    return this.http.post(`${this.apiUrl}/start_test/`, {headers, params})
+  }
 
   public getFlowTestWorks(id: number,search: string = '',): Observable<FlowTest[]> {
     const token = this.userService.token;

@@ -11,12 +11,12 @@ import {LearnerLesson} from "../../assets/models/learner_lesson.interface";
 })
 export class LearnerCourseService {
 
-  private apiUrl = 'http://127.0.0.1:8000/api/learner_course'; // Основной URL для всех запросов
+  private apiUrl = 'http://127.0.0.1:8000/api/learner_course';
   private userService = inject(UserService);
   private http = inject(HttpClient)
 
   // Получение курсов ученика
-  getCourses(): Observable<LearnerCourses[]> {
+  public getCourses(): Observable<LearnerCourses[]> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
@@ -24,7 +24,7 @@ export class LearnerCourseService {
   }
 
   // Получение конкретного курса ученика
-  getCourse(learnerCourseId: number): Observable<LearnerCourse> {
+  public getCourse(learnerCourseId: number): Observable<LearnerCourse> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
@@ -33,7 +33,7 @@ export class LearnerCourseService {
   }
 
   // Получение урока ученика
-  getLesson(learnerLessonId: number): Observable<LearnerLesson> {
+  public getLesson(learnerLessonId: number): Observable<LearnerLesson> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
