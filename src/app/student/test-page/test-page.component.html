@@ -19,21 +19,29 @@
             <p>Сұрақ саны</p>
             <p>Тест уақыты</p>
             <p>Дедлайн</p>
+            <p *ngIf="learnerTest?.passed_at">Время сдачи: </p>
+            <p *ngIf="learnerTest?.taken_marks">Правильных: </p>
           </div>
 
           <div class="test-detail-right">
-            <p>{{ learnerTest.questions_count }}</p>
-            <p>{{ learnerTest.duration }} минут</p>
-            <p>{{ learnerTest.deadline }}</p>
-            <p *ngIf="learnerTest.passed_at">{{ learnerTest.passed_at }}</p>
-            <p *ngIf="learnerTest.taken_marks">{{ learnerTest.taken_marks }}</p>
+            <p>{{ learnerTest?.questions_count }}</p>
+            <p>{{ learnerTest?.duration }} минут</p>
+            <p>{{ learnerTest?.deadline }}</p>
+            <p *ngIf="learnerTest?.passed_at">{{ learnerTest?.passed_at }}</p>
+            <p *ngIf="learnerTest?.taken_marks">{{ learnerTest?.taken_marks }}</p>
           </div>
         </div>
-        <button class="start-test-btn" (click)="showStartTestDialog()">Тестті бастау</button>
+        <button *ngIf="testStatus === 'opened'" class="start-test-btn" (click)="showStartTestDialog()">
+          Тестті бастау
+        </button>
+        <button *ngIf="testStatus === 'passed'" class="start-test-btn" (click)="viewResults(testId)">
+          Результаты
+        </button>
+
       </div>
 
       <div class="test-right">
-        <h3><strong>{{ topicName }}. Тақырыптық тест</strong></h3>
+        <h3><strong> {{ topicName }}. Тақырыптық тест</strong></h3>
         <div class="progress-wrappper">
           <p>Тақырып прогрессі</p>
           <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
@@ -53,8 +61,8 @@
   <div *ngIf="isTestStarted" class="start-test">
     <div class="start-test-header">
       <div class="test-header">
-        <h2>Мезолит. Орта тас дәуірі / Тақырыптық тест</h2>
-        <p>Мұғалім: Ирисбеков Мақсат</p>
+        <h2>{{ topicName }} / Тақырыптық тест</h2>
+        <p>Мұғалім: {{ teacherName }}</p>
       </div>
       <div class="remain-time">
         <p>Қалған уақыт: <strong> 15:00</strong></p>
@@ -69,10 +77,9 @@
           {{ i + 1 }}
         </button>
       }
-
     </div>
 
-    <div class="question-card">
+    <div class="question-card" *ngIf="questions && questions.length > 0">
       <div class="question-header">
         <h3>{{ currentQuestionIndex + 1 }} сұрақ</h3>
       </div>
@@ -83,7 +90,7 @@
             <div *ngFor="let option of questions[currentQuestionIndex].options; let j = index" class="answer">
               <label class="answer-option">
                 <input type="radio" [formControlName]="'question_' + questions[currentQuestionIndex].id"
-                       (change)="saveAnswer(questions[currentQuestionIndex].id, j)" [value]="j">
+                       (change)="saveAnswer(questions[currentQuestionIndex].id, option.answerId)" [value]="j">
                 <span>{{ option.answerName }}</span>
               </label>
             </div>

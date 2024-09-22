@@ -144,7 +144,7 @@ export class EditTopicComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Успешно',
-          detail: `Вопрос успешно удален!`
+          detail: `Вопрос успешно удален`!
         });
         this.questions().removeAt(index);
       }
@@ -165,7 +165,15 @@ export class EditTopicComponent implements OnInit {
   }
 
   public answers(questionIndex: number): FormArray {
-    return (this.questions().at(questionIndex) as FormGroup).get('answers') as FormArray;
+    const questionForm = this.questions().at(questionIndex) as FormGroup;
+    let answersArray = questionForm.get('answers') as FormArray;
+
+    // Проверяем, есть ли уже 4 ответа, если нет - добавляем недостающие
+    while (answersArray.length < 4) {
+      answersArray.push(this.generateAnswer());
+    }
+
+    return answersArray;
   }
 
   private loadTopicContent() {
@@ -356,5 +364,4 @@ export class EditTopicComponent implements OnInit {
     const fileInput = document.getElementById('homeworkFile') as HTMLInputElement;
     fileInput.click();
   }
-
 }

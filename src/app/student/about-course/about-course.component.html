@@ -43,7 +43,7 @@
                   </div>
 
                   <div *ngIf="topic.homework" class="details-sublist">
-                    <div class="details-item">
+                    <div class="details-item" (click)="goToHomework(topic.homework.id)">
                       <img [src]="getTemaStatusIcon(topic.homework.status)" alt="homework-status">
                       <p><strong>Үй жұмысы</strong></p>
                     </div>

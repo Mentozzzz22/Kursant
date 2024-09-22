@@ -18,6 +18,7 @@ import {LearnerTestService} from "../../service/learner-test.service";
 import {getLearnerTest, Testing} from "../../../assets/models/getLearner_test.interface";
 import {LearnerLessons} from "../../../assets/models/learner_course.interface";
 import {MessageService} from "primeng/api";
+import {LearnerQuestions} from "../../../assets/models/getLearnerQuestions.interface";
 
 @Component({
   selector: 'app-test-page',
@@ -55,12 +56,13 @@ export class TestPageComponent implements OnInit {
   public endTestVisible: boolean = false;
   public isTestStarted: boolean = false; // Управление состоянием теста
   public currentQuestionIndex: number = 0; // Отслеживает текущий выбранный вопрос
-  public questions: any[] = [];
+  public questions: LearnerQuestions[] = [];
   public answeredQuestions: { [key: number]: boolean } = {}; // Используем объект для хранения состояний
   public testForm!: FormGroup;
   public testId!: number;
   public getLearnerTest!: getLearnerTest;
   public learnerTest!: Testing;
+  public testStatus!: string;
 
   private fb = inject(FormBuilder)
 
@@ -69,8 +71,6 @@ export class TestPageComponent implements OnInit {
       this.testId = +params.get('testId')!;
       this.loadTest(this.testId);
     });
-
-    this.initializeForm();
   }
 
   loadTest(testId: number) {
@@ -82,14 +82,11 @@ export class TestPageComponent implements OnInit {
       this.topicName = data.topic_name;
       this.teacherName = data.teacher_fullname
       this.learnerTest = data.test
+      this.testStatus = data.test.status
     })
 
-    this.questions = this.getMockTestQuestions();
+    // this.questions = this.getMockTestQuestions();
     this.answeredQuestions = new Array(this.questions.length).fill(false);
-
-    this.testForm = this.fb.group({
-      answers: this.fb.array([]) // FormArray для вопросов
-    });
 
     this.questions.forEach((question) => {
       this.testForm.addControl(
@@ -102,15 +99,34 @@ export class TestPageComponent implements OnInit {
     this.restoreSavedState();
   }
 
+  public getQuestions(testId: number) {
+    this.learnerTestService.getTestQuestions(testId).subscribe(data => {
+      this.questions = data.questions;
+      this.initializeForm()
+      console.log(this.questions)
+    });
+  }
+
   // Метод для инициализации формы с вопросами
   initializeForm() {
+    // Создание формы и добавление контролов
+    this.testForm = this.fb.group({
+      answers: this.fb.array([])
+    });
+
     const answersArray = this.testForm.get('answers') as FormArray;
     this.questions.forEach(question => {
       answersArray.push(this.fb.group({
         questionId: question.id,
-        answerId: null // Ответ на вопрос
+        answerId: null
       }));
+      this.testForm.addControl(
+        'question_' + question.id,
+        this.fb.control(null, Validators.required)
+      );
     });
+
+    this.restoreSavedState(); // Восстановление состояния после создания формы
   }
 
   get answersFormArray(): FormArray {
@@ -135,18 +151,19 @@ export class TestPageComponent implements OnInit {
           this.messageService.add({
             severity: 'success',
             summary: 'Успешно',
-            detail: 'Доступ к курсам успешно предоставлен'
+            detail: 'Тест начат!'
           });
         }
         this.isTestStarted = true;
         this.startTestVisible = false;
         localStorage.setItem('isTestStarted', 'true'); // Сохранение состояния теста
+        this.getQuestions(testId)
       },
       error => {
         this.messageService.add({
           severity: 'error',
           summary: 'Ошибка',
-          detail: 'Не удалось предоставить доступ к курсам'
+          detail: 'Не удалось начать тест.'
         });
       }
     )
@@ -185,7 +202,7 @@ export class TestPageComponent implements OnInit {
 
     Object.keys(savedAnswers).forEach((questionId) => {
       const controlName = 'question_' + questionId;
-      if (this.testForm.contains(controlName)) {
+      if (this.testForm?.contains(controlName)) {
         this.testForm.get(controlName)?.setValue(savedAnswers[questionId]);
       }
     });
@@ -213,19 +230,25 @@ export class TestPageComponent implements OnInit {
   }
 
   submitTest() {
-    if (this.testForm.valid) {
-      console.log(this.testForm.value);
-      const submittedAnswers = this.testForm.value.answers
-        .filter((answer: any) => answer.answerId !== null); // Только заполненные ответы
-      console.log('Submitted answers:', submittedAnswers);
-    }
 
-    const results: any = {};
-    this.questions.forEach((question) => {
-      results[question.id] = this.testForm.get('question_' + question.id)?.value;
+    this.learnerTestService.finishTest(this.testId, this.testForm.value.answers).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Тест завершен',
+            detail: 'Ваши ответы успешно сохранены.'
+          });
+        }
+      }, error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось завершить тест.'
+        });
+      }
     });
-    console.log(this.testForm.getRawValue());
-    localStorage.setItem('testResults', JSON.stringify(results));
+
     this.clearTestState();
   }
 
@@ -239,6 +262,7 @@ export class TestPageComponent implements OnInit {
     this.answeredQuestions = {}; // Очищаем состояние отвеченных вопросов
     this.isTestStarted = false;
     this.endTestVisible = false;
+    this.loadTest(this.testId);
   }
 
   selectQuestion(index: number) {
@@ -246,141 +270,26 @@ export class TestPageComponent implements OnInit {
     this.updateFormForCurrentQuestion(); // Обновляем форму при выборе вопроса
   }
 
-  getMockTestQuestions() {
-    return [
-      {
-        id: 1,
-        question: 'Сақтар туралы мәлімет беретін ежелгі мәтіндердің бірі?',
-        options: [
-          {
-            answerId: 1,
-            answerName: 'Ежелгі Қытай деректері'
-          },
-          {
-            answerId: 2,
-            answerName: 'Парсы патшаларының тасты сына жазбалары'
-          },
-          {
-            answerId: 3,
-            answerName: 'Араб саяхатшыларының деректері'
-          },
-          {
-            answerId: 4,
-            answerName: 'Орыс жылнамалары'
-          }
-        ],
-      },
-      {
-        id: 2,
-        question: 'Сақтар туралы мәлімет беретін ежелгі мәтіндердің бірі?',
-        options: [
-          {
-            answerId: 1,
-            answerName: 'Ежелгі Қытай деректері'
-          },
-          {
-            answerId: 2,
-            answerName: 'Парсы патшаларының тасты сына жазбалары'
-          },
-          {
-            answerId: 3,
-            answerName: 'Араб саяхатшыларының деректері'
-          },
-          {
-            answerId: 4,
-            answerName: 'Орыс жылнамалары'
-          }
-        ],
-      },
-      {
-        id: 3,
-        question: 'Сақтар туралы мәлімет беретін ежелгі мәтіндердің бірі?',
-        options: [
-          {
-            answerId: 1,
-            answerName: 'Ежелгі Қытай деректері'
-          },
-          {
-            answerId: 2,
-            answerName: 'Парсы патшаларының тасты сына жазбалары'
-          },
-          {
-            answerId: 3,
-            answerName: 'Араб саяхатшыларының деректері'
-          },
-          {
-            answerId: 4,
-            answerName: 'Орыс жылнамалары'
-          }
-        ],
-      },
-      {
-        id: 4,
-        question: 'Сақтар туралы мәлімет беретін ежелгі мәтіндердің бірі?',
-        options: [
-          {
-            answerId: 1,
-            answerName: 'Ежелгі Қытай деректері'
-          },
-          {
-            answerId: 2,
-            answerName: 'Парсы патшаларының тасты сына жазбалары'
-          },
-          {
-            answerId: 3,
-            answerName: 'Араб саяхатшыларының деректері'
-          },
-          {
-            answerId: 4,
-            answerName: 'Орыс жылнамалары'
-          }
-        ],
-      },
-      {
-        id: 5,
-        question: 'Сақтар туралы мәлімет беретін ежелгі мәтіндердің бірі?',
-        options: [
-          {
-            answerId: 1,
-            answerName: 'Ежелгі Қытай деректері'
-          },
-          {
-            answerId: 2,
-            answerName: 'Парсы патшаларының тасты сына жазбалары'
-          },
-          {
-            answerId: 3,
-            answerName: 'Араб саяхатшыларының деректері'
-          },
-          {
-            answerId: 4,
-            answerName: 'Орыс жылнамалары'
-          }
-        ],
-      },
-    ];
-  }
-
   getTemaStatusIcon(status: string): string {
-    if (status === 'finished') {
+    if (status === 'passed') {
       return 'assets/images/finished.svg';
+    } else if (status === 'passed-retake') {
+      return 'assets/images/passed-retake.svg';
     } else if (status === 'opened') {
       return 'assets/images/opened.svg';
+    } else if (status === 'expired') {
+      return 'assets/images/expired.svg';
+    } else if (status === 'opened_retake') {
+      return 'assets/images/opened-retake.svg';
     } else {
       return 'assets/images/closed.svg';
     }
   }
 
-  public sabaktar: any = [
-    {id: 1, status: 'finished', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'},
-    {id: 2, status: 'finished', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'},
-    {id: 3, status: 'finished', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'},
-    {id: 4, status: 'opened', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'},
-    {id: 5, status: 'closed', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'},
-    {id: 6, status: 'closed', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'},
-    {id: 7, status: 'closed', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'},
-    {id: 8, status: 'closed', tema: 'Мезолит', sabakName: 'Орта тас дәуірі'}
-  ]
+  public viewResults(testId: number) {
+    this.router.navigate([`/student/results/${testId}`]);
+  }
+
 
   public back() {
     this.router.navigate([`/student/courses/${this.getLearnerTest.course_id}`]);

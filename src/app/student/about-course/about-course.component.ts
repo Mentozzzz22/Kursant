@@ -68,6 +68,10 @@ export class AboutCourseComponent implements OnInit {
     this.router.navigate(['/student/test', testId]);
   }
 
+  goToHomework(homeworkId: number): void {
+    this.router.navigate(['/student/homework', homeworkId]);
+  }
+
   goToLesson(lessonId: number): void {
     this.router.navigate(['/student/lesson', lessonId]);
   }

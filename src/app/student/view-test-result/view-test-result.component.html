@@ -1,0 +1,54 @@
+<div class="test-container">
+
+  <div class="breadcrumb-container" (click)="back()">
+    <img src="assets/images/back-arrow.svg" alt="back">
+    <span class="breadcrumb-label-text">{{ courseName }} / {{ topicName }}</span>
+  </div>
+
+  <div class="test-header">
+    <h2>{{ topicName }} / Тақырыптық тест</h2>
+    <p>Мұғалім: {{ teacherName }}</p>
+  </div>
+
+  <div class="question-buttons">
+    @for (question of questions; track question.id; let i = $index) {
+      <button (click)="selectQuestion(i)"
+              [ngClass]="{'correct': question.is_correct, 'current-question': currentQuestionIndex === i}">
+        {{ i + 1 }}
+      </button>
+    }
+  </div>
+
+  <div class="question-container">
+
+    <div class="question-card" *ngIf="questions && questions.length > 0">
+      <div class="question-header">
+        <h3>{{ currentQuestionIndex + 1 }} сұрақ</h3>
+      </div>
+      <div class="question-content">
+        <h4>{{ questions[currentQuestionIndex].question }}</h4>
+        <div class="answers-list">
+          <div *ngFor="let option of questions[currentQuestionIndex].options; let j = index" class="answer">
+            <label class="answer-option">
+              <input type="radio" [checked]="option.is_selected" disabled>
+              <span>{{ option.answerName }}</span>
+              <img *ngIf="option.is_selected && option.is_correct" src="assets/images/correct.svg" alt="Correct">
+              <img *ngIf="option.is_selected && !option.is_correct" src="assets/images/expired.svg" alt="Incorrect">
+              <img *ngIf="!option.is_selected && option.is_correct" src="assets/images/correct.svg"
+                   alt="Missed Correct">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="questions-right">
+      <div class="question-count-container">
+        <h1>{{ correctAnswersCount }}</h1>
+        <p>дұрыс жауап саны</p>
+      </div>
+      <button>Үй жұмысына өту</button>
+    </div>
+  </div>
+</div>
+
