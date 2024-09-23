@@ -39,7 +39,7 @@
 
               <div formGroupName="test" class="lesson">
                 <label for="test{{ moduleIndex }}{{ topicIndex }}">Дедлайн теста:</label>
-                <input id="test{{ moduleIndex }}{{ topicIndex }}" type="text" formControlName="deadline">
+                <input id="test{{ moduleIndex }}{{ topicIndex }}" type="datetime-local" formControlName="deadline">
                 <small *ngIf="topicControl.get('test')!.get('deadline')!.errors?.['invalidDateTime'] &&
                 topicControl.get('test')!.get('deadline')?.dirty && topicControl.get('test')!.get('deadline')?.touched"
                        class="error-deadline">

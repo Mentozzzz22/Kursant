@@ -4,6 +4,7 @@ import {LearnerHomeworkService} from "../../service/learner-homework.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MessageService} from "primeng/api";
 import {LearnerHomework} from "../../../assets/models/curatorLearnerHomeWork.interface";
+import {LearnerHomeworks} from "../../../assets/models/learnerHomework.ineteface";
 
 interface Homework {
   subject: string;
@@ -32,7 +33,7 @@ export class HomeWorkComponent implements OnInit{
   private route = inject(ActivatedRoute)
   private messageService = inject(MessageService);
 
-  learnerHomeWorks:LearnerHomework[]=[];
+  learnerHomeWorks:LearnerHomeworks[]=[];
 
 
   homeworks: Homework[] = [
@@ -47,11 +48,11 @@ export class HomeWorkComponent implements OnInit{
   }
 
   ngOnInit(): void {
-
+    this.loadLearnerHomeWork()
   }
 
-  loadLearnerHomeWork(status:string, id:number){
-    this.learnerHomeworkService.getLearnerHomeWorkDetails(status,id).subscribe(data=>{
+  loadLearnerHomeWork(){
+    this.learnerHomeworkService.getLearnerHomeworks().subscribe(data=> {
       this.learnerHomeWorks = data;
     })
   }

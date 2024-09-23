@@ -267,7 +267,7 @@ export class EditTopicComponent implements OnInit {
     const lessonsData = this.lessons.map((lesson, index) => {
       return {
         name: lesson.name,
-        file: lesson.file instanceof File ? `lesson_file_${index}` : lesson.file
+        file: lesson.file instanceof File ? `lesson_file_${index}.mp4` : lesson.file
       };
     });
 
@@ -276,7 +276,7 @@ export class EditTopicComponent implements OnInit {
     // Добавляем новые файлы в FormData (бинарные данные)
     this.lessons.forEach((lesson, index) => {
       if (lesson.file instanceof File) {
-        formData.append(`lesson_file_${index}`, lesson.file);
+        formData.append(`lesson_file_${index}.mp4`, lesson.file);
       }
     });
 
@@ -345,6 +345,18 @@ export class EditTopicComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files?.length) {
       const file = input.files[0];
+
+      // Check if the file is an mp4
+      const fileType = file.type;
+      if (fileType !== 'video/mp4') {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Только .mp4 файлы могут быть загружены для уроков.'
+        });
+        return;  // Prevent further action if the file is not an mp4
+      }
+
       this.lessons[index].file = file;
       this.lessons[index].fileName = file.name;
       console.log(`Файл для урока ${index + 1}: ${file.name}`);

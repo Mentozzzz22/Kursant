@@ -6,7 +6,7 @@ import {CuratorHomeWorks} from "../../assets/models/curatorHomeWorks.interface";
 import {HomeworkDetails} from "../../assets/models/curatorHomeWorkDetails.interfact";
 import {LearnerHomework} from "../../assets/models/curatorLearnerHomeWork.interface";
 import {FlowTest} from "../../assets/models/curatorTestWork.interface";
-import {LearnerHomeworkDetails} from "../../assets/models/learnerHomework.ineteface";
+import {LearnerHomeworkDetails, LearnerHomeworks} from "../../assets/models/learnerHomework.ineteface";
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,15 @@ export class LearnerHomeworkService {
   private userService = inject(UserService);
 
   constructor() { }
+
+  public getLearnerHomeworks(): Observable<LearnerHomeworks[]> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    return this.http.get<LearnerHomeworks[]>(`${this.apiUrl}/learner_get_homeworks/`, { headers });
+  }
+
+
 
   public getLearnerHomework(learner_homework_id: number): Observable<LearnerHomeworkDetails> {
     const token = this.userService.token;

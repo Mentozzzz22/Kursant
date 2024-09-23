@@ -13,8 +13,8 @@
   <div class="test-content">
     <div class="test-left">
       <div class="homework-info">
-        <p><strong>Описание дз: {{ homework?.description }}</strong></p>
-        <p>Дедлайн: {{ homework?.deadline }}</p>
+        <p><strong>Описание дз: {{ homework!.description }}</strong></p>
+        <p>Дедлайн: {{ homework!.deadline }}</p>
         <button class="download-hw" (click)="downloadHomeworkFile()">
           <img src="../../../assets/images/download-homework.svg" alt="download">
           Үй жұмысының берілгені

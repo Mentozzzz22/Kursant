@@ -30,3 +30,14 @@ export interface HomeworkDetails {
   uploaded_file: string | null; // Learner's uploaded homework file URL
   mark: number | null; // Null if not marked yet
 }
+
+export interface LearnerHomeworks {
+  learner_homework_id: number;
+  course_name: string;
+  module_name: string;
+  topic_name: string;
+  deadline: string;
+  status: string;
+  mark: number | null;
+  is_expired: boolean;
+}
