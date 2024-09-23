@@ -28,14 +28,18 @@
         <h3><strong>{{ topicName }}. {{ lessonName }}</strong></h3>
         <div class="progress-wrapper">
           <p>Тақырып прогрессі</p>
-          <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
+          <div class="custom-progress-bar">
+            <div class="progress-segment" *ngFor="let segment of progressSegments"
+                 [ngStyle]="{'background-color': segment.filled ? '#00B69B' : '#E0E0E0'}">
+            </div>
+          </div>
         </div>
 
-        <!-- Список уроков -->
         <div class="sabaktar">
-          <div *ngFor="let lesson of lessons; let i = index" class="sabak">
-            <img [src]="getTemaStatusIcon(lesson.status)" alt="status">
-            <p>{{ i + 1 }} сабақ. {{ topicName }}. {{ lesson.name }}</p>
+          <div *ngFor="let item  of lessonsAndTests; let i = index" class="sabak"
+               [routerLink]="item.type === 'test' ? ['/student/test', item.id] : ['/student/lesson', item.id]" style="cursor: pointer">
+            <img [src]="getTemaStatusIcon(item .status)" alt="status">
+            <p>{{ i + 1 }} {{ item.type === 'test' ? 'тест' : 'сабақ' }}. {{ topicName }}. {{ item.type === 'test' ? 'Тест' : item.name }}</p>
           </div>
         </div>
       </div>

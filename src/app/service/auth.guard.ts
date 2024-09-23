@@ -28,10 +28,15 @@ export class AuthGuard implements CanActivate {
           }
         }),
         catchError(error => {
-          this.router.navigate(['/access-denied']);
-          return of(false);
-        })
-      );
+          if (error?.detail === "Invalid token.") {
+            console.log('Invalid token, allowing navigation.');
+            return of(true);
+          } else {
+            console.error('Verification failed, redirecting to access denied.');
+            this.router.navigate(['/access-denied']);
+            return of(false);
+          }
+        }))
     } else {
       this.router.navigate(['/login']);
       return false;

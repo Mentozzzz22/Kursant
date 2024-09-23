@@ -1,7 +1,7 @@
-import {Component, ElementRef, inject, input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, inject, input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ProgressBarModule} from "primeng/progressbar";
 import {BreadcrumbModule} from "primeng/breadcrumb";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {MenuItem, MessageService} from "primeng/api";
 import {LearnerCourseService} from "../../service/learner-course.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -18,12 +18,13 @@ import {VideoService} from "../../service/video.service";
     BreadcrumbModule,
     NgClass,
     NgIf,
-    NgForOf
+    NgForOf,
+    NgStyle
   ],
   templateUrl: './sabak-page.component.html',
   styleUrl: './sabak-page.component.css'
 })
-export class SabakPageComponent implements OnInit {
+export class SabakPageComponent implements OnInit,OnDestroy {
 
   @ViewChild('plyrID', { static: true }) videoElement!: ElementRef;
 
@@ -39,6 +40,7 @@ export class SabakPageComponent implements OnInit {
   public lessons: LearnerLessons[] = [];
   public lesson!: LearnerLesson;
   public courseName!: string;
+  public lessonStatus!:string;
   public topicName!: string;
   public lessonName!: string;
   public teacherName!: string;
@@ -49,9 +51,13 @@ export class SabakPageComponent implements OnInit {
   public checkProgressInterval: any;
   firstVideoStartTimeSaved: boolean = false;
   nextLessonIsAvailable: boolean = false;
-
+  autoSaveInterval!: any;
   prevVideoTime: number = 0;
   videoStartTime: number = 0;
+  public testId!: number;
+  public testStatus!: string;
+  public lessonsAndTests: any[] = [];
+  progressSegments: { filled: boolean }[] = [];
 
   getTemaStatusIcon(status: string): string {
     switch (status) {
@@ -78,12 +84,15 @@ export class SabakPageComponent implements OnInit {
 
   ngOnInit() {
 
+
     this.player = new Plyr(this.videoElement.nativeElement, { captions: { active: true } });
 
     const video = this.videoElement.nativeElement;
 
+
     this.player.on('timeupdate', this.saveVideoTimeUpdate.bind(this));
     this.player.on('ended', this.saveVideoFinish.bind(this));
+
 
 
 
@@ -99,7 +108,25 @@ export class SabakPageComponent implements OnInit {
         this.loadLessonVideo(this.lessonId);
         this.checkLessonProgress(this.lessonId);
 
-        this.checkProgressInterval = setInterval(() => this.checkLessonProgress(this.lessonId), 5000);
+        if (this.lessonStatus !== 'passed') {
+          this.player.on('play', () => {
+            if (this.lessonStatus !== 'passed') {
+              this.videoStartTime = this.player.currentTime;
+              this.autoSaveInterval = setInterval(() => this.autoSaveVideoProgress(), 30000);
+            }
+          });
+
+          this.checkProgressInterval = setInterval(() => this.checkLessonProgress(this.lessonId), 5000);
+        } else {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Урок доступен',
+            detail: 'Следующий урок теперь доступен!'
+          });
+        }
+
+        this.autoSaveInterval = setInterval(() => this.saveVideoTimeUpdate(), 30000);
+
       } else {
         console.error('Lesson ID is missing or invalid');
       }
@@ -110,29 +137,57 @@ export class SabakPageComponent implements OnInit {
   public getLesson(lessonId: number) {
     this.learnerCourseService.getLesson(lessonId).subscribe((data) => {
       console.log('Data received:', data);
-      this.lesson = data
+
+      this.lesson=data;
       this.lessons = data.lessons;
       this.courseName = data.course_name;
       this.topicName = data.topic_name;
       this.lessonName = data.lesson_name;
       this.teacherName = data.teacher_fullname
       this.lessonIndex = data.lesson_number
+      this.lessonStatus = data.lesson_status
       // this.video = `http://127.0.0.1:8000${this.lesson.video}`
+      this.lessonsAndTests = [...this.lessons];
+
+      if (data.test) {
+        this.lessonsAndTests.push({
+          id: data.test.id,
+          status: data.test.status,
+          type: 'test'
+        });
+      }
+
+
       this.calculateProgress();
     })
   }
 
-  public calculateProgress() {
-    const totalLessons = this.lessons.length;
-    const passedLessons = this.lessons.filter(lesson => lesson.status === 'passed').length; // Количество пройденных уроков
-
-    if (totalLessons > 0) {
-      this.progress = (passedLessons / totalLessons) * 100;
+  ngOnDestroy() {
+    if (this.autoSaveInterval) {
+      clearInterval(this.autoSaveInterval);
     }
   }
 
+
+
+  public calculateProgress() {
+    const totalLessons = this.lessons.length;
+    const passedLessons = this.lessons.filter(lesson => lesson.status === 'passed').length;
+
+    if (totalLessons > 0) {
+      this.progress = (passedLessons / totalLessons) * 100;
+
+      this.progressSegments = [];
+      for (let i = 0; i < totalLessons; i++) {
+        this.progressSegments.push({
+          filled: i < passedLessons
+        });
+      }
+    }
+  }
+
+
   public back() {
-    console.log(this.lesson)
     this.router.navigate([`/student/courses/${this.lesson.course_id}`]);
   }
 
@@ -148,8 +203,6 @@ export class SabakPageComponent implements OnInit {
   saveVideoTimeUpdate(): void {
     if (!this.nextLessonIsAvailable) {
       const currentTime = this.player.currentTime;
-      const videoDuration = this.player.duration;
-      const videoTwentyPercent = videoDuration * 0.2;
 
       if (!this.firstVideoStartTimeSaved) {
         this.firstVideoStartTimeSaved = true;
@@ -158,12 +211,10 @@ export class SabakPageComponent implements OnInit {
       }
 
       if (Math.abs(currentTime - this.prevVideoTime) > 2) {
-        if (Math.abs(this.prevVideoTime - this.videoStartTime) > videoTwentyPercent) {
         this.videoService.sendVideoTimeUpdate(this.videoStartTime, this.prevVideoTime,this.lessonId).subscribe(() => {
           console.log(`start = ${this.videoStartTime}, prev = ${this.prevVideoTime}`);
         });
           this.videoStartTime = currentTime;
-        }
         this.prevVideoTime = currentTime;
       } else {
         this.prevVideoTime = currentTime;
@@ -171,10 +222,21 @@ export class SabakPageComponent implements OnInit {
     }
   }
 
+  autoSaveVideoProgress(): void {
+    const currentTime = this.player.currentTime;
+
+    this.videoService.sendVideoTimeUpdate(this.videoStartTime, currentTime, this.lessonId).subscribe(() => {
+      console.log(` start = ${this.videoStartTime},  = ${currentTime}`);
+
+      this.videoStartTime = currentTime;
+    });
+  }
+
 
   saveVideoFinish(): void {
     if (!this.nextLessonIsAvailable) {
       this.videoService.sendVideoTimeUpdate(this.videoStartTime, this.prevVideoTime,this.lessonId).subscribe(() => {
+        this.getLesson(this.lessonId);
         this.firstVideoStartTimeSaved = false;
         this.videoStartTime = 0;
         this.prevVideoTime = 0;
@@ -186,12 +248,21 @@ export class SabakPageComponent implements OnInit {
   checkLessonProgress(lessonId: number): void {
     this.videoService.checkProgress(lessonId).subscribe(
       (response: any) => {
-        this.nextLessonIsAvailable = response.next_lesson_is_available;
-
-        if (this.nextLessonIsAvailable) {
+        if (response?.is_passed) {
+          this.nextLessonIsAvailable = true;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Урок доступен',
+            detail: 'Следующий урок теперь доступен!'
+          });
           console.log('Следующий урок доступен');
+
+          if (this.checkProgressInterval) {
+            clearInterval(this.checkProgressInterval);
+            console.log('Progress check interval cleared since lesson is passed.');
+          }
         } else {
-          console.log('Следующий урок пока недоступен');
+          this.nextLessonIsAvailable = false;
         }
       },
       (error) => {
@@ -202,16 +273,11 @@ export class SabakPageComponent implements OnInit {
           if (this.checkProgressInterval) {
             clearInterval(this.checkProgressInterval);
           }
-
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Урок ученика не найден'
-          });
         }
       }
     );
   }
+
 
 
   loadLessonVideo(lessonId: number) {
