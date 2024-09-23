@@ -24,10 +24,12 @@ import {MessageService, PrimeTemplate} from "primeng/api";
 
 function dateTimeValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const valid = /^(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})$/.test(control.value);
+    const valid = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(control.value);
     if (!valid) return {'invalidDateTime': true};
 
-    const [day, month, year, hour, minute] = control.value.split(/\D/).map(Number);
+    const [datePart, timePart] = control.value.split('T');
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hour, minute] = timePart.split(':').map(Number);
     const date = new Date(year, month - 1, day, hour, minute);
     if (isNaN(date.getTime())) return {'invalidDateTime': true};
 
@@ -118,16 +120,16 @@ export class FlowDeadlinesComponent implements OnInit {
             lessons: this.fb.array(topic.lessons.map(lesson =>
               this.fb.group({
                 id: [lesson.id],
-                deadline: [lesson.deadline, [Validators.required, dateTimeValidator()]] // Добавляем валидатор
+                deadline: [this.formatDateToDateTimeLocal(lesson.deadline || ''), [Validators.required, dateTimeValidator()]]
               })
             )),
             test: this.fb.group({
               id: [topic.test.id],
-              deadline: [topic.test.deadline, [Validators.required, dateTimeValidator()]] // Тесты
+              deadline: [this.formatDateToDateTimeLocal(topic.test.deadline || ''), [Validators.required, dateTimeValidator()]]
             }),
             homework: this.fb.group({
               id: [topic.homework.id],
-              deadline: [topic.homework.deadline, [Validators.required, dateTimeValidator()]] // Домашние задания
+              deadline: [this.formatDateToDateTimeLocal(topic.homework.deadline || ''), [Validators.required, dateTimeValidator()]]
             })
           })
         ))
@@ -139,22 +141,44 @@ export class FlowDeadlinesComponent implements OnInit {
     });
   }
 
+
+
+  private formatDateToDateTimeLocal(dateStr: string): string {
+    if (!dateStr) {
+      // Handle the case where dateStr is null or empty
+      // You could return a default value or handle it in a way that fits your app's logic
+      return ''; // Just as an example
+    }
+
+    const parts = dateStr.split(/[\s.:-]/).map(Number);
+    if (parts.length < 5) {
+      // If the split operation does not produce the expected number of parts,
+      // it means the format is not as expected. Handle this case appropriately.
+      return ''; // Just as an example
+    }
+
+    const [day, month, year, hour, minute] = parts;
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+  }
+
+  private formatDateToServerFormat(dateTimeLocalStr: string): string {
+    const [datePart, timePart] = dateTimeLocalStr.split('T');
+    const [year, month, day] = datePart.split('-');
+    return `${day}.${month}.${year} ${timePart}`;
+  }
+
   public save() {
-    if (this.deadlineForm.valid) {
-      console.log(this.deadlineForm.getRawValue())
-      const formattedData = this.formatDataForSave(this.deadlineForm.value);
+    // if (this.deadlineForm.valid) {
+      const formattedData = this.formatDataForSave(this.deadlineForm.value); // Конвертация перед отправкой
       this.flowService.saveCourseDeadlines(formattedData).subscribe({
         next: (response) => {
           console.log('Данные успешно сохранены', response);
-          // Обработка успешного сохранения
         },
         error: (error) => {
           console.error('Ошибка при сохранении данных', error);
-          // Обработка ошибок
         }
       });
-    }
-    console.log(this.deadlineForm.getRawValue())
+    // }
   }
 
   private formatDataForSave(formData: any): any {
@@ -165,11 +189,10 @@ export class FlowDeadlinesComponent implements OnInit {
     formData.modules.forEach((module: FlowModules) => {
       module.topics.forEach(topic => {
         topic.lessons.forEach(lesson => {
-          lessons.push({id: lesson.id, deadline: lesson.deadline});
+          lessons.push({id: lesson.id, deadline: this.formatDateToServerFormat(lesson.deadline)}); // Конвертация даты урока
         });
-        console.log(topic.test.deadline)
-        tests.push({id: topic.test.id, deadline: topic.test.deadline});
-        homeworks.push({id: topic.homework.id, deadline: topic.homework.deadline});
+        tests.push({id: topic.test.id, deadline: this.formatDateToServerFormat(topic.test.deadline)}); // Конвертация даты теста
+        homeworks.push({id: topic.homework.id, deadline: this.formatDateToServerFormat(topic.homework.deadline)}); // Конвертация даты домашней работы
       });
     });
 

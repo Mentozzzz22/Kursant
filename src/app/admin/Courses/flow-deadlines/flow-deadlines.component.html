@@ -27,7 +27,7 @@
                 <div [formGroupName]="lessonIndex" class="lesson">
                   <label for="lesson{{ moduleIndex }}{{ topicIndex }}{{ lessonIndex }}">Дедлайн
                     урока {{ lessonIndex + 1 }}</label>
-                  <input id="lesson{{ moduleIndex }}{{ topicIndex }}{{ lessonIndex }}" type="text"
+                  <input id="lesson{{ moduleIndex }}{{ topicIndex }}{{ lessonIndex }}" type="datetime-local"
                          formControlName="deadline">
                   <small *ngIf="lessonControl.get('deadline')?.errors?.['invalidDateTime'] &&
                 lessonControl.get('deadline')?.dirty && lessonControl.get('deadline')?.touched"
@@ -49,7 +49,7 @@
 
               <div formGroupName="homework" class="lesson">
                 <label for="homework{{ moduleIndex }}{{ topicIndex }}">Дедлайн домашнего задания:</label>
-                <input id="homework{{ moduleIndex }}{{ topicIndex }}" type="text" formControlName="deadline">
+                <input id="homework{{ moduleIndex }}{{ topicIndex }}" type="datetime-local" formControlName="deadline">
                 <small *ngIf="topicControl.get('homework')!.get('deadline')!.errors?.['invalidDateTime'] &&
                 topicControl.get('homework')!.get('deadline')?.dirty && topicControl.get('homework')!.get('deadline')?.touched"
                        class="error-deadline">
@@ -64,7 +64,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="submit" class="btn start-btn" [disabled]="!deadlineForm.valid">Сохранить</button>
+      <button type="submit" class="btn start-btn" >Сохранить</button>
       <button type="button" class="btn back-btn" (click)="cancelChanges()">Отмена</button>
     </div>
   </form>
