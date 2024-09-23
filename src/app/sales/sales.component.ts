@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {Component, inject} from '@angular/core';
+import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {UserService} from "../service/user.service";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-sales',
@@ -13,5 +15,29 @@ import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
   styleUrl: './sales.component.css'
 })
 export class SalesComponent {
+  private userService = inject(UserService);
+  private messageService = inject(MessageService);
+  private router = inject(Router);
 
+
+  logout() {
+    this.userService.logout().subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Успешно',
+          detail: 'Вы успешно вышли из системы'
+        });
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        console.error('Ошибка при выходе:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Ошибка при выходе из системы'
+        });
+      }
+    });
+  }
 }

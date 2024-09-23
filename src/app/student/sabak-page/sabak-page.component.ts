@@ -66,7 +66,7 @@ export class SabakPageComponent implements OnInit {
       case 'opened_retake':
         return 'assets/images/opened-retake.svg';
       case 'completed':
-        return 'assets/images/completed.svg'; // Иконка для завершенного урока
+        return 'assets/images/completed.svg';
       default:
         return 'assets/images/closed.svg';
     }
@@ -148,6 +148,8 @@ export class SabakPageComponent implements OnInit {
   saveVideoTimeUpdate(): void {
     if (!this.nextLessonIsAvailable) {
       const currentTime = this.player.currentTime;
+      const videoDuration = this.player.duration;
+      const videoTwentyPercent = videoDuration * 0.2;
 
       if (!this.firstVideoStartTimeSaved) {
         this.firstVideoStartTimeSaved = true;
@@ -156,11 +158,12 @@ export class SabakPageComponent implements OnInit {
       }
 
       if (Math.abs(currentTime - this.prevVideoTime) > 2) {
+        if (Math.abs(this.prevVideoTime - this.videoStartTime) > videoTwentyPercent) {
         this.videoService.sendVideoTimeUpdate(this.videoStartTime, this.prevVideoTime,this.lessonId).subscribe(() => {
-          console.log(`Прогресс сохранён: start = ${this.videoStartTime}, prev = ${this.prevVideoTime}`);
+          console.log(`start = ${this.videoStartTime}, prev = ${this.prevVideoTime}`);
         });
-
-        this.videoStartTime = currentTime;
+          this.videoStartTime = currentTime;
+        }
         this.prevVideoTime = currentTime;
       } else {
         this.prevVideoTime = currentTime;
@@ -215,10 +218,16 @@ export class SabakPageComponent implements OnInit {
     this.videoUrl = this.videoService.getLessonVideoUrl(lessonId, 720); // Default to 720p
     const video480Url = this.videoService.getLessonVideoUrl(lessonId, 480);
     const video720Url = this.videoService.getLessonVideoUrl(lessonId, 720);
+    const video1080Url = this.videoService.getLessonVideoUrl(lessonId, 1080);
 
     this.player.source = {
       type: 'video',
       sources: [
+        {
+          src: video1080Url,
+          type: 'video/mp4',
+          size: 1080
+        },
         {
           src: video720Url,
           type: 'video/mp4',
@@ -234,7 +243,7 @@ export class SabakPageComponent implements OnInit {
   }
 
   changeQuality(quality: number) {
-    let videoUrl: string = '';  // Initialize videoUrl with an empty string
+    let videoUrl: string = '';
 
     if (quality === 720) {
       videoUrl = this.videoService.getLessonVideoUrl(this.lessonId, 720);
@@ -242,9 +251,7 @@ export class SabakPageComponent implements OnInit {
       videoUrl = this.videoService.getLessonVideoUrl(this.lessonId, 480);
     }
 
-    // Ensure videoUrl is valid before using it
     if (videoUrl) {
-      // Update Plyr player with the new video source
       this.player.source = {
         type: 'video',
         sources: [
@@ -256,9 +263,8 @@ export class SabakPageComponent implements OnInit {
         ]
       };
 
-      // Optionally play the video after switching quality
       this.player.once('loadedmetadata', () => {
-        this.player.play(); // Play after switching
+        this.player.play();
       });
     } else {
       console.error('Video URL is not defined for the selected quality.');
