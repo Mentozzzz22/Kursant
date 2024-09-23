@@ -214,10 +214,16 @@ export class SabakPageComponent implements OnInit {
     this.videoUrl = this.videoService.getLessonVideoUrl(lessonId, 720); // Default to 720p
     const video480Url = this.videoService.getLessonVideoUrl(lessonId, 480);
     const video720Url = this.videoService.getLessonVideoUrl(lessonId, 720);
+    const video1080Url = this.videoService.getLessonVideoUrl(lessonId, 1080);
 
     this.player.source = {
       type: 'video',
       sources: [
+        {
+          src: video1080Url,
+          type: 'video/mp4',
+          size: 1080
+        },
         {
           src: video720Url,
           type: 'video/mp4',
