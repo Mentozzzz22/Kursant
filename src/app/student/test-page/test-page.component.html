@@ -24,11 +24,11 @@
           </div>
 
           <div class="test-detail-right">
-            <p>{{ learnerTest!.questions_count }}</p>
-            <p>{{ learnerTest!.duration }} минут</p>
-            <p>{{ learnerTest!.deadline }}</p>
-            <p *ngIf="learnerTest?.passed_at">{{ learnerTest!.passed_at }}</p>
-            <p *ngIf="learnerTest?.taken_marks">{{ learnerTest!.taken_marks }}</p>
+            <p>{{ learnerTest?.questions_count }}</p>
+            <p>{{ learnerTest?.duration }} минут</p>
+            <p>{{ learnerTest?.deadline }}</p>
+            <p *ngIf="learnerTest?.passed_at">{{ learnerTest?.passed_at }}</p>
+            <p *ngIf="learnerTest?.taken_marks">{{ learnerTest?.taken_marks }}</p>
           </div>
         </div>
         <button *ngIf="testStatus === 'opened'" class="start-test-btn" (click)="showStartTestDialog()">
@@ -90,7 +90,7 @@
             <div *ngFor="let option of questions[currentQuestionIndex].options; let j = index" class="answer">
               <label class="answer-option">
                 <input type="radio" [formControlName]="'question_' + questions[currentQuestionIndex].id"
-                       (change)="saveAnswer(questions[currentQuestionIndex].id, option.answerId)" [value]="j">
+                       (change)="saveAnswer(questions[currentQuestionIndex].id, j, option.answerId)" [value]="j">
                 <span>{{ option.answerName }}</span>
               </label>
             </div>

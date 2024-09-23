@@ -66,11 +66,20 @@ export class TestPageComponent implements OnInit {
 
   private fb = inject(FormBuilder)
 
+  constructor() {
+    this.initializeForm();
+  }
+
+
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.testId = +params.get('testId')!;
       this.loadTest(this.testId);
     });
+
+    if(this.isTestStarted) {
+      this.getQuestions(this.testId);
+    }
   }
 
   loadTest(testId: number) {
@@ -86,7 +95,6 @@ export class TestPageComponent implements OnInit {
       this.calculateProgress();
     })
 
-    // this.questions = this.getMockTestQuestions();
     this.answeredQuestions = new Array(this.questions.length).fill(false);
 
     this.questions.forEach((question) => {
@@ -178,9 +186,9 @@ export class TestPageComponent implements OnInit {
   }
 
   // Сохранение ответа при выборе варианта
-  saveAnswer(questionId: number, answerId: number) {
+  saveAnswer(questionId: number, index: number, answerId: number) {
     let savedAnswers = JSON.parse(localStorage.getItem('testAnswers') || '{}');
-    savedAnswers[questionId] = answerId; // Сохраняем ответ для конкретного вопроса
+    savedAnswers[questionId] = index; // Сохраняем ответ для конкретного вопроса
     localStorage.setItem('testAnswers', JSON.stringify(savedAnswers));
 
     this.answeredQuestions[questionId] = true; // Отмечаем вопрос как отвеченный
@@ -193,6 +201,10 @@ export class TestPageComponent implements OnInit {
       questionGroup.patchValue({answerId: answerId});
       this.answeredQuestions[questionId] = true;
     }
+    // Добавляем ответ в массив ответов в форме
+    const answers = this.testForm.get('answers') as FormArray;
+    answers.at(questionId - 1).setValue({questionId: questionId, answerId: answerId});
+    localStorage.setItem('answers', JSON.stringify(answers.value));
   }
 
 
@@ -200,6 +212,16 @@ export class TestPageComponent implements OnInit {
   restoreSavedState() {
     const savedAnswers = JSON.parse(localStorage.getItem('testAnswers') || '{}');
     const answeredQuestions = JSON.parse(localStorage.getItem('answeredQuestions') || '{}');
+    const answers = JSON.parse(localStorage.getItem('answers') || '[]');
+
+    const answersFormArray = this.testForm.get('answers') as FormArray;
+    answers.forEach((answer: any, index: any) => {
+      if (answersFormArray.at(index)) {
+        answersFormArray.at(index).setValue(answer);
+      } else {
+        answersFormArray.push(this.fb.group(answer));
+      }
+    });
 
     Object.keys(savedAnswers).forEach((questionId) => {
       const controlName = 'question_' + questionId;
@@ -232,6 +254,7 @@ export class TestPageComponent implements OnInit {
 
   submitTest() {
 
+    console.log(this.testForm.getRawValue())
     this.learnerTestService.finishTest(this.testId, this.testForm.value.answers).subscribe({
       next: (response) => {
         if (response.success) {
