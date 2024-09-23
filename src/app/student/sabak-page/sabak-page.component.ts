@@ -110,7 +110,7 @@ export class SabakPageComponent implements OnInit {
   public getLesson(lessonId: number) {
     this.learnerCourseService.getLesson(lessonId).subscribe((data) => {
       console.log('Data received:', data);
-
+      this.lesson = data
       this.lessons = data.lessons;
       this.courseName = data.course_name;
       this.topicName = data.topic_name;
@@ -132,6 +132,7 @@ export class SabakPageComponent implements OnInit {
   }
 
   public back() {
+    console.log(this.lesson)
     this.router.navigate([`/student/courses/${this.lesson.course_id}`]);
   }
 

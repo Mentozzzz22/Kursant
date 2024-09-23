@@ -293,6 +293,7 @@ export class TestPageComponent implements OnInit {
 
 
   public back() {
+    console.log(this.getLearnerTest)
     this.router.navigate([`/student/courses/${this.getLearnerTest.course_id}`]);
   }
 

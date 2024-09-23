@@ -19,8 +19,8 @@
             <p>Сұрақ саны</p>
             <p>Тест уақыты</p>
             <p>Дедлайн</p>
-            <p *ngIf="learnerTest!.passed_at">Время сдачи: </p>
-            <p *ngIf="learnerTest!.taken_marks">Правильных: </p>
+            <p *ngIf="learnerTest?.passed_at">Время сдачи: </p>
+            <p *ngIf="learnerTest?.taken_marks">Правильных: </p>
           </div>
 
           <div class="test-detail-right">
