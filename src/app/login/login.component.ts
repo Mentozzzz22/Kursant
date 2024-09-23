@@ -78,15 +78,19 @@ export class LoginComponent implements OnInit {
           this.isCodeValid = true;
           this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Успешно авторизован'});
           const userRole = response.role;
+          console.log(userRole);
           switch (userRole) {
             case 'learner':
-              this.router.navigate(['/student']);
+              this.router.navigate(['/student/courses']);
+              break;
+            case 'sales':
+              this.router.navigate(['/sales/application-sales']);
               break;
             case 'employee':
-              this.router.navigate(['/admin']);
+              this.router.navigate(['/admin/course']);
               break;
             case 'curator':
-              this.router.navigate(['/curator']);
+              this.router.navigate(['/curator/curator-homework']);
               break;
             default:
               console.error('Неизвестная роль пользователя:', userRole);
@@ -109,5 +113,9 @@ export class LoginComponent implements OnInit {
     } else {
       console.error('Неверный SMS-код');
     }
+  }
+
+  goBack() {
+    window.history.back();
   }
 }

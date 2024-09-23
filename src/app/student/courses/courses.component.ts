@@ -1,5 +1,5 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {NgForOf} from "@angular/common";
+import {Component, HostListener, inject, OnInit} from '@angular/core';
+import {NgForOf, NgIf} from "@angular/common";
 import {kurs} from "../../non-authorized/main-page/main-page.component";
 import {ProgressBarModule} from "primeng/progressbar";
 import {Router} from "@angular/router";
@@ -11,12 +11,18 @@ import {LearnerCourses, OtherCourses} from "../../../assets/models/learner_cours
   standalone: true,
   imports: [
     NgForOf,
-    ProgressBarModule
+    ProgressBarModule,
+    NgIf
   ],
   templateUrl: './courses.component.html',
   styleUrl: './courses.component.css'
 })
 export class CoursesComponent implements OnInit {
+  isMobileView: boolean = false;
+  @HostListener('window:resize', [])
+  onResize() {
+    this.checkWindowSize();
+  }
 
   private learnerCourseService = inject(LearnerCourseService)
   private router = inject(Router);
@@ -53,9 +59,10 @@ export class CoursesComponent implements OnInit {
   }
 
 
+  checkWindowSize(): void {
+    this.isMobileView = window.innerWidth <= 768;
+  }
 
-
-  // Метод для перехода на страницу курса
   goToCourse(courseId: number): void {
     this.router.navigate(['/student/courses', courseId]);
   }

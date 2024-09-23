@@ -2,7 +2,12 @@
 <div class="main-page">
   <div class="main-right">
     <div class="main-carousel">
-      <img src="../../../assets/images/mainpage-carousel.svg" alt="carousel">
+      <img src="../../../assets/images/mainpage-carousel.svg" alt="carousel" *ngIf="!isMobileView">
+      <img src="../../../assets/images/Carousel2.svg" alt="carousel" *ngIf="isMobileView">
+    </div>
+    <div class="nav-search">
+      <i class="pi pi-search" ></i>
+      <input type="text" pInputText placeholder="Курс или поток" />
     </div>
     <div class="lil-cards">
       <div class="lil-card">
@@ -59,41 +64,23 @@
     <h2>Потоктар тізімі</h2>
 
     <div class="potoktar-tizimi">
-      <div class="potok-card">
+      <div *ngFor="let flow of flows; let i = index" [ngClass]="i % 2 === 0 ? 'potok-card' : 'potok-card1'">
         <div class="potok-info">
-          <p>Поток #1</p>
-          <p>Дата: 22.09.2024</p>
+          <p>Поток #{{ flow.flow_id }}</p>
+          <p>Дата: {{ flow.starts_at }}</p>
         </div>
-        <h3>ҰБТ-ға 3 профильді пән бойынша дайындық</h3>
+        <h3>{{ flow.name }}</h3>
         <div class="potok-subjects">
-          <p class="subject_teacher" *ngFor="let sub of subjectAndTeacher">
-            {{ sub.subject }} | {{ sub.teacher }}
+          <p class="subject_teacher" *ngFor="let course of flow.courses">
+            {{ course.name }} | {{ course.teacher_fullname }}
           </p>
         </div>
         <div class="potok-footer">
           <button>Потокқа жазылу</button>
-          <h3>123,000 ₸</h3>
-          <p>бір реттік төлем</p>
-        </div>
-      </div>
-      <div class="potok-card1">
-        <div class="potok-info">
-          <p>Поток #1</p>
-          <p>Дата: 22.09.2024</p>
-        </div>
-        <h3>ҰБТ-ға 3 профильді пән бойынша дайындық</h3>
-        <div class="potok-subjects">
-          <p class="subject_teacher1" *ngFor="let sub of subjectAndTeacher">
-            {{ sub.subject }} | {{ sub.teacher }}
-          </p>
-        </div>
-        <div class="potok-footer">
-          <button>Потокқа жазылу</button>
-          <h3>123,000 ₸</h3>
-          <p>бір реттік төлем</p>
         </div>
       </div>
     </div>
+
 
   </div>
   <div class="main-left">

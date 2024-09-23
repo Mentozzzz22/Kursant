@@ -58,8 +58,8 @@
   <ng-template pTemplate="header">
     <ng-container *ngIf="!visibleAdd && !selectedApplicationType?.showAccess">
       <div class="inline-flex align-items-center justify-content-center gap-2">
-        <h3>Заявка #0012</h3>
-        <h5 class="username">Арман</h5>
+        <h3>Заявка #{{ selectedNum }}</h3>
+        <h5 class="username">{{ selectedName }}</h5>
       </div>
     </ng-container>
 

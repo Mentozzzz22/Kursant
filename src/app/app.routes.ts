@@ -31,12 +31,13 @@ import {TestDetailComponent} from "./curator/homeworks/test-detail/test-detail.c
 import {ViewTestResultComponent} from "./student/view-test-result/view-test-result.component";
 import {LearnerHomeworkComponent} from "./student/learner-homework/learner-homework.component";
 import {AuthGuard} from "./service/auth.guard";
+import {NonAuthGuard} from "./service/nonauth.guard";
 
 export const routes: Routes = [
   {
-    path: '', component: NonAuthorizedComponent, children: [
-      {path: '', component: MainPageComponent},
-      {path: 'cart', component: CartComponent},
+    path: '', component: NonAuthorizedComponent,canActivate: [NonAuthGuard], children: [
+      {path: '', component: MainPageComponent,canActivate: [NonAuthGuard]},
+      {path: 'cart', component: CartComponent,canActivate: [NonAuthGuard]},
     ]
   },
   {path: 'login', component: LoginComponent},

@@ -4,14 +4,14 @@
   </div>
   <div class="nav-search">
     <i class="pi pi-search" (click)="onSearchChange()"></i>
-    <input type="text" pInputText placeholder="Курс или поток" [(ngModel)]="searchText"/>
+    <input type="text" pInputText placeholder="Курс или поток" [(ngModel)]="searchText" (keydown.enter)="onSearchChange()"/>
   </div>
   <div class="nav-buttons">
     <div class="nav-cart-logo">
       <a routerLink="cart">
         <div class="icon-wrapper">
           <img src="../../../assets/images/navbar-cart-logo.svg" alt="cart-logo" class="cart-icon">
-          <p-badge [value]="cartCount" severity="danger" ></p-badge>
+          <p-badge *ngIf="cartCount > 0" [value]="cartCount" severity="danger"></p-badge>
         </div>
       </a>
     </div>

@@ -65,6 +65,8 @@ export class ApplicationComponent implements OnInit{
   selectedFileName: string | null = null;
   selectedApplicationType: any;
   public selectedFlow: number | null = null;
+  selectedName:string|null=null;
+  selectedNum:number|null=null;
 
   ngOnInit(): void {
     this.getApplications();
@@ -120,6 +122,8 @@ export class ApplicationComponent implements OnInit{
       this.selectedApplicationType = { ...application, showAccess: false };
 
       this.status = data.status;
+      this.selectedNum = data.order_id;
+      this.selectedName = data.learner_fullname
 
       this.applicationsForm.patchValue({
         learner_fullname: data.learner_fullname,
@@ -182,6 +186,8 @@ export class ApplicationComponent implements OnInit{
       this.orderService.acceptAdminOrder(order_Id, flow_Id).subscribe(
         response => {
           if (response.success) {
+            this.visible=false;
+            this.getApplications();
             this.messageService.add({
               severity: 'success',
               summary: 'Успешно',

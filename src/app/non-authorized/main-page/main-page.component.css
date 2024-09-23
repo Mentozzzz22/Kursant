@@ -14,6 +14,7 @@
   justify-content: center;
   gap: 30px;
   margin-top: 30px;
+  padding:15px;
 }
 
 .main-right {
@@ -24,8 +25,12 @@
 
 .main-carousel img {
   width: 100%;
-  max-width: 100%;
   height: auto;
+}
+
+
+.nav-search{
+ display:none;
 }
 
 .lil-cards {
@@ -262,7 +267,7 @@
   flex-direction: column;
   gap: 10px;
   background-color: white;
-  border-radius: 20px;
+  border-radius: 10px;
   border-left: 12px solid #00B0EA;
   padding: 20px;
 }
@@ -272,7 +277,7 @@
   flex-direction: column;
   gap: 10px;
   background-color: white;
-  border-radius: 20px;
+  border-radius: 10px;
   border-left: 12px solid #6E63E5;
   padding: 20px;
 }
@@ -449,6 +454,28 @@
     flex-direction: column;
   }
 
+  .nav-search {
+    display: flex;
+    flex: 1;
+    position: relative;
+  }
+
+  .nav-search i.pi-search {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .nav-search input {
+    width: 100%;
+    padding-left: 35px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+
+    height: 38px;
+    background-color: #FFFFFF;
+  }
 
   .lil-cards {
     flex-direction: column;

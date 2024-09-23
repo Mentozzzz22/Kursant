@@ -1,7 +1,8 @@
 <div class="main-page">
   <div class="main-right">
     <div class="main-carousel">
-      <img src="../../../assets/images/Carousel-orange.svg" alt="carousel">
+      <img src="../../../assets/images/mainpage-carousel.svg" alt="carousel" *ngIf="!isMobileView">
+      <img src="../../../assets/images/Carousel2.svg" alt="carousel" *ngIf="isMobileView">
     </div>
     <div class="lil-cards">
       <div class="lil-card" *ngFor="let course of learnerCourses">

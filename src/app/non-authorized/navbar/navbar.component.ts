@@ -6,6 +6,7 @@ import {OrderService} from "../../service/order.service";
 import {RouterLink} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {CourseService} from "../../service/course.service";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-navbar',
@@ -15,7 +16,8 @@ import {CourseService} from "../../service/course.service";
     ButtonDirective,
     BadgeModule,
     RouterLink,
-    FormsModule
+    FormsModule,
+    NgIf
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'

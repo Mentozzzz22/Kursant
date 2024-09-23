@@ -1,14 +1,16 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, HostListener, inject, OnInit} from '@angular/core';
 import {CardModule} from "primeng/card";
 import {Button} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
-import {NgForOf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Course} from "../../../assets/models/course.interface";
 import {CourseService} from "../../service/course.service";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {OrderService} from "../../service/order.service";
 import {MessageService} from "primeng/api";
 import {NgxMaskDirective} from "ngx-mask";
+import {GetFlows} from "../../../assets/models/getFlows.interface";
+import {FlowService} from "../../service/flow.service";
 
 export interface kurs {
   id: number,
@@ -31,6 +33,8 @@ export interface kurs {
     NgForOf,
     ReactiveFormsModule,
     NgxMaskDirective,
+    NgClass,
+    NgIf,
 
   ],
   templateUrl: './main-page.component.html',
@@ -38,11 +42,19 @@ export interface kurs {
 })
 export class MainPageComponent implements OnInit{
   courses: Course[] = [];
+  public flows: GetFlows[] = [];
+  isMobileView: boolean = false;
   private courseService = inject(CourseService);
   private orderService = inject(OrderService);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
+  private flowService = inject(FlowService);
   public searchText: string = '';
+
+  @HostListener('window:resize', [])
+  onResize() {
+    this.checkWindowSize();
+  }
 
   public subjectAndTeacher: any = [
     {
@@ -77,6 +89,10 @@ export class MainPageComponent implements OnInit{
       this.searchText = searchText;
       this.loadCourses();
     });
+
+    this.checkWindowSize();
+
+    this.loadFlows();
   }
 
   loadCourses(): void {
@@ -84,13 +100,19 @@ export class MainPageComponent implements OnInit{
       (data: Course[]) => {
         this.courses = data.map(course => ({
           ...course,
-          poster: `http://127.0.0.1:8000/media/${course.poster}`
+          poster: `http://127.0.0.1:8000/${course.poster}`
         }));
       },
       (error) => {
         console.error('Error fetching courses:', error);
       }
     );
+  }
+
+  loadFlows() {
+    this.flowService.getFlows(this.searchText).subscribe(data => {
+      this.flows = data
+    })
   }
 
 
@@ -137,6 +159,10 @@ export class MainPageComponent implements OnInit{
     } else {
       this.messageService.add({severity: 'info', summary: 'Информация', detail: 'Курс уже находится в корзине'});
     }
+  }
+
+  checkWindowSize(): void {
+    this.isMobileView = window.innerWidth <= 768;
   }
 
 
