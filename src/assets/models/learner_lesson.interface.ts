@@ -7,6 +7,7 @@ export interface LearnerLesson {
   topic_name: string;
   lesson_name: string;
   lesson_number: number;
+  lesson_status:string;
   teacher_fullname: string;
   next_lesson_id: number;
   video: string;

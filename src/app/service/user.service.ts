@@ -98,17 +98,17 @@ export class UserService implements OnInit {
   }
   verify(): Observable<any> {
     if (!this.token || !this.role) {
-      return throwError({ status: 403, detail: 'User has no role' });
+      return throwError({ status: 403, detail: 'Invalid token.' });
     }
 
     const headers = new HttpHeaders({
       'Authorization': `Token ${this.token}`
     });
 
-    const params = {
-      token: this.token,
-      role: this.role
-    };
+    // Send the token and role as query parameters
+    const params = new HttpParams()
+      .set('token', this.token)
+      .set('role', this.role);
 
     return this.http.get<any>(`${this.userUrl}verify/`, { headers, params }).pipe(
       tap(response => {
@@ -120,9 +120,11 @@ export class UserService implements OnInit {
         }
       }),
       catchError(error => {
-        console.error('Ошибка верификации:', error);
+        console.error('Verification error:', error);
         return throwError(error);
       })
     );
   }
+
+
 }
