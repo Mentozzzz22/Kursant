@@ -168,17 +168,20 @@ export class FlowDeadlinesComponent implements OnInit {
   }
 
   public save() {
-    // if (this.deadlineForm.valid) {
+    if (!this.deadlineForm.valid) {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Необходимо заполнить все поля!'});
+      return;
+    } else {
       const formattedData = this.formatDataForSave(this.deadlineForm.value); // Конвертация перед отправкой
       this.flowService.saveCourseDeadlines(formattedData).subscribe({
         next: (response) => {
-          console.log('Данные успешно сохранены', response);
+          this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Дедлайны успешно обновлены!'});
         },
         error: (error) => {
           console.error('Ошибка при сохранении данных', error);
         }
       });
-    // }
+    }
   }
 
   private formatDataForSave(formData: any): any {
@@ -224,26 +227,26 @@ export class FlowDeadlinesComponent implements OnInit {
     if (!this.flowEditForm.valid) {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Необходимо заполнить все поля!'});
       return;
+    } else {
+      const formattedDate = this.formatDate(this.flowEditForm.get('starts_at')!.value);
+
+      const flowData = {
+        flow_id: flowId,
+        name: this.flowEditForm.get('name')!.value,
+        starts_at: formattedDate
+      };
+
+      this.flowService.saveFlow(flowData).subscribe({
+        next: (response) => {
+          this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Поток успешно изменен'});
+          this.visibleEditFlowModal = false;
+          this.loadDeadlines(this.courseId);
+        },
+        error: (error) => {
+          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка при редактировании потока'});
+        }
+      });
     }
-
-    const formattedDate = this.formatDate(this.flowEditForm.get('starts_at')!.value);
-
-    const flowData = {
-      flow_id: flowId,
-      name: this.flowEditForm.get('name')!.value,
-      starts_at: formattedDate
-    };
-
-    this.flowService.saveFlow(flowData).subscribe({
-      next: (response) => {
-        this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Поток успешно изменен'});
-        this.visibleEditFlowModal = false;
-        this.loadDeadlines(this.courseId);
-      },
-      error: (error) => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка при редактировании потока'});
-      }
-    });
   }
 
   private formatDate(dateStr: string): string {

@@ -7,12 +7,13 @@ import {Answer, Question, Test} from "../../../../assets/models/test.interface";
 import {Homework} from "../../../../assets/models/homework.interface";
 import {DialogModule} from "primeng/dialog";
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
-  ReactiveFormsModule,
+  ReactiveFormsModule, ValidationErrors,
   Validators
 } from "@angular/forms";
 import {EditorModule} from "primeng/editor";
@@ -34,6 +35,14 @@ type Form = FormGroup<{
   duration: FormControl<number>;
   questions: FormArray<FormQuestion>;
 }>;
+
+// Custom validator to ensure at least one correct answer is selected
+function atLeastOneCorrectAnswer(control: AbstractControl): ValidationErrors | null {
+  const answersArray = control.get('answers') as FormArray;
+  const hasCorrectAnswer = answersArray.controls.some(answerCtrl => answerCtrl.get('is_correct')?.value === true);
+
+  return hasCorrectAnswer ? null : {noCorrectAnswer: true};
+}
 
 @Component({
   selector: 'app-edit-topic',
@@ -124,7 +133,7 @@ export class EditTopicComponent implements OnInit {
     return this.fb.group({
       text: [questionData?.text || '', Validators.required],
       answers: this.fb.array(questionData?.answers.map(answer => this.generateAnswer(answer)) || [])
-    });
+    }, {validators: atLeastOneCorrectAnswer});
   }
 
   public addQuestion() {
@@ -261,47 +270,57 @@ export class EditTopicComponent implements OnInit {
 
   public saveContent(): void {
 
-    const formData = new FormData();
-    formData.append('topic_id', String(this.topicId));
+    if (this.testForm.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Есть ошибки в форме. Пожалуйста, убедитесь, что на все вопросы выбран правильный ответ.'
+      });
+      return;
+    } else {
 
-    const lessonsData = this.lessons.map((lesson, index) => {
-      return {
-        name: lesson.name,
-        file: lesson.file instanceof File ? `lesson_file_${index}.mp4` : lesson.file
+      const formData = new FormData();
+      formData.append('topic_id', String(this.topicId));
+
+      const lessonsData = this.lessons.map((lesson, index) => {
+        return {
+          name: lesson.name,
+          file: lesson.file instanceof File ? `lesson_file_${index}.mp4` : lesson.file
+        };
+      });
+
+      formData.append('lessons', JSON.stringify(lessonsData));
+
+      // Добавляем новые файлы в FormData (бинарные данные)
+      this.lessons.forEach((lesson, index) => {
+        if (lesson.file instanceof File) {
+          formData.append(`lesson_file_${index}.mp4`, lesson.file);
+        }
+      });
+
+      const homeworkData = {
+        description: this.testForm.get('description')?.value,
+        file: this.homeworkFile instanceof File ? 'homework_file' : this.homeworkFileName || ''
       };
-    });
+      formData.append('homework', JSON.stringify(homeworkData));
 
-    formData.append('lessons', JSON.stringify(lessonsData));
-
-    // Добавляем новые файлы в FormData (бинарные данные)
-    this.lessons.forEach((lesson, index) => {
-      if (lesson.file instanceof File) {
-        formData.append(`lesson_file_${index}.mp4`, lesson.file);
+      if (this.homeworkFile instanceof File) {
+        formData.append('homework_file', this.homeworkFile);
       }
-    });
 
-    const homeworkData = {
-      description: this.testForm.get('description')?.value,
-      file: this.homeworkFile instanceof File ? 'homework_file' : this.homeworkFileName || ''
-    };
-    formData.append('homework', JSON.stringify(homeworkData));
+      formData.append('test', JSON.stringify(this.testForm.value));
 
-    if (this.homeworkFile instanceof File) {
-      formData.append('homework_file', this.homeworkFile);
+      this.topicService.saveTopicContent(formData).subscribe({
+        next: response => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: `Успешно сохранено!`
+          });
+        },
+        error: error => console.error('Failed to save content:', error)
+      });
     }
-
-    formData.append('test', JSON.stringify(this.testForm.value));
-
-    this.topicService.saveTopicContent(formData).subscribe({
-      next: response => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Успешно',
-          detail: `Успешно сохранено!`
-        });
-      },
-      error: error => console.error('Failed to save content:', error)
-    });
   }
 
   public removeLessonFile(event: Event, index: number): void {
