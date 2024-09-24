@@ -1,17 +1,38 @@
 <div class="about-courses-container">
   <div class="about-courses-content">
-    <div class="subject-carousel">
-      <img src="assets/images/subject-carousel.svg" alt="subject-carousel">
+    <div class="carousel-content">
+      <div class="image-overlay"></div>
+      <div class="text-overlay">
+        <h1>{{ course.name }}</h1>
+        <p>Мұғалім: {{ course.teacherName }}</p>
+        <div class="course-info">
+          <span class="info-item">
+        <i class="pi pi-book"></i> {{ course.modules_count }} бөлім
+          </span>
+          <span class="info-item-2">
+        <i class="pi pi-bookmark"></i> {{ course.lessons_count }} сабақ
+          </span>
+        </div>
+        <div class="course-item">
+          <p class="progress-label">Прогресс:</p>
+          <p class="progress-value">{{ course.progress }}%</p>
+        </div>
+        <p-progressBar [value]="course.progress" [style]="{ height: '6px' }" [showValue]="false"></p-progressBar>
+
+      </div>
+      <img src="{{ poster }}" alt="subject-carousel" class="carousel-image">
     </div>
+
+
     <div class="bolimder">
       @for (module of modules; track i; let i = $index) {
         <div class="bolim-container">
           <div class="bolim">
             <div class="left-bolim">
               <p><strong>Бөлім {{ i + 1 }}.</strong> {{ module.name }}</p>
-              <p class="sabak">
+              <div class="sabak">
                 <img src="../../../assets/images/sabak.svg" alt="sabak"> {{ module.topics.length }} тақырып
-              </p>
+              </div>
             </div>
             <div class="right-bolim" (click)="toggleBolim(i)">
               <img [src]="getTemaStatusIcon(module.status)" alt="status">

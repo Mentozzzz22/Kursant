@@ -78,75 +78,44 @@ export class SabakPageComponent implements OnInit,OnDestroy {
     }
   }
 
-
-
-
-
   ngOnInit() {
-
-
     this.player = new Plyr(this.videoElement.nativeElement, { captions: { active: true } });
-
-    const video = this.videoElement.nativeElement;
-
-
     this.player.on('timeupdate', this.saveVideoTimeUpdate.bind(this));
     this.player.on('ended', this.saveVideoFinish.bind(this));
-
-
-
-
     this.route.paramMap.subscribe(params => {
       const lessonIdParam = params.get('lessonId');
-      console.log('Lesson ID from route params:', lessonIdParam);
-
       if (lessonIdParam) {
         this.lessonId = +lessonIdParam;
-        console.log('Assigned lessonId:', this.lessonId);
-
         this.getLesson(this.lessonId);
         this.loadLessonVideo(this.lessonId);
         this.checkLessonProgress(this.lessonId);
 
-        if (this.lessonStatus !== 'passed') {
-          this.player.on('play', () => {
-            if (this.lessonStatus !== 'passed') {
-              this.videoStartTime = this.player.currentTime;
-              this.autoSaveInterval = setInterval(() => this.autoSaveVideoProgress(), 30000);
-            }
-          });
-
-          this.checkProgressInterval = setInterval(() => this.checkLessonProgress(this.lessonId), 5000);
-        } else {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Урок доступен',
-            detail: 'Следующий урок теперь доступен!'
-          });
-        }
-
-        this.autoSaveInterval = setInterval(() => this.saveVideoTimeUpdate(), 30000);
-
+        this.player.on('play', () => {
+          if (this.lessonStatus !== 'passed') {
+            this.videoStartTime = this.player.currentTime;
+            this.autoSaveInterval = setInterval(() => this.autoSaveVideoProgress(), 30000);
+            this.checkProgressInterval = setInterval(() => this.checkLessonProgress(this.lessonId), 5000);
+          }
+        });
       } else {
         console.error('Lesson ID is missing or invalid');
       }
-    })
-
+    });
   }
 
   public getLesson(lessonId: number) {
     this.learnerCourseService.getLesson(lessonId).subscribe((data) => {
       console.log('Data received:', data);
 
-      this.lesson=data;
+      this.lesson = data;
       this.lessons = data.lessons;
       this.courseName = data.course_name;
       this.topicName = data.topic_name;
       this.lessonName = data.lesson_name;
-      this.teacherName = data.teacher_fullname
-      this.lessonIndex = data.lesson_number
-      this.lessonStatus = data.lesson_status
-      // this.video = `http://127.0.0.1:8000${this.lesson.video}`
+      this.teacherName = data.teacher_fullname;
+      this.lessonIndex = data.lesson_number;
+      this.lessonStatus = data.lesson_status;
+
       this.lessonsAndTests = [...this.lessons];
 
       if (data.test) {
@@ -157,34 +126,62 @@ export class SabakPageComponent implements OnInit,OnDestroy {
         });
       }
 
+      if (data.homework) {
+        this.lessonsAndTests.push({
+          id: data.homework.id,
+          status: data.homework.status,
+          type: 'homework'
+        });
+      }
 
       this.calculateProgress();
-    })
+    });
   }
+
+  public getRouterLink(item: any) {
+    if (item.status === 'passed' || item.status === 'opened') {
+      if (item.type === 'test') {
+        return ['/student/test', item.id];
+      } else if (item.type === 'homework') {
+        return ['/student/homework', item.id];
+      } else {
+        return ['/student/lesson', item.id];
+      }
+    }
+    return null;
+  }
+
+
 
   ngOnDestroy() {
     if (this.autoSaveInterval) {
       clearInterval(this.autoSaveInterval);
     }
+    if (this.checkProgressInterval) {
+      clearInterval(this.checkProgressInterval);
+    }
   }
 
 
-
   public calculateProgress() {
-    const totalLessons = this.lessons.length;
-    const passedLessons = this.lessons.filter(lesson => lesson.status === 'passed').length;
+    const totalItems = this.lessonsAndTests.length;
 
-    if (totalLessons > 0) {
-      this.progress = (passedLessons / totalLessons) * 100;
+    const passedItems = this.lessonsAndTests.filter(item => item.status === 'passed').length;
+
+    if (totalItems > 0) {
+      this.progress = (passedItems / totalItems) * 100;
 
       this.progressSegments = [];
-      for (let i = 0; i < totalLessons; i++) {
+
+      for (let i = 0; i < totalItems; i++) {
         this.progressSegments.push({
-          filled: i < passedLessons
+          filled: this.lessonsAndTests[i].status === 'passed'
         });
       }
     }
   }
+
+
 
 
   public back() {
@@ -192,12 +189,14 @@ export class SabakPageComponent implements OnInit,OnDestroy {
   }
 
   public nextLesson() {
-    this.router.navigate([`/student/lesson/${this.lesson.next_lesson_id}`]);
+    this.router.navigate([`/student/lesson/${this.lesson.next_lesson_id}`]).then(() => {
+      this.clearIntervals();
+    });
   }
 
-
-  goToLesson(lessonId: number) {
-    console.log(`Переход к уроку с ID: ${lessonId}`);
+  private clearIntervals() {
+    if (this.autoSaveInterval) clearInterval(this.autoSaveInterval);
+    if (this.checkProgressInterval) clearInterval(this.checkProgressInterval);
   }
 
   saveVideoTimeUpdate(): void {
@@ -224,10 +223,8 @@ export class SabakPageComponent implements OnInit,OnDestroy {
 
   autoSaveVideoProgress(): void {
     const currentTime = this.player.currentTime;
-
     this.videoService.sendVideoTimeUpdate(this.videoStartTime, currentTime, this.lessonId).subscribe(() => {
       console.log(` start = ${this.videoStartTime},  = ${currentTime}`);
-
       this.videoStartTime = currentTime;
     });
   }
@@ -255,28 +252,18 @@ export class SabakPageComponent implements OnInit,OnDestroy {
             summary: 'Урок доступен',
             detail: 'Следующий урок теперь доступен!'
           });
-          console.log('Следующий урок доступен');
-
-          if (this.checkProgressInterval) {
-            clearInterval(this.checkProgressInterval);
-            console.log('Progress check interval cleared since lesson is passed.');
-          }
+          this.clearIntervals();
         } else {
           this.nextLessonIsAvailable = false;
         }
       },
       (error) => {
         console.error('Ошибка при проверке прогресса:', error);
-
-        if (error?.error?.detail === "Learner lesson not found") {
-          console.log('Урок ученика не найден, остановка проверок.');
-          if (this.checkProgressInterval) {
-            clearInterval(this.checkProgressInterval);
-          }
-        }
+        this.nextLessonIsAvailable = false;
       }
     );
   }
+
 
 
 

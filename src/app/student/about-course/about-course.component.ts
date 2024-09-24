@@ -3,6 +3,7 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {LearnerCourseService} from "../../service/learner-course.service";
 import {LearnerModules} from "../../../assets/models/learner_course.interface";
+import {ProgressBarModule} from "primeng/progressbar";
 
 
 @Component({
@@ -11,7 +12,8 @@ import {LearnerModules} from "../../../assets/models/learner_course.interface";
   imports: [
     NgIf,
     NgForOf,
-    NgClass
+    NgClass,
+    ProgressBarModule
   ],
   templateUrl: './about-course.component.html',
   styleUrl: './about-course.component.css'
@@ -23,8 +25,10 @@ export class AboutCourseComponent implements OnInit {
   private route = inject(ActivatedRoute)
   public courseId!: number;
   public modules: LearnerModules[] = []
+  poster: string = '';
   public isOpen: boolean[] = [];
   public isOpenTopic: boolean[][] = [];
+  public course: any = {};
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -35,7 +39,16 @@ export class AboutCourseComponent implements OnInit {
 
   public getCourse(courseId: number) {
     this.learnerCourseService.getCourse(courseId).subscribe((data) => {
+      this.course = {
+        name: data.name,
+        modules_count: data.modules_count,
+        lessons_count: data.lessons_count,
+        teacherName: data.teacher_fullname,
+        progress:data.progress,
+      };
+
       this.modules = data.modules
+      this.poster = `http://127.0.0.1:8000${data.poster}`
       console.log('Data received:', data);
       this.isOpen = new Array(this.modules.length).fill(false);
       this.isOpenTopic = this.modules.map(module => new Array(module.topics.length).fill(false));
