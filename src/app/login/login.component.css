@@ -83,3 +83,120 @@
 .login-button:hover {
   background-color: #1565C0;
 }
+
+@media (max-width: 1024px) {
+  .login-container {
+    flex-direction: column;
+    gap: 50px;
+    align-items: center;
+  }
+
+  .login-left img {
+    width: 100%;
+  }
+
+  .login-right {
+    gap: 50px;
+    text-align: center;
+  }
+
+  .login-input input {
+    width: 320px;
+  }
+
+  .login-button {
+    width: 120px;
+  }
+
+  .login-text h1 {
+    font-size: 36px;
+  }
+
+  .login-text p {
+    font-size: 18px;
+  }
+}
+
+/* Адаптация для экрана шириной 768px */
+@media (max-width: 768px) {
+  :host {
+    padding: 20px;
+  }
+
+  .login-container {
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .login-left img {
+    width: 100%;
+  }
+
+  .login-right {
+    gap: 40px;
+    text-align: center;
+  }
+
+  .login-text h1 {
+    font-size: 32px;
+  }
+
+  .login-text p {
+    font-size: 16px;
+  }
+
+  .login-input input {
+    width: 280px;
+    height: 50px;
+    font-size: 18px;
+  }
+
+  .login-button {
+    width: 110px;
+    height: 50px;
+    font-size: 18px;
+  }
+}
+
+/* Адаптация для экрана шириной 425px */
+@media (max-width: 425px) {
+  :host {
+    padding: 15px;
+  }
+
+  .login-container {
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+  }
+
+  .login-left img {
+    width: 100%;
+  }
+
+  .login-right {
+    gap: 30px;
+    text-align: center;
+  }
+
+  .login-text h1 {
+    font-size: 28px;
+  }
+
+  .login-text p {
+    font-size: 14px;
+  }
+
+  .login-input input {
+    width: 100%;
+    height: 45px;
+    font-size: 16px;
+  }
+
+  .login-button {
+    width: 100%;
+    height: 45px;
+    font-size: 16px;
+  }
+}

@@ -14,7 +14,6 @@
   justify-content: center;
   gap: 30px;
   margin-top: 30px;
-  padding:15px;
 }
 
 .main-right {
@@ -178,6 +177,12 @@
   background-color: white;
   border-radius: 20px;
   padding: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.kurstar-card:hover {
+  transform: translateY(-5px);
 }
 
 .kurs-images {
@@ -492,7 +497,19 @@
   }
 
   .potok-subjects {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .subject_teacher {
+    display: inline-block;
+    background-color: #B5E8F9;
+    color: #00B0EA;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 10px;
   }
 
   .kurs-images {
@@ -574,4 +591,9 @@
   .mektep-statistika{
     display:none;
   }
+}
+
+
+:host ::ng-deep  .p-dialog-content{
+  padding:0;
 }

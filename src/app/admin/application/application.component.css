@@ -472,3 +472,66 @@ textarea:focus {
 .add-btn i, .close-btn i {
   font-size: 1.2em;
 }
+
+.show-photo-cont{
+  width:100px;
+}
+
+.show-photo{
+  padding:10px 60px;
+  border:1px solid black;
+  border-radius: 10px;
+  background-color: transparent;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+
+  /* Flexbox для центрирования */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.show {
+  display: flex; /* Для показа диалога */
+}
+
+.modal-image-content {
+  display: flex;
+  justify-content: center;
+  max-width: 90%; /* Ограничение максимальной ширины */
+  max-height: 90%; /* Ограничение максимальной высоты */
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.modal-img {
+  max-width: 60%; /* Ограничение ширины изображения */
+  max-height:60%; /* Ограничение высоты изображения */
+  align-items:center
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}

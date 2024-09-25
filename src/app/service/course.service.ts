@@ -5,6 +5,8 @@ import {Course} from "../../assets/models/course.interface";
 import {UserService} from "./user.service";
 import {BehaviorSubject} from "rxjs";
 import {tap} from "rxjs/operators";
+import {LearnerCourse} from "../../assets/models/learner_course.interface";
+import {CourseInfo} from "../../assets/models/CourseInfo.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +37,12 @@ export class CourseService {
       params.ids = JSON.stringify(ids);
     }
     return this.http.get<Course[]>(`${this.apiUrl}get_courses/`, {params});
+  }
+
+  public getCourseNonAuth(learnerCourseId: number): Observable<CourseInfo> {
+
+    const params = {course_id: learnerCourseId};
+    return this.http.get<CourseInfo>(`${this.apiUrl}learner_get_course/`, { params});
   }
 
   public getCourse(id: number): Observable<Course> {

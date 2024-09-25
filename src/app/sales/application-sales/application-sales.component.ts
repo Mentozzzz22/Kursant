@@ -4,7 +4,7 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
 import {TableModule} from "primeng/table";
 import {OrderService} from "../../service/order.service";
 import {SalesApplication} from "../../../assets/models/salesApplication.interface";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
 import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {Course} from "../../../assets/models/course.interface";
@@ -28,7 +28,8 @@ import {DropdownModule} from "primeng/dropdown";
     NgForOf,
     FormsModule,
     OverlayPanelModule,
-    DropdownModule
+    DropdownModule,
+    NgStyle
   ],
   templateUrl: './application-sales.component.html',
   styleUrl: './application-sales.component.css'
@@ -57,11 +58,15 @@ export class ApplicationSalesComponent implements OnInit{
   coursesAddList: Course[] = [];
   selectedFile: File | null = null;
   selectedFileName: string | null = null;
+  comments:string = '';
   selectedApplicationType: any;
   isModalVisible: boolean = false;
-  imageUrl: string | null = null;
+  modalImageUrl: string | undefined = undefined;
+  modalImageCaption: string | undefined = undefined;
+  imageUrl: string | undefined = undefined;
   ngOnInit(): void {
     this.getApplications();
+    this.loadCourses();
   }
 
 
@@ -71,7 +76,7 @@ export class ApplicationSalesComponent implements OnInit{
     learner_phone_number: [''],
     learner_region: [''],
     course:[''],
-    paid_check: [null as File | null], // Allow File or null
+    paid_check: [null as File | null],
     comments:['']});
 
   public applicationAddForm = this.fb.group({
@@ -96,6 +101,9 @@ export class ApplicationSalesComponent implements OnInit{
     }
   }
   showAddDialog() {
+    this.status = 'new';
+    this.imageUrl = '';
+    this.selectedFileName = '';
     this.visibleAdd  = true;
     this.loadCourses();
   }
@@ -127,6 +135,7 @@ export class ApplicationSalesComponent implements OnInit{
         learner_fullname: data.learner_fullname,
         learner_phone_number: data.learner_phone_number,
         learner_region: data.learner_region,
+        comments: data.comments,
         paid_check: data.paid_check as File | null
       });
 
@@ -140,15 +149,13 @@ export class ApplicationSalesComponent implements OnInit{
         }
       } else {
         this.selectedFileName = 'Файл не выбран';
-        this.imageUrl = null;
+        this.imageUrl = undefined;
       }
 
       if (data.courses && data.courses.length > 0) {
-        data.courses.forEach((courseId: number) => {
-          this.courseService.getCourse(courseId).subscribe(course => {
-            this.coursesList.push(course);
-          });
-        });
+        this.coursesList = data.courses.map((courseId: number) => {
+          return this.courses.find(course => course.id === courseId);
+        }).filter(course => course !== undefined) as Course[];
       }
     });
   }
@@ -174,17 +181,21 @@ export class ApplicationSalesComponent implements OnInit{
         });
       } else {
         this.coursesList.push(this.selectedCourse);
-      }
 
+        if (this.selectedApplication) {
+          this.selectedApplication.courses = this.selectedApplication.courses || [];
+          this.selectedApplication.courses.push(this.selectedCourse.id);
+        } else {
+          console.error('Selected application is null.');
+        }
+      }
       this.selectedCourse = null;
     }
   }
 
-  openImageModal() {
-    if (this.imageUrl) {
-      this.isModalVisible = true;
-    }
-  }
+
+
+
 
   closeImageModal() {
     this.isModalVisible = false;
@@ -196,6 +207,7 @@ export class ApplicationSalesComponent implements OnInit{
     if (file) {
       this.selectedFile = file;
       this.selectedFileName = file.name;
+      this.imageUrl = URL.createObjectURL(file);
     } else {
       console.error('No file was selected');
       this.selectedFileName = null;
@@ -216,6 +228,15 @@ export class ApplicationSalesComponent implements OnInit{
     }
   }
 
+  openModal(imageUrl: string, imageCaption: string) {
+    this.modalImageUrl = imageUrl;
+    this.modalImageCaption = imageCaption;
+    this.isModalVisible = true;
+  }
+
+  closeModal() {
+    this.isModalVisible = false;
+  }
 
   filterApplications(status: string) {
     this.activeStatus = status;
@@ -319,6 +340,7 @@ export class ApplicationSalesComponent implements OnInit{
         response => {
           this.visibleAdd = false;
           this.getApplications();
+          this.coursesAddList = [];
           this.applicationAddForm.reset();
           this.messageService.add({
             severity: 'success',
@@ -353,6 +375,8 @@ export class ApplicationSalesComponent implements OnInit{
         response => {
           this.visible = false;
           this.getApplications();
+          this.applicationsForm.reset()
+          this.rejection_reason = '';
           this.messageService.add({
             severity: 'success',
             summary: 'Заявка отклонена',

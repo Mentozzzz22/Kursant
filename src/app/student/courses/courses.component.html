@@ -18,7 +18,7 @@
         </div>
       </div>
     </div>
-    <div class="kurstar">
+    <div class="course">
       <div class="kurstar-text">
         <h2>Курстар</h2>
       </div>
@@ -46,5 +46,36 @@
         </div>
       </div>
     </div>
+
+    <div class="kurstar">
+      <div class="kurstar-text">
+        <h2>Басқа курстар</h2>
+      </div>
+      <div class="kurstar-cards">
+        <div class="kurstar-card" *ngFor="let course of otherCourses" (click)="goToCourse(course.id)">
+          <img [src]="course.poster" alt="subject1" class="kurs-images">
+          <div class="kurs-card-content">
+            <div class="kurs-info">
+              <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ course.modules_count }} бөлім
+              </p>
+              <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ course.lessons_count }} сабақ
+              </p>
+            </div>
+            <div class="subject-info">
+              <h3>{{ course.name }}</h3>
+            </div>
+            <hr class="course-divider">
+            <div class="course-price-container">
+              <div class="price-content">
+                <p class="course-price">70 000 тг</p>
+                <p class="course-payment-type">бір реттік төлем</p>
+              </div>
+              <button class="course-cart-button" >Алу</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

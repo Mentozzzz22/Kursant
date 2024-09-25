@@ -46,7 +46,7 @@ export class CoursesComponent implements OnInit {
 
         this.otherCourses = data.other_courses.map(course => ({
           ...course,
-          poster: `http://127.0.0.1:8000${course.poster}`
+          poster: `http://127.0.0.1:8000/media/${course.poster}`
         }));
 
         console.log('Learner Courses:', this.learnerCourses);
