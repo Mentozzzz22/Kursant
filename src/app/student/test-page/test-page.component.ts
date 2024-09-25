@@ -80,7 +80,7 @@ export class TestPageComponent implements OnInit {
       this.loadTest(this.testId);
     });
 
-    if(this.isTestStarted) {
+    if (this.isTestStarted) {
       this.getQuestions(this.testId);
     }
   }
@@ -150,10 +150,13 @@ export class TestPageComponent implements OnInit {
         questionId: question.id,
         answerId: null
       }));
-      this.testForm.addControl(
-        'question_' + question.id,
-        this.fb.control(null, Validators.required)
-      );
+      const controlName = 'question_' + question.id;
+      if (!this.testForm.contains(controlName)) {
+        this.testForm.addControl(
+          controlName,
+          this.fb.control(null, Validators.required)
+        );
+      }
     });
 
     this.restoreSavedState(); // Восстановление состояния после создания формы
@@ -207,13 +210,33 @@ export class TestPageComponent implements OnInit {
   }
 
   // Сохранение ответа при выборе варианта
+  // saveAnswer(questionId: number, index: number, answerId: number) {
+  //   let savedAnswers = JSON.parse(localStorage.getItem('testAnswers') || '{}');
+  //   savedAnswers[questionId] = index; // Сохраняем ответ для конкретного вопроса
+  //   localStorage.setItem('testAnswers', JSON.stringify(savedAnswers));
+  //
+  //   this.answeredQuestions[questionId] = true; // Отмечаем вопрос как отвеченный
+  //   localStorage.setItem('answeredQuestions', JSON.stringify(this.answeredQuestions));
+  //
+  //   const answersArray = this.answersFormArray;
+  //   const questionGroup = answersArray.controls.find(control => control.value.questionId === questionId) as FormGroup;
+  //
+  //   if (questionGroup) {
+  //     questionGroup.patchValue({answerId: answerId});
+  //     this.answeredQuestions[questionId] = true;
+  //   }
+  //   // Добавляем ответ в массив ответов в форме
+  //   const answers = this.testForm.get('answers') as FormArray;
+  //   console.log(answers.at(questionId - 1));
+  //   console.log(questionId, index, answerId);
+  //   answers.at(questionId - 1).setValue({questionId: questionId, answerId: answerId});
+  //   localStorage.setItem('answers', JSON.stringify(answers.value));
+  // }
+
   saveAnswer(questionId: number, index: number, answerId: number) {
     let savedAnswers = JSON.parse(localStorage.getItem('testAnswers') || '{}');
     savedAnswers[questionId] = index; // Сохраняем ответ для конкретного вопроса
     localStorage.setItem('testAnswers', JSON.stringify(savedAnswers));
-
-    this.answeredQuestions[questionId] = true; // Отмечаем вопрос как отвеченный
-    localStorage.setItem('answeredQuestions', JSON.stringify(this.answeredQuestions));
 
     const answersArray = this.answersFormArray;
     const questionGroup = answersArray.controls.find(control => control.value.questionId === questionId) as FormGroup;
@@ -221,13 +244,19 @@ export class TestPageComponent implements OnInit {
     if (questionGroup) {
       questionGroup.patchValue({answerId: answerId});
       this.answeredQuestions[questionId] = true;
+      localStorage.setItem('answeredQuestions', JSON.stringify(this.answeredQuestions));
+    } else {
+      console.error(`Элемент управления для questionId ${questionId} не найден в массиве ответов`);
     }
-    // Добавляем ответ в массив ответов в форме
-    const answers = this.testForm.get('answers') as FormArray;
-    console.log(answers.at(questionId - 1));
-    console.log(questionId, index, answerId);
-    answers.at(questionId - 1).setValue({questionId: questionId, answerId: answerId});
-    localStorage.setItem('answers', JSON.stringify(answers.value));
+
+    const controlName = 'question_' + questionId;
+    if (this.testForm.contains(controlName)) {
+      this.testForm.get(controlName)?.setValue(index);
+    } else {
+      console.error(`Элемент управления формы для questionId ${questionId} не найден`);
+    }
+
+    localStorage.setItem('answers', JSON.stringify(this.testForm.getRawValue().answers));
   }
 
 
