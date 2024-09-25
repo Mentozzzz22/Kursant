@@ -1,0 +1,89 @@
+<div class="about-courses-container">
+  <div class="about-courses-content">
+    <div class="carousel-content">
+      <div class="image-overlay"></div>
+      <div class="text-overlay">
+        <h1>{{ course.name }}</h1>
+        <p>Мұғалім: {{ course.teacherName }}</p>
+        <div class="course-info">
+          <span class="info-item">
+        <i class="pi pi-book"></i> {{ course.modules_count }} бөлім
+          </span>
+          <span class="info-item-2">
+        <i class="pi pi-bookmark"></i> {{ course.lessons_count }} сабақ
+          </span>
+        </div>
+        <div class="course-description">
+          <p>{{course.description}}</p>
+        </div>
+        <div class="course-item">
+          <div class="price-info">
+            <p class="price">{{ course.price }} тг</p>
+            <p class="payment-type">бір реттік төлем</p>
+          </div>
+          <button class="cart-button" (click)="addToCart(course.course_id)">Корзинаға</button>
+        </div>
+
+      </div>
+      <img *ngIf="poster" [src]="poster" alt="subject-carousel" class="carousel-image">
+    </div>
+
+
+    <div class="course-layout">
+      <!-- Список модулей курса -->
+      <div class="bolimder">
+        <div *ngFor="let module of modules; let i = index" class="bolim-container">
+          <div class="bolim">
+            <div class="left-bolim">
+              <p><strong>Бөлім {{ i + 1 }}.</strong> {{ module.module_name }}</p>
+              <div class="sabak">
+                <img src="../../../assets/images/sabak.svg" alt="sabak"> {{ module.topics.length }} тақырып
+              </div>
+            </div>
+            <div class="right-bolim" (click)="toggleBolim(i)">
+              <img src="assets/images/right-arrow.svg" alt="right" class="right-arrow" [ngClass]="{'rotated': isOpen[i]}">
+            </div>
+          </div>
+
+          <!-- Раскрывающийся список тем -->
+          <div *ngIf="isOpen[i]" class="tema-list">
+            <div *ngFor="let topic of module.topics; let j = index" class="tema-item" (click)="toggleTema(i, j)">
+              <p><strong>{{ j + 1 }} тақырып.</strong> {{ topic }}</p> <!-- Упрощено, так как topics – это строки -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Дополнительные курсы -->
+      <div class="course-list">
+        <div *ngFor="let additionalCourse of additional_courses" class="course-items">
+          <img [src]="getCoursePoster(additionalCourse.poster)" alt="{{ additionalCourse.name }}" class="course-image">
+          <div class="course-details">
+            <div class="course-tags">
+              <span class="course-tag">10 бөлім</span>
+              <span class="course-tag course-tag-secondary">70 сабақ</span>
+            </div>
+            <h3 class="course-name">{{ additionalCourse.name }}</h3>
+            <p class="course-date">Ең жақын поток: 22.09.2024</p>
+            <hr class="course-divider">
+            <div class="course-price-container">
+              <div class="price-content">
+                <p class="course-price">70 000 тг</p>
+                <p class="course-payment-type">бір реттік төлем</p>
+              </div>
+              <button class="course-cart-button" (click)="addToCart(additionalCourse.id)">Корзинаға</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    </div>
+
+
+  </div>
+</div>
+
+

@@ -32,12 +32,14 @@ import {ViewTestResultComponent} from "./student/view-test-result/view-test-resu
 import {LearnerHomeworkComponent} from "./student/learner-homework/learner-homework.component";
 import {AuthGuard} from "./service/auth.guard";
 import {NonAuthGuard} from "./service/nonauth.guard";
+import {AboutCourseNonAuthComponent} from "./non-authorized/about-course-non-auth/about-course-non-auth.component";
 
 export const routes: Routes = [
   {
     path: '', component: NonAuthorizedComponent,canActivate: [NonAuthGuard], children: [
       {path: '', component: MainPageComponent,canActivate: [NonAuthGuard]},
       {path: 'cart', component: CartComponent,canActivate: [NonAuthGuard]},
+      {path:'about/:course_id',component: AboutCourseNonAuthComponent,canActivate: [NonAuthGuard]}
     ]
   },
   {path: 'login', component: LoginComponent},

@@ -14,8 +14,7 @@
 <div class="main-content">
   <div class="content-buttons">
     <button class="content-button" [ngClass]="{'active': activeStatus === ''}" (click)="filterApplications('')">Все заявки</button>
-    <button class="content-button" [ngClass]="{'active': activeStatus === 'new'}" (click)="filterApplications('new')">Новые заявки</button>
-    <button class="content-button" [ngClass]="{'active': activeStatus === 'waiting_admin'}" (click)="filterApplications('waiting_admin')">На проверке у админа</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'waiting_admin'}" (click)="filterApplications('waiting_admin')">Новые заявки</button>
     <button class="content-button" [ngClass]="{'active': activeStatus === 'accepted'}" (click)="filterApplications('accepted')">Получили доступ</button>
     <button class="content-button" [ngClass]="{'active': activeStatus === 'rejected'}" (click)="filterApplications('rejected')">Отклонённые</button>
   </div>
@@ -80,7 +79,7 @@
             <li *ngFor="let course of coursesList let i = index">
               <span class="item-name">{{ course.name }}</span>
               <span class="price">{{ course.current_price}} тг</span>
-              <button class="delete-btn" (click)="removeCourse(i)">
+              <button class="delete-btn" (click)="removeCourse(i)" *ngIf="status === 'waiting_admin'">
                 <i class="pi pi-trash"></i>
               </button>
             </li>
@@ -132,10 +131,15 @@
 
         <div class="block-four">
           <label for="fileInput1">Чек</label>
-          <div class="custom-file-upload">
-            <input type="file" id="fileInput1" class="file-input" (change)="onFileSelected($event)" hidden />
-            <span class="file-upload-button" (click)="triggerFileInputFirst()">Выберите файл</span>
-            <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
+          <div class="show-photo-cont">
+            <button class="show-photo" (click)="openModal(imageUrl!, selectedFileName!)">ЧЕК</button>
+          </div>
+
+          <div id="myModal" class="modal" [ngStyle]="{'display': isModalVisible ? 'flex' : 'none'}">
+            <span class="close" (click)="closeModal()">&times;</span>
+            <div class="modal-image-content">
+              <img class="modal-img" id="img01" [src]="modalImageUrl">
+            </div>
           </div>
         </div>
 
@@ -164,8 +168,8 @@
       <div class="button-group">
 
         <div class="button-container" >
-          <button class="filled-button" (click)="this.selectedApplicationType.showAccess = true;" >Открыть доступ</button>
-          <button class="outlined-button" (click)="cancelDialog()" >Отклонить</button>
+          <button class="filled-button" (click)="this.selectedApplicationType.showAccess = true;" *ngIf="status === 'waiting_admin'">Открыть доступ</button>
+          <button class="outlined-button" (click)="cancelDialog()" *ngIf="status === 'waiting_admin'">Отклонить</button>
         </div>
 
 

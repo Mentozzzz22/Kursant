@@ -44,6 +44,14 @@
   margin-right: 10px;
 }
 
+.sidebar-menu li.active {
+  color: #2A6DB3;
+}
+
+.sidebar-menu li.active img {
+  filter: invert(37%) sepia(100%) saturate(627%) hue-rotate(178deg) brightness(95%) contrast(95%);
+}
+
 .sidebar-menu li span {
   display: none;
 }

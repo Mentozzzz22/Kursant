@@ -45,7 +45,7 @@ export class CartComponent implements OnInit{
         (data: Course[]) => {
           this.courses = data.map(course => ({
             ...course,
-            poster: `http://127.0.0.1:8000/media/${course.poster}`
+            poster: `http://127.0.0.1:8000${course.poster}`
           }));
 
           this.calculateTotalPrices();

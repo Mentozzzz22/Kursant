@@ -16,12 +16,12 @@ export class StudentSidebarComponent {
   private router = inject(Router);
   private userService = inject(UserService);
   @Output() sidebarToggled = new EventEmitter<boolean>();
-
+  activeItem: string = '';
   isExpanded: boolean = false;
   isMobileSidebarOpen: boolean = false;
 
   menuItems = [
-    { name: 'Курстар', link: '/student/courses', icon: 'assets/images/courses-icon.svg' },
+    { name: 'Курстар', link: '/student/courses', icon: 'assets/images/cap_icon.svg' },
     { name: 'Үй жұмысы', link: '/student/homework-list', icon: 'assets/images/dz-icon.svg' },
     { name: 'Календарь', link: '/calendar', icon: 'assets/images/calendar-icon.svg' },
     { name: 'Хабарламалар', link: '/notifications', icon: 'assets/images/notification-icon.svg' },
@@ -52,6 +52,7 @@ export class StudentSidebarComponent {
         }
       });
     } else {
+      this.activeItem = link;
       this.router.navigate([link]);
     }
     this.isMobileSidebarOpen = false;

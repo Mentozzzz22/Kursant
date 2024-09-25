@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {ApplicationService} from "../../service/application.service";
 import {TableModule} from "primeng/table";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
 import {Button} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
@@ -35,7 +35,8 @@ import {FlowService} from "../../service/flow.service";
     NgIf,
     OverlayPanelModule,
     PaginatorModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgStyle
   ],
   templateUrl: './application.component.html',
   styleUrl: './application.component.css'
@@ -65,11 +66,16 @@ export class ApplicationComponent implements OnInit{
   selectedFileName: string | null = null;
   selectedApplicationType: any;
   public selectedFlow: number | null = null;
+  modalImageUrl: string | undefined = undefined;
+  modalImageCaption: string | undefined = undefined;
   selectedName:string|null=null;
   selectedNum:number|null=null;
+  imageUrl: string | undefined = undefined;
+  isModalVisible: boolean = false;
 
   ngOnInit(): void {
     this.getApplications();
+    this.loadCourses();
   }
 
 
@@ -132,33 +138,45 @@ export class ApplicationComponent implements OnInit{
       });
 
       if (data.courses && data.courses.length > 0) {
-        data.courses.forEach((courseId: number) => {
-          this.courseService.getCourse(courseId).subscribe(course => {
-            this.coursesList.push(course);
-          });
-        });
+        this.coursesList = data.courses.map((courseId: number) => {
+          return this.courses.find(course => course.id === courseId);
+        }).filter(course => course !== undefined) as Course[];
       }
+
+      if (data.paid_check) {
+        if (typeof data.paid_check === 'string') {
+          const urlParts = data.paid_check.split('/');
+          this.selectedFileName = urlParts[urlParts.length - 1];
+          this.imageUrl = `http://127.0.0.1:8000${data.paid_check}`;
+        } else if (data.paid_check instanceof File) {
+          this.selectedFileName = data.paid_check.name;
+        }
+      } else {
+        this.selectedFileName = 'Файл не выбран';
+        this.imageUrl = undefined;
+      }
+
     });
   }
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-
-    if (file) {
-      this.selectedFile = file;
-      this.selectedFileName = file.name;
-    } else {
-      console.error('No file was selected');
-      this.selectedFileName = null;
-    }
-  }
-
-  triggerFileInputFirst() {
-    const fileInput = document.getElementById('fileInput1') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.click();
-    }
-  }
+  // onFileSelected(event: any) {
+  //   const file: File = event.target.files[0];
+  //
+  //   if (file) {
+  //     this.selectedFile = file;
+  //     this.selectedFileName = file.name;
+  //   } else {
+  //     console.error('No file was selected');
+  //     this.selectedFileName = null;
+  //   }
+  // }
+  //
+  // triggerFileInputFirst() {
+  //   const fileInput = document.getElementById('fileInput1') as HTMLInputElement;
+  //   if (fileInput) {
+  //     fileInput.click();
+  //   }
+  // }
 
 
   filterApplications(status: string) {
@@ -175,7 +193,15 @@ export class ApplicationComponent implements OnInit{
     });
   }
 
+  openModal(imageUrl: string, imageCaption: string) {
+    this.modalImageUrl = imageUrl;
+    this.modalImageCaption = imageCaption;
+    this.isModalVisible = true;
+  }
 
+  closeModal() {
+    this.isModalVisible = false;
+  }
 
   saveDialog() {
 

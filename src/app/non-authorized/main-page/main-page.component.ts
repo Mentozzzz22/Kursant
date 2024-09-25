@@ -11,6 +11,8 @@ import {MessageService} from "primeng/api";
 import {NgxMaskDirective} from "ngx-mask";
 import {GetFlows} from "../../../assets/models/getFlows.interface";
 import {FlowService} from "../../service/flow.service";
+import {DialogModule} from "primeng/dialog";
+import {Router} from "@angular/router";
 
 export interface kurs {
   id: number,
@@ -35,6 +37,7 @@ export interface kurs {
     NgxMaskDirective,
     NgClass,
     NgIf,
+    DialogModule,
 
   ],
   templateUrl: './main-page.component.html',
@@ -49,7 +52,9 @@ export class MainPageComponent implements OnInit{
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
   private flowService = inject(FlowService);
+  private router = inject(Router);
   public searchText: string = '';
+  visible: boolean = false;
 
   @HostListener('window:resize', [])
   onResize() {
@@ -128,10 +133,13 @@ export class MainPageComponent implements OnInit{
     if (phone) {
       phone = phone.replace(/\D/g, '');
       phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      this.orderForm.get('phone_number')?.setValue(phone);
     }
     if (this.orderForm.valid) {
       this.orderService.makeOrder(this.orderForm.value).subscribe(
         (response) => {
+          this.visible=false;
+          this.orderForm.reset()
           this.messageService.add({severity:'success', summary:'Сәтті', detail:'Өтінім жіберілді'});
         },
         (error) => {
@@ -163,6 +171,14 @@ export class MainPageComponent implements OnInit{
 
   checkWindowSize(): void {
     this.isMobileView = window.innerWidth <= 768;
+  }
+
+  showDialog() {
+    this.visible = true;
+  }
+
+  openDetails(courseId: number) {
+    this.router.navigate(['/about', courseId]);
   }
 
 

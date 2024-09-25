@@ -171,7 +171,7 @@
   display: flex;
   flex-direction: column;
   padding: 0 13px 13px 13px;
-  gap: 15px;
+  gap: 10px;
 }
 
 .kurs-info {
@@ -229,3 +229,166 @@ p-progressBar {
   margin-bottom: 7px;
 }
 
+
+
+/***/
+
+
+.course {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.kurstar-text {
+  display: flex;
+  justify-content: space-between;
+}
+
+.kurstar-text h2 {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.kurstar-text p {
+  font-size: 17px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.kurstar-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+
+.kurstar-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 5px;
+}
+
+.kurs-images {
+  width: 289px;
+  height: 138px;
+}
+
+.subject-info h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subject-info p {
+  font-size: 10px;
+  color: #A4A4A4;
+  margin-bottom: 10px;
+}
+
+.kurs-card-content {
+  display: flex;
+  flex-direction: column;
+  padding: 0 13px 13px 13px;
+  gap: 10px;
+}
+
+.kurs-info {
+  display: flex;
+  gap: 7px;
+}
+
+.bolim {
+  display: flex;
+  gap: 8px;
+  background-color: #B5E8F9;
+  color: #00B0EA;
+  font-size: 10px;
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.sabak {
+  display: flex;
+  gap: 8px;
+  background-color: #CCC7FF;
+  color: #6E63E5;
+  font-size: 10px;
+  border-radius: 20px;
+  padding: 5px 12px;
+}
+
+.progress-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+}
+
+p-progressBar {
+  height: 11px;
+}
+
+.progress-wrapper p {
+  font-size: 13px;
+  font-weight: 300;
+}
+
+:host ::ng-deep .progress-wrapper .p-progressbar .p-progressbar-value {
+  background: #2A6DB3;
+}
+
+:host ::ng-deep .progress-wrapper .p-progressbar {
+  background: #f0f0f0; /* Цвет фона для незаполненной части прогресс-бара */
+  height: 10px;
+  border-radius: 10px;
+  margin-bottom: 7px;
+}
+
+
+
+.course-price-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.course-price {
+  font-size: 17px;
+  font-weight: bold;
+  color: #333;
+}
+
+.course-cart-button {
+  background-color: transparent;
+  border: 1px solid #2A6DB3;
+  color: #2A6DB3;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.course-cart-button:hover {
+  background-color: #2A6DB3;
+  color: white;
+}
+
+.course-payment-type {
+  font-size: 12px;
+  color: #A4A4A4;
+  text-align: left;
+}
+
+.course-divider {
+  border: none;
+  height: 1px;
+  background-color: #E0E0E0;
+  margin: 10px 0;
+}

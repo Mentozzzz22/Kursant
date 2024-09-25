@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {UserService} from "../service/user.service";
 import {MessageService} from "primeng/api";
@@ -14,10 +14,11 @@ import {MessageService} from "primeng/api";
   templateUrl: './sales.component.html',
   styleUrl: './sales.component.css'
 })
-export class SalesComponent {
+export class SalesComponent implements OnInit{
   private userService = inject(UserService);
   private messageService = inject(MessageService);
   private router = inject(Router);
+  fullname: string | null = '';
 
 
   logout() {
@@ -39,5 +40,9 @@ export class SalesComponent {
         });
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.fullname = this.userService.getFullName();
   }
 }

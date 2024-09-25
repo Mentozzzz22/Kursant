@@ -12,7 +12,7 @@
     </ng-template>
   </div>
   <ul class="sidebar-menu">
-    <li *ngFor="let item of menuItems" (click)="navigate(item.link)">
+    <li *ngFor="let item of menuItems" (click)="navigate(item.link)"  [ngClass]="{'active': activeItem === item.link}">
       <img [src]="item.icon" alt="{{ item.name }}"/>
       <span *ngIf="isExpanded || isMobileSidebarOpen">{{ item.name }}</span>
     </li>
