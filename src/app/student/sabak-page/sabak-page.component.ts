@@ -159,13 +159,13 @@ export class SabakPageComponent implements OnInit,OnDestroy {
   public getRouterLink(item: any) {
     if (item.status === 'passed' || item.status === 'opened') {
       if (item.type === 'test') {
-        console.log('Test routerLink:', ['/student/test', item.id]); // Log for debugging
+        console.log('Test routerLink:', ['/student/test', item.id]);
         return ['/student/test', item.id];
       } else if (item.type === 'homework') {
-        console.log('Homework routerLink:', ['/student/homework', item.id]); // Log for debugging
+        console.log('Homework routerLink:', ['/student/homework', item.id]);
         return ['/student/homework', item.id];
       } else {
-        console.log('Lesson routerLink:', ['/student/lesson', item.id]); // Log for debugging
+        console.log('Lesson routerLink:', ['/student/lesson', item.id]);
         return ['/student/lesson', item.id];
       }
     }
