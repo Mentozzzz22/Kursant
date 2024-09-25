@@ -51,20 +51,20 @@
                 <div *ngIf="isOpenTopic[i][j]" class="details-list">
                   <div *ngIf="topic.lessons.length" class="details-sublist">
                     <div *ngFor="let lesson of topic.lessons; let l = index" class="details-item"
-                         (click)="goToLesson(lesson.id)">
+                         (click)="goToLesson(lesson, lesson.id)">
                       <img [src]="getTemaStatusIcon(lesson.status)" alt="sabak-status">
                       <p><strong>{{ l + 1 }} сабақ.</strong> {{ lesson.name }}</p>
                     </div>
                   </div>
                   <div *ngIf="topic.test" class="details-sublist">
-                    <div class="details-item" (click)="goToTest(topic.test.id)">
+                    <div class="details-item" (click)="goToTest(topic.test, topic.test.id)">
                       <img [src]="getTemaStatusIcon(topic.test.status)" alt="test-status">
                       <p><strong>Тақырыптық тест</strong></p>
                     </div>
                   </div>
 
                   <div *ngIf="topic.homework" class="details-sublist">
-                    <div class="details-item" (click)="goToHomework(topic.homework.id)">
+                    <div class="details-item" (click)="goToHomework(topic.homework, topic.homework.id)">
                       <img [src]="getTemaStatusIcon(topic.homework.status)" alt="homework-status">
                       <p><strong>Үй жұмысы</strong></p>
                     </div>

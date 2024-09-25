@@ -3,7 +3,7 @@ import {ProgressBarModule} from "primeng/progressbar";
 import {DialogModule} from "primeng/dialog";
 import {InputTextModule} from "primeng/inputtext";
 import {Button} from "primeng/button";
-import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
+import {DatePipe, NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {BreadcrumbModule} from "primeng/breadcrumb";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {
@@ -34,7 +34,8 @@ import {LearnerQuestions} from "../../../assets/models/getLearnerQuestions.inter
     BreadcrumbModule,
     DatePipe,
     NgClass,
-    RadioButtonModule
+    RadioButtonModule,
+    NgStyle
   ],
   templateUrl: './test-page.component.html',
   styleUrl: './test-page.component.css'
@@ -64,6 +65,8 @@ export class TestPageComponent implements OnInit {
   public learnerTest!: Testing;
   public testStatus!: string;
 
+  public lessonsAndTests: any[] = [];
+  progressSegments: { filled: boolean }[] = [];
   private fb = inject(FormBuilder)
 
   constructor() {
@@ -92,6 +95,24 @@ export class TestPageComponent implements OnInit {
       this.teacherName = data.teacher_fullname
       this.learnerTest = data.test
       this.testStatus = data.test.status
+
+      this.lessonsAndTests = [...this.lessons];
+
+      if (data.test) {
+        this.lessonsAndTests.push({
+          id: data.test.id,
+          status: data.test.status,
+          type: 'test'
+        });
+      }
+
+      if (data.homework) {
+        this.lessonsAndTests.push({
+          id: data.homework.id,
+          status: data.homework.status,
+          type: 'homework'
+        });
+      }
       this.calculateProgress();
     })
 
@@ -203,6 +224,8 @@ export class TestPageComponent implements OnInit {
     }
     // Добавляем ответ в массив ответов в форме
     const answers = this.testForm.get('answers') as FormArray;
+    console.log(answers.at(questionId - 1));
+    console.log(questionId, index, answerId);
     answers.at(questionId - 1).setValue({questionId: questionId, answerId: answerId});
     localStorage.setItem('answers', JSON.stringify(answers.value));
   }
@@ -255,23 +278,23 @@ export class TestPageComponent implements OnInit {
   submitTest() {
 
     console.log(this.testForm.getRawValue())
-    this.learnerTestService.finishTest(this.testId, this.testForm.value.answers).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Тест завершен',
-            detail: 'Ваши ответы успешно сохранены.'
-          });
-        }
-      }, error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Ошибка',
-          detail: 'Не удалось завершить тест.'
-        });
-      }
-    });
+    // this.learnerTestService.finishTest(this.testId, this.testForm.value.answers).subscribe({
+    //   next: (response) => {
+    //     if (response.success) {
+    //       this.messageService.add({
+    //         severity: 'success',
+    //         summary: 'Тест завершен',
+    //         detail: 'Ваши ответы успешно сохранены.'
+    //       });
+    //     }
+    //   }, error: (error) => {
+    //     this.messageService.add({
+    //       severity: 'error',
+    //       summary: 'Ошибка',
+    //       detail: 'Не удалось завершить тест.'
+    //     });
+    //   }
+    // });
 
     this.clearTestState();
   }
@@ -279,6 +302,7 @@ export class TestPageComponent implements OnInit {
   clearTestState() {
     this.testForm.reset();
     localStorage.removeItem('testAnswers');
+    localStorage.removeItem('answers');
     localStorage.removeItem('answeredQuestions');
     localStorage.removeItem('currentQuestionIndex');
     localStorage.removeItem('isTestStarted');
@@ -321,13 +345,34 @@ export class TestPageComponent implements OnInit {
   }
 
   public calculateProgress() {
-    const totalLessons = this.lessons.length; // Общее количество уроков
-    const passedLessons = this.lessons.filter(lesson => lesson.status === 'passed').length; // Количество пройденных уроков
+    const totalItems = this.lessonsAndTests.length;
 
-    // Вычисляем процент
-    if (totalLessons > 0) {
-      this.progress = (passedLessons / totalLessons) * 100;
+    const passedItems = this.lessonsAndTests.filter(item => item.status === 'passed').length;
+
+    if (totalItems > 0) {
+      this.progress = (passedItems / totalItems) * 100;
+
+      this.progressSegments = [];
+
+      for (let i = 0; i < totalItems; i++) {
+        this.progressSegments.push({
+          filled: this.lessonsAndTests[i].status === 'passed'
+        });
+      }
     }
+  }
+
+  public getRouterLink(item: any) {
+    if (item.status === 'passed' || item.status === 'opened') {
+      if (item.type === 'test') {
+        return ['/student/test', item.id];
+      } else if (item.type === 'homework') {
+        return ['/student/homework', item.id];
+      } else {
+        return ['/student/lesson', item.id];
+      }
+    }
+    return null;
   }
 
 }

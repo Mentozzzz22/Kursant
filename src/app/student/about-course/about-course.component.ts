@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {LearnerCourseService} from "../../service/learner-course.service";
 import {LearnerModules} from "../../../assets/models/learner_course.interface";
 import {ProgressBarModule} from "primeng/progressbar";
+import {MessageService} from "primeng/api";
 
 
 @Component({
@@ -21,6 +22,7 @@ import {ProgressBarModule} from "primeng/progressbar";
 export class AboutCourseComponent implements OnInit {
 
   private learnerCourseService = inject(LearnerCourseService)
+  private messageService = inject(MessageService);
   private router = inject(Router)
   private route = inject(ActivatedRoute)
   public courseId!: number;
@@ -77,16 +79,42 @@ export class AboutCourseComponent implements OnInit {
     }
   }
 
-  goToTest(testId: number): void {
-    this.router.navigate(['/student/test', testId]);
+  goToTest(test: any, testId: number): void {
+    if(test.status === 'passed' || test.status === 'opened') {
+      this.router.navigate(['/student/test', testId]);
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Пройдите предыдущие уроки чтобы открыть доступ к тесту!'
+      });
+    }
+
   }
 
-  goToHomework(homeworkId: number): void {
-    this.router.navigate(['/student/homework', homeworkId]);
+  goToHomework(homework: any, homeworkId: number): void {
+    if(homework.status === 'passed' || homework.status === 'opened') {
+      this.router.navigate(['/student/homework', homeworkId]);    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Пройдите предыдущие уроки и тест чтобы открыть доступ к домашней работе!'
+      });
+    }
+
   }
 
-  goToLesson(lessonId: number): void {
-    this.router.navigate(['/student/lesson', lessonId]);
+  goToLesson(lesson: any, lessonId: number): void {
+    if(lesson.status === 'passed' || lesson.status === 'opened') {
+      this.router.navigate(['/student/lesson', lessonId]);
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Пройдите предыдущие уроки чтобы открыть доступ к уроку!'
+      });
+    }
+
   }
 
 }

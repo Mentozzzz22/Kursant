@@ -28,7 +28,6 @@ export class CoursesComponent implements OnInit {
   private router = inject(Router);
 
 
-  public progress: number = 10;
   public learnerCourses: LearnerCourses[] = [];
   public otherCourses: OtherCourses[] = [];
 

@@ -39,20 +39,30 @@
         </button>
 
       </div>
-
       <div class="test-right">
-        <h3><strong> {{ topicName }}. Тақырыптық тест</strong></h3>
-        <div class="progress-wrappper">
+        <h3><strong>{{ topicName }}. Тақырыптық тест</strong></h3>
+        <div class="progress-wrapper">
           <p>Тақырып прогрессі</p>
-          <p-progressBar [value]="progress" [showValue]="false" class="progress-bar" color="#00B69B"></p-progressBar>
-        </div>
-        <div class="sabaktar">
-          @for (lesson of lessons; track i; let i = $index) {
-            <div class="sabak">
-              <img [src]="getTemaStatusIcon(lesson.status)" alt="status">
-              <p>{{ i + 1 }} сабақ. {{ topicName }}. {{ lesson.name }}</p>
+          <div class="custom-progress-bar">
+            <div class="progress-segment" *ngFor="let segment of progressSegments"
+                 [ngStyle]="{'background-color': segment.filled ? '#00B69B' : '#E0E0E0'}">
             </div>
-          }
+          </div>
+        </div>
+
+        <div class="sabaktar">
+          <div *ngFor="let item of lessonsAndTests; let i = index"
+               class="sabak"
+               [ngClass]="{'inactive': item.status !== 'passed' && item.status !== 'opened'}"
+               [routerLink]="getRouterLink(item)"
+               [style.cursor]="item.status === 'passed' || item.status === 'opened' ? 'pointer' : 'default'">
+
+            <img [src]="getTemaStatusIcon(item.status)" alt="status">
+            <p>{{ i + 1 }}
+              {{ item.type === 'test' ? 'тест' : item.type === 'homework' ? 'үй жұмысы' : 'сабақ' }}.
+              {{ item.type === 'test' ? 'Тест' : item.type === 'homework' ? 'Үй жұмысы' : item.name }}
+            </p>
+          </div>
         </div>
       </div>
     </div>

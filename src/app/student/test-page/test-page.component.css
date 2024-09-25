@@ -332,6 +332,21 @@ input[type="radio"]:checked::before {
   background-color: #00B0EA;
 }
 
+.custom-progress-bar {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+  height: 5px;
+}
+
+.progress-segment {
+  flex: 1;
+  height: 100%;
+  border-radius: 5px;
+  background-color: #E0E0E0;
+}
+
+
 @media (max-width: 768px) {
 
   .test-container {
