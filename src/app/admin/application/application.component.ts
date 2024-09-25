@@ -134,7 +134,8 @@ export class ApplicationComponent implements OnInit{
       this.applicationsForm.patchValue({
         learner_fullname: data.learner_fullname,
         learner_phone_number: data.learner_phone_number,
-        learner_region: data.learner_region
+        learner_region: data.learner_region,
+        comments: data.comments
       });
 
       if (data.courses && data.courses.length > 0) {

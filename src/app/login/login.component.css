@@ -23,8 +23,12 @@
 }
 
 .login-left img {
-  width: 111%;
+  width: 111%;    /* The image will be 111% of the parent container's width */
+  max-width: 111%; /* Ensure it doesn’t exceed 111% */
+  height: auto;    /* Maintain aspect ratio */
+  object-fit: cover; /* Cover the container while cropping parts that overflow */
 }
+
 
 .login-right {
   display: flex;
@@ -84,6 +88,13 @@
   background-color: #1565C0;
 }
 
+@media (max-width: 1440px) {
+  .login-left img {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 @media (max-width: 1024px) {
   .login-container {
     flex-direction: column;
@@ -92,7 +103,7 @@
   }
 
   .login-left img {
-    width: 100%;
+    display: none;
   }
 
   .login-right {
@@ -100,8 +111,13 @@
     text-align: center;
   }
 
+  .login-input  {
+    display: flex;
+    align-items: center;
+  }
+
   .login-input input {
-    width: 320px;
+    width: 350px;
   }
 
   .login-button {
@@ -130,7 +146,7 @@
   }
 
   .login-left img {
-    width: 100%;
+    display: none;
   }
 
   .login-right {

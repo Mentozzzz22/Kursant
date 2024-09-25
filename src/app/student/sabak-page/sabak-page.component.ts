@@ -1,4 +1,14 @@
-import {Component, ElementRef, inject, input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {ProgressBarModule} from "primeng/progressbar";
 import {BreadcrumbModule} from "primeng/breadcrumb";
 import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
@@ -22,6 +32,7 @@ import {VideoService} from "../../service/video.service";
     NgStyle
   ],
   templateUrl: './sabak-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Default,
   styleUrl: './sabak-page.component.css'
 })
 export class SabakPageComponent implements OnInit,OnDestroy {
@@ -34,6 +45,7 @@ export class SabakPageComponent implements OnInit,OnDestroy {
   private route = inject(ActivatedRoute);
   private videoService = inject(VideoService)
   private messageService = inject(MessageService);
+  private cd =  inject(ChangeDetectorRef);
 
   videoUrl!: string;
   public lessonId!: number;
@@ -70,7 +82,7 @@ export class SabakPageComponent implements OnInit,OnDestroy {
       case 'expired':
         return 'assets/images/expired.svg';
       case 'opened_retake':
-        return 'assets/images/opened-retake.svg';
+        return 'assets/images/expired.svg';
       case 'completed':
         return 'assets/images/completed.svg';
       default:
@@ -79,6 +91,8 @@ export class SabakPageComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit() {
+    this.cd.detectChanges();
+
     this.player = new Plyr(this.videoElement.nativeElement, { captions: { active: true } });
     this.player.on('timeupdate', this.saveVideoTimeUpdate.bind(this));
     this.player.on('ended', this.saveVideoFinish.bind(this));
@@ -93,9 +107,12 @@ export class SabakPageComponent implements OnInit,OnDestroy {
         this.player.on('play', () => {
           if (this.lessonStatus !== 'passed') {
             this.videoStartTime = this.player.currentTime;
-            this.autoSaveInterval = setInterval(() => this.autoSaveVideoProgress(), 30000);
-            this.checkProgressInterval = setInterval(() => this.checkLessonProgress(this.lessonId), 5000);
-          }
+            if (!this.autoSaveInterval){
+              this.autoSaveInterval = setInterval(() => this.autoSaveVideoProgress(), 30000);
+            }
+            if (!this.checkProgressInterval) {
+              this.checkProgressInterval = setInterval(() => this.checkLessonProgress(this.lessonId), 5000);
+            }          }
         });
       } else {
         console.error('Lesson ID is missing or invalid');
@@ -133,18 +150,22 @@ export class SabakPageComponent implements OnInit,OnDestroy {
           type: 'homework'
         });
       }
-
       this.calculateProgress();
+
+      this.cd.detectChanges();
     });
   }
 
   public getRouterLink(item: any) {
     if (item.status === 'passed' || item.status === 'opened') {
       if (item.type === 'test') {
+        console.log('Test routerLink:', ['/student/test', item.id]); // Log for debugging
         return ['/student/test', item.id];
       } else if (item.type === 'homework') {
+        console.log('Homework routerLink:', ['/student/homework', item.id]); // Log for debugging
         return ['/student/homework', item.id];
       } else {
+        console.log('Lesson routerLink:', ['/student/lesson', item.id]); // Log for debugging
         return ['/student/lesson', item.id];
       }
     }
@@ -153,13 +174,9 @@ export class SabakPageComponent implements OnInit,OnDestroy {
 
 
 
+
   ngOnDestroy() {
-    if (this.autoSaveInterval) {
-      clearInterval(this.autoSaveInterval);
-    }
-    if (this.checkProgressInterval) {
-      clearInterval(this.checkProgressInterval);
-    }
+    this.clearIntervals();
   }
 
 
@@ -194,10 +211,17 @@ export class SabakPageComponent implements OnInit,OnDestroy {
     });
   }
 
-  private clearIntervals() {
-    if (this.autoSaveInterval) clearInterval(this.autoSaveInterval);
-    if (this.checkProgressInterval) clearInterval(this.checkProgressInterval);
+  clearIntervals(): void {
+    if (this.autoSaveInterval) {
+      clearInterval(this.autoSaveInterval);
+      this.autoSaveInterval = null;
+    }
+    if (this.checkProgressInterval) {
+      clearInterval(this.checkProgressInterval);
+      this.checkProgressInterval = null;
+    }
   }
+
 
   saveVideoTimeUpdate(): void {
     if (!this.nextLessonIsAvailable) {
@@ -247,23 +271,37 @@ export class SabakPageComponent implements OnInit,OnDestroy {
       (response: any) => {
         if (response?.is_passed) {
           this.nextLessonIsAvailable = true;
+          this.lessonStatus = 'passed';
+
+          this.getLesson(this.lessonId);
+
+          const lesson = this.lessonsAndTests.find(item => item.id === lessonId);
+          if (lesson) {
+            lesson.status = 'passed';
+          }
+
           this.messageService.add({
             severity: 'success',
             summary: 'Урок доступен',
             detail: 'Следующий урок теперь доступен!'
           });
+
           this.clearIntervals();
+
         } else {
           this.nextLessonIsAvailable = false;
         }
+
+        this.cd.detectChanges();
       },
       (error) => {
         console.error('Ошибка при проверке прогресса:', error);
         this.nextLessonIsAvailable = false;
+
+        this.cd.detectChanges();
       }
     );
   }
-
 
 
 

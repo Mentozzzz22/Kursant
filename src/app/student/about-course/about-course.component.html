@@ -1,7 +1,6 @@
 <div class="about-courses-container">
   <div class="about-courses-content">
     <div class="carousel-content">
-      <div class="image-overlay"></div>
       <div class="text-overlay">
         <h1>{{ course.name }}</h1>
         <p>Мұғалім: {{ course.teacherName }}</p>
@@ -27,14 +26,14 @@
     <div class="bolimder">
       @for (module of modules; track i; let i = $index) {
         <div class="bolim-container">
-          <div class="bolim">
-            <div class="left-bolim">
+          <div class="bolim" (click)="toggleBolim(i)">
+            <div class="left-bolim" >
               <p><strong>Бөлім {{ i + 1 }}.</strong> {{ module.name }}</p>
-              <div class="sabak">
+              <div class="sabak" >
                 <img src="../../../assets/images/sabak.svg" alt="sabak"> {{ module.topics.length }} тақырып
               </div>
             </div>
-            <div class="right-bolim" (click)="toggleBolim(i)">
+            <div class="right-bolim" >
               <img [src]="getTemaStatusIcon(module.status)" alt="status">
               <img src="assets/images/right-arrow.svg" alt="right" class="right-arrow"
                    [ngClass]="{'rotated': isOpen[i]}">
@@ -42,7 +41,7 @@
           </div>
           <!-- Раскрывающийся список тем -->
           @if (isOpen[i]) {
-            <div class="tema-list">
+            <div class="tema-list" >
               @for (topic of module.topics; track j; let j = $index) {
                 <div class="tema-item" (click)="toggleTema(i, j)">
                   <img [src]="getTemaStatusIcon(topic.status)" alt="tema-status">

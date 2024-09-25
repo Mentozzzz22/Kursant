@@ -291,9 +291,8 @@ export class ApplicationSalesComponent implements OnInit{
           this.getApplications();
           this.messageService.add({
             severity: 'success',
-            summary: 'Открыть доступ',
-            detail: 'Доступ открыт',
-            icon: 'pi-lock-open'
+            summary: 'Успешно',
+            detail: 'Заявка передано админу'
           });
         },
         error => {
