@@ -181,9 +181,6 @@ export class SabakPageComponent implements OnInit,OnDestroy {
     }
   }
 
-
-
-
   public back() {
     this.router.navigate([`/student/courses/${this.lesson.course_id}`]);
   }

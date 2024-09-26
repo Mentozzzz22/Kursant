@@ -16,8 +16,6 @@ export class LearnerCourseService {
   private http = inject(HttpClient)
 
 
-
-
   // Получение курсов ученика
   public getCourses(): Observable<{ learner_courses: LearnerCourses[]; other_courses: OtherCourses[] }> {
     const token = this.userService.token;

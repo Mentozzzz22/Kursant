@@ -3,46 +3,47 @@
     <h1 class="supplier-title">Ученики</h1>
     <hr style="transform: scaleY(0.3);">
     <div class="supplier-actions">
-      <div class="search-form" >
+      <div class="search-form">
         <label for="supplierSearch" class="visually-hidden">ФИО</label>
-        <input type="text" id="supplierSearch"  placeholder="ФИО" class="search-input" />
-        <button type="submit" class="search-button" >Поиск</button>
+        <input type="text" id="supplierSearch" placeholder="ФИО" class="search-input"/>
+        <button type="submit" class="search-button">Поиск</button>
       </div>
     </div>
   </div>
 </div>
 <div class="main-content">
-  <div class="content-buttons" >
-    <button class="content-button"  routerLinkActive="active">Поток 1</button>
-    <button class="content-button" routerLinkActive="active">Поток 2</button>
-    <button class="content-button"  routerLinkActive="active">Поток 3</button>
-    <button class="content-button"  routerLinkActive="active">Поток 4</button>
+  <div class="content-buttons">
+    <button class="content-button" *ngFor="let curatorFlow of curatorFlows"
+            (click)="getLearnersLessonProgress(curatorFlow.id)"
+            [class.active]="curatorFlow.id === activeFlowId">
+      Поток {{ curatorFlow.index }}
+    </button>
   </div>
 
   <div class="content-table-container">
 
-      <p-table [value]="progress" [tableStyle]="{ 'min-width': '50rem' }">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>ФИО</th>
-            <th>Дата добавления</th>
-            <th>Сдали</th>
-            <th>Сдали</th>
-            <th></th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-progresses >
-          <tr >
-            <td>{{progresses.module}}</td>
-            <td>{{progresses.topic}}</td>
-            <td>{{progresses.deadline}}</td>
-            <td>{{progresses.submitted}}</td>
-          </tr>
-        </ng-template>
-      </p-table>
-
-
-
+    <p-table [value]="learnerLessonProgress" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ФИО</th>
+          <th>Дата добавления</th>
+          <th>Сдали</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-progresses>
+        <tr *ngFor="let progress of learnerLessonProgress">
+          <td>{{ progress.fullname }}</td>
+          <td>{{ progress.accepted_at }}</td>
+          <td>
+            {{ progress.lessons_passed }} из {{ progress.total_lessons }}
+            <div class="progress-bar-outer" style="background-color: #D9D9D9;">
+              <div class="progress-bar-inner" [style.width]="(progress.lessons_passed / progress.total_lessons * 100) + '%'"></div>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
 </div>
 

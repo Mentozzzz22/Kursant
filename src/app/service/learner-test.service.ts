@@ -27,11 +27,14 @@ export class LearnerTestService {
     return this.http.get<getLearnerTest>(`${this.apiUrl}/get_test/`, {headers, params});
   }
 
-  public startTest(learnerTestId: number): Observable<any> {
+  public startTest(dateToMaks: any, learnerTestId: number): Observable<any> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-    return this.http.post(`${this.apiUrl}/start_test/`, {learner_test_id: learnerTestId}, {headers});
+    return this.http.post(`${this.apiUrl}/start_test/`, {
+      learner_test_id: learnerTestId,
+      ends_at: dateToMaks
+    }, {headers});
   }
 
   // Метод для получения вопросов теста

@@ -1,44 +1,55 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MessageService} from "primeng/api";
 import {LearnerHomeworkService} from "../../service/learner-homework.service";
 import {HomeworkDetails, LearnerHomeworkDetails} from "../../../assets/models/learnerHomework.ineteface";
 import {LearnerLessons} from "../../../assets/models/learner_course.interface";
 import {ProgressBarModule} from "primeng/progressbar";
-import {NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-learner-homework',
   standalone: true,
   imports: [
     ProgressBarModule,
-    NgIf
+    NgIf,
+    NgClass,
+    NgStyle,
+    RouterLink,
+    NgForOf
   ],
   templateUrl: './learner-homework.component.html',
   styleUrl: './learner-homework.component.css'
 })
-export class LearnerHomeworkComponent implements OnInit{
+export class LearnerHomeworkComponent implements OnInit {
   private learnerHomeworkService = inject(LearnerHomeworkService);
   private router = inject(Router)
   private route = inject(ActivatedRoute)
   private messageService = inject(MessageService);
+  private sanitizer = inject(DomSanitizer);
   public homeworkData!: LearnerHomeworkDetails;
   public homework!: HomeworkDetails;
   public progress: number = 0;
+  public deadline!: string;
   public courseName!: string;
   public topicName!: string;
+  public description!: string;
   public teacherName!: string;
   public lessons: LearnerLessons[] = [];
   public homeworkFile: File | null = null;
-  public homeworkFileName: string | undefined;
-
+  public homeworkFileName!: string;
   public homeworkId!: number;
+  public lessonsAndTests: any[] = [];
+  progressSegments: { filled: boolean }[] = [];
+  public fullUrl!: string
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.homeworkId = +params.get('homeworkId')!;
       this.loadHomework(this.homeworkId);
     });
+
   }
 
   public loadHomework(homeworkId: number) {
@@ -49,9 +60,41 @@ export class LearnerHomeworkComponent implements OnInit{
         this.courseName = data.course_name;
         this.topicName = data.topic_name;
         this.teacherName = data.teacher_fullname
+        this.description = data.homework.description;
         this.homework = data.homework
+        this.deadline = this.homework.deadline
+        this.homeworkFileName = data.homework.file
+        this.lessonsAndTests = [...this.lessons];
+        const encodedFilePath = encodeURI(this.homework.file);
+        this.fullUrl = `http://127.0.0.1:8000${encodedFilePath}`;
+        console.log(this.fullUrl)
+
+        if (data.test) {
+          this.lessonsAndTests.push({
+            id: data.test.id,
+            status: data.test.status,
+            type: 'test'
+          });
+        }
+
+        if (data.homework) {
+          this.lessonsAndTests.push({
+            id: data.homework.id,
+            status: data.homework.status,
+            type: 'homework'
+          });
+        }
+
+        this.calculateProgress();
       }
     });
+  }
+
+  public safeHtmlContent!: SafeHtml;
+
+  // Возвращаем SafeHtml для использования в шаблоне
+  sanitizeHtmlContent(htmlContent: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(htmlContent);
   }
 
   getTemaStatusIcon(status: string): string {
@@ -68,6 +111,37 @@ export class LearnerHomeworkComponent implements OnInit{
     } else {
       return 'assets/images/closed.svg';
     }
+  }
+
+  public calculateProgress() {
+    const totalItems = this.lessonsAndTests.length;
+
+    const passedItems = this.lessonsAndTests.filter(item => item.status === 'passed').length;
+
+    if (totalItems > 0) {
+      this.progress = (passedItems / totalItems) * 100;
+
+      this.progressSegments = [];
+
+      for (let i = 0; i < totalItems; i++) {
+        this.progressSegments.push({
+          filled: this.lessonsAndTests[i].status === 'passed'
+        });
+      }
+    }
+  }
+
+  public getRouterLink(item: any) {
+    if (item.status === 'passed' || item.status === 'opened') {
+      if (item.type === 'test') {
+        return ['/student/test', item.id];
+      } else if (item.type === 'homework') {
+        return ['/student/homework', item.id];
+      } else {
+        return ['/student/lesson', item.id];
+      }
+    }
+    return null;
   }
 
   public back() {
@@ -92,32 +166,22 @@ export class LearnerHomeworkComponent implements OnInit{
     if (this.homeworkFile) {
       this.learnerHomeworkService.saveLearnerHomework(this.homework.id, this.homeworkFile).subscribe({
         next: () => {
-          this.messageService.add({severity: 'success', summary: 'Homework Submitted', detail: 'Your homework has been submitted successfully'});
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: 'Домашняя работа отправлена!'
+          });
         },
         error: (error) => {
-          this.messageService.add({severity: 'error', summary: 'Submission Error', detail: 'Failed to submit homework'});
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось отправить домашнюю работу'
+          });
           console.error('Error submitting homework:', error);
         }
       });
     }
   }
 
-  public downloadHomeworkFile(): void {
-    if (this.homework && this.homework.file) {
-      // Directly append the path to the base URL
-      const fullUrl = `http://127.0.0.1:8000/${this.homework.file}`;
-      const link = document.createElement('a');
-      link.href = fullUrl;
-      link.download = this.homework.file.split('/').pop() || 'download'; // Extracts the filename or defaults to 'download'
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'No File',
-        detail: 'No homework file available to download'
-      });
-    }
-  }
 }

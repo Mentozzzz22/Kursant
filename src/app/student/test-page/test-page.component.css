@@ -134,7 +134,7 @@ p-progressBar {
 
 ::ng-deep .p-dialog {
   max-width: 470px;
-  height: 268px;
+  max-height: 268px;
 }
 
 .modal-text {

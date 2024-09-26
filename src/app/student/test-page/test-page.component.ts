@@ -18,7 +18,8 @@ import {LearnerTestService} from "../../service/learner-test.service";
 import {getLearnerTest, Testing} from "../../../assets/models/getLearner_test.interface";
 import {LearnerLessons} from "../../../assets/models/learner_course.interface";
 import {MessageService} from "primeng/api";
-import {LearnerQuestions} from "../../../assets/models/getLearnerQuestions.interface";
+import {GetLearnerQuestions, LearnerQuestions} from "../../../assets/models/getLearnerQuestions.interface";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-test-page',
@@ -46,7 +47,8 @@ export class TestPageComponent implements OnInit {
   private router = inject(Router)
   private route = inject(ActivatedRoute)
   private messageService = inject(MessageService);
-
+  private sanitizer = inject(DomSanitizer);
+  private datePipe = inject(DatePipe)
   public courseName!: string;
   public topicName!: string;
   public teacherName!: string;
@@ -58,12 +60,18 @@ export class TestPageComponent implements OnInit {
   public isTestStarted: boolean = false; // Управление состоянием теста
   public currentQuestionIndex: number = 0; // Отслеживает текущий выбранный вопрос
   public questions: LearnerQuestions[] = [];
+  public questionData!: GetLearnerQuestions;
   public answeredQuestions: { [key: number]: boolean } = {}; // Используем объект для хранения состояний
   public testForm!: FormGroup;
   public testId!: number;
   public getLearnerTest!: getLearnerTest;
   public learnerTest!: Testing;
   public testStatus!: string;
+  public endsAt!: number;
+  public remainingTime: number = 0; // Время, которое осталось в секундах
+  private timerInterval: any;
+  public displayedTime: string = '';
+  public displayAlertMessage: boolean = false;
 
   public lessonsAndTests: any[] = [];
   progressSegments: { filled: boolean }[] = [];
@@ -132,9 +140,20 @@ export class TestPageComponent implements OnInit {
   public getQuestions(testId: number) {
     this.learnerTestService.getTestQuestions(testId).subscribe(data => {
       this.questions = data.questions;
-      this.initializeForm()
-      console.log(this.questions)
+      this.questions.forEach(question => {
+        question.safeHtmlContent = this.sanitizeHtmlContent(question.question);
+      });
+      this.questionData = data;
+      this.initializeForm();
+      this.startTimer();
     });
+  }
+
+  public safeHtmlContent!: SafeHtml;
+
+  // Возвращаем SafeHtml для использования в шаблоне
+  sanitizeHtmlContent(htmlContent: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(htmlContent);
   }
 
   // Метод для инициализации формы с вопросами
@@ -173,12 +192,19 @@ export class TestPageComponent implements OnInit {
 
   // Показ диалогового окна для завершения теста
   showEndTestDialog() {
+    this.checkUnansweredQuestions();
     this.endTestVisible = true;
   }
 
   // Старт теста
-  startTest(testId: number): void {
-    this.learnerTestService.startTest(testId).subscribe(
+  public startTest(testId: number): void {
+    const now = new Date().getTime();
+    const durationInMilliseconds = this.learnerTest.duration * 60 * 1000;
+    this.endsAt = now + durationInMilliseconds;
+    localStorage.setItem('endsAt', this.endsAt.toString());
+    let dateToMaks = this.datePipe.transform(this.endsAt, 'dd MM yyyy HH mm')
+
+    this.learnerTestService.startTest(dateToMaks, testId).subscribe(
       response => {
         if (response.success) {
           this.messageService.add({
@@ -191,6 +217,7 @@ export class TestPageComponent implements OnInit {
         this.startTestVisible = false;
         localStorage.setItem('isTestStarted', 'true'); // Сохранение состояния теста
         this.getQuestions(testId)
+
       },
       error => {
         this.messageService.add({
@@ -203,35 +230,13 @@ export class TestPageComponent implements OnInit {
   }
 
   // Завершение теста
-  endTest() {
+  public endTest() {
+    clearInterval(this.timerInterval);
     this.isTestStarted = false;
     this.endTestVisible = false;
     this.submitTest();
+    this.testStatus = 'passed';
   }
-
-  // Сохранение ответа при выборе варианта
-  // saveAnswer(questionId: number, index: number, answerId: number) {
-  //   let savedAnswers = JSON.parse(localStorage.getItem('testAnswers') || '{}');
-  //   savedAnswers[questionId] = index; // Сохраняем ответ для конкретного вопроса
-  //   localStorage.setItem('testAnswers', JSON.stringify(savedAnswers));
-  //
-  //   this.answeredQuestions[questionId] = true; // Отмечаем вопрос как отвеченный
-  //   localStorage.setItem('answeredQuestions', JSON.stringify(this.answeredQuestions));
-  //
-  //   const answersArray = this.answersFormArray;
-  //   const questionGroup = answersArray.controls.find(control => control.value.questionId === questionId) as FormGroup;
-  //
-  //   if (questionGroup) {
-  //     questionGroup.patchValue({answerId: answerId});
-  //     this.answeredQuestions[questionId] = true;
-  //   }
-  //   // Добавляем ответ в массив ответов в форме
-  //   const answers = this.testForm.get('answers') as FormArray;
-  //   console.log(answers.at(questionId - 1));
-  //   console.log(questionId, index, answerId);
-  //   answers.at(questionId - 1).setValue({questionId: questionId, answerId: answerId});
-  //   localStorage.setItem('answers', JSON.stringify(answers.value));
-  // }
 
   saveAnswer(questionId: number, index: number, answerId: number) {
     let savedAnswers = JSON.parse(localStorage.getItem('testAnswers') || '{}');
@@ -289,6 +294,14 @@ export class TestPageComponent implements OnInit {
 
     const isTestStarted = localStorage.getItem('isTestStarted');
     this.isTestStarted = isTestStarted === 'true';
+
+    const savedEndsAt = localStorage.getItem('endsAt');
+    if (savedEndsAt) {
+      this.endsAt = parseInt(savedEndsAt);
+    }
+    if (this.isTestStarted) {
+      this.startTimer();
+    }
   }
 
 // Обновление формы при переключении вопросов
@@ -296,7 +309,6 @@ export class TestPageComponent implements OnInit {
     const currentQuestionId = this.questions[this.currentQuestionIndex].id;
     const savedAnswers = JSON.parse(localStorage.getItem('testAnswers') || '{}');
 
-    // Проверяем, есть ли ответ на текущий вопрос
     if (savedAnswers[currentQuestionId] !== undefined) {
       this.testForm.get('question_' + currentQuestionId)?.setValue(savedAnswers[currentQuestionId]);
     } else {
@@ -305,8 +317,8 @@ export class TestPageComponent implements OnInit {
   }
 
   submitTest() {
-
     console.log(this.testForm.getRawValue())
+
     // this.learnerTestService.finishTest(this.testId, this.testForm.value.answers).subscribe({
     //   next: (response) => {
     //     if (response.success) {
@@ -328,6 +340,10 @@ export class TestPageComponent implements OnInit {
     this.clearTestState();
   }
 
+  checkUnansweredQuestions() {
+    this.displayAlertMessage = this.questions.some((question) => !this.answeredQuestions[question.id]);
+  }
+
   clearTestState() {
     this.testForm.reset();
     localStorage.removeItem('testAnswers');
@@ -335,15 +351,16 @@ export class TestPageComponent implements OnInit {
     localStorage.removeItem('answeredQuestions');
     localStorage.removeItem('currentQuestionIndex');
     localStorage.removeItem('isTestStarted');
+    localStorage.removeItem('endsAt');
     this.currentQuestionIndex = 0;
     this.answeredQuestions = {}; // Очищаем состояние отвеченных вопросов
     this.isTestStarted = false;
     this.endTestVisible = false;
-    this.loadTest(this.testId);
   }
 
   selectQuestion(index: number) {
     this.currentQuestionIndex = index;
+    this.safeHtmlContent = this.sanitizeHtmlContent(this.questions[index].question);
     this.updateFormForCurrentQuestion(); // Обновляем форму при выборе вопроса
   }
 
@@ -403,5 +420,37 @@ export class TestPageComponent implements OnInit {
     }
     return null;
   }
+
+  startTimer() {
+    const now = new Date().getTime();
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+    // Проверяем, есть ли уже сохраненное время окончания (если тест перезагружался)
+    const savedEndsAt = localStorage.getItem('endsAt');
+    if (savedEndsAt) {
+      this.endsAt = parseInt(savedEndsAt);
+    }
+
+    const timeUntilEnd = Math.round((this.endsAt - now) / 1000); // Округляем здесь
+    this.remainingTime = Math.max(timeUntilEnd, 0); // Убедимся, что время не отрицательное
+
+    this.timerInterval = setInterval(() => {
+      if (this.remainingTime > 0) {
+        this.remainingTime--;
+        this.updateDisplayedTime();
+      } else {
+        this.endTest(); // Автоматически завершить тест
+        clearInterval(this.timerInterval); // Остановить таймер
+      }
+    }, 1000); // Обновляем каждую секунду
+  }
+
+  updateDisplayedTime() {
+    const minutes = Math.floor(this.remainingTime / 60);
+    const seconds = Math.round(this.remainingTime % 60);  // Здесь добавляем округление
+    this.displayedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  }
+
 
 }

@@ -75,7 +75,7 @@
         <p>Мұғалім: {{ teacherName }}</p>
       </div>
       <div class="remain-time">
-        <p>Қалған уақыт: <strong> 15:00</strong></p>
+        <p>Қалған уақыт: <strong> {{ displayedTime }}</strong></p>
       </div>
     </div>
 
@@ -93,8 +93,8 @@
       <div class="question-header">
         <h3>{{ currentQuestionIndex + 1 }} сұрақ</h3>
       </div>
-      <div class="question-content">
-        <h4>{{ questions[currentQuestionIndex].question }}</h4>
+      <div class="question-content" >
+        <h4 [innerHTML]="sanitizeHtmlContent(questions[currentQuestionIndex].question)"></h4>
         <form [formGroup]="testForm">
           <div class="answers-list">
             <div *ngFor="let option of questions[currentQuestionIndex].options; let j = index" class="answer">
@@ -112,7 +112,7 @@
   </div>
 </div>
 <p-dialog class="test-modal" header="Тестілеуді бастау" [modal]="true" [(visible)]="startTestVisible" draggable="false">
-  <span class="modal-text">Тестілеуді бастау батырмасы басылғасын уақыт есептегіш қосылады.</span>
+  <span class="modal-text" >Тестілеуді бастау батырмасы басылғасын уақыт есептегіш қосылады.</span>
   <div class="modal-footer">
     <button class="back-btn" (click)="startTestVisible = false">Артқа</button>
     <button class="start-btn" (click)="startTest(testId)">Тестті бастау</button>
@@ -120,7 +120,7 @@
 </p-dialog>
 
 <p-dialog class="test-modal" header="Тестілеуді аяқтау" [modal]="true" [(visible)]="endTestVisible">
-  <span class="modal-text">Белгіленбеген сұрақтар бар, тестілеуді аяқтағанда ол сұрақтарға 0 балл беріледі.</span>
+  <span class="modal-text"  *ngIf="displayAlertMessage">Белгіленбеген сұрақтар бар, тестілеуді аяқтағанда ол сұрақтарға 0 балл беріледі.</span>
   <div class="modal-footer">
     <button class="back-btn" (click)="endTestVisible = false">Артқа</button>
     <button class="start-btn" (click)="endTest()">Тесттілеуді аяқтау</button>

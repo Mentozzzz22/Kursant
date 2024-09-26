@@ -121,3 +121,24 @@
 .canceled {
   color: #F93C65;
 }
+
+td {
+  color: #000000;
+  font-size: 16px;
+}
+
+.progress-bar-outer {
+  max-width: 69px;
+  height: 3px; /* или другая желаемая высота */
+  border-radius: 5px;
+  background-color: #D9D9D9;
+}
+
+.progress-bar-inner {
+  height: 3px;
+  background-color: #00ADEF;
+  color: #D9D9D9;
+  text-align: right;
+  padding-right: 5px;
+  border-radius: 5px;
+}

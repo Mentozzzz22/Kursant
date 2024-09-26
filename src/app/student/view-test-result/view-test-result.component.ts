@@ -6,6 +6,7 @@ import {LearnerQuestions} from "../../../assets/models/getLearnerQuestions.inter
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {ReactiveFormsModule} from "@angular/forms";
 import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-view-test-result',
@@ -25,10 +26,11 @@ export class ViewTestResultComponent implements OnInit {
   private router = inject(Router)
   private route = inject(ActivatedRoute)
   private messageService = inject(MessageService);
-
+  private sanitizer = inject(DomSanitizer);
   public currentQuestionIndex: number = 0;
   public testId!: number;
   public courseId!: number;
+  public homeworkId!: number;
   public courseName!: string;
   public topicName!: string;
   public teacherName!: string;
@@ -46,7 +48,11 @@ export class ViewTestResultComponent implements OnInit {
   public getQuestions(testId: number) {
     this.learnerTestService.getTestQuestions(testId).subscribe(data => {
       this.questions = data.questions;
+      this.questions.forEach(question => {
+        question.safeHtmlContent = this.sanitizeHtmlContent(question.question);
+      });
       this.courseId = data.course_id
+      this.homeworkId = data.homework_id
       this.courseName = data.course_name;
       this.topicName = data.topic_name;
       this.teacherName = data.teacher_fullname
@@ -55,11 +61,22 @@ export class ViewTestResultComponent implements OnInit {
     });
   }
 
+  public safeHtmlContent!: SafeHtml;
+
+  // Возвращаем SafeHtml для использования в шаблоне
+  sanitizeHtmlContent(htmlContent: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(htmlContent);
+  }
+
   selectQuestion(index: number) {
     this.currentQuestionIndex = index;
   }
 
   public back() {
     this.router.navigate([`/student/courses/${this.courseId}`]);
+  }
+
+  public navigateToHomework() {
+    this.router.navigate([`/student/homework/${this.homeworkId}`]);
   }
 }

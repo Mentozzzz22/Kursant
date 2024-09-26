@@ -1,3 +1,5 @@
+import {SafeHtml} from "@angular/platform-browser";
+
 export interface Options {
   answerId: number;
   answerName: string;
@@ -10,6 +12,7 @@ export interface LearnerQuestions {
   question: string;
   is_correct: boolean;
   options: Options[]
+  safeHtmlContent?: SafeHtml;
 }
 
 export interface GetLearnerQuestions {

@@ -4,6 +4,8 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {UserService} from "./user.service";
 import {GetModules} from "../../assets/models/getModules.interface";
 import {CuratorInterface} from "../../assets/models/curator.interface";
+import {CuratorFlowsInterface} from "../../assets/models/curatorFlows.interface";
+import {LearnersLessonProgress} from "../../assets/models/LearnersLessonProgress.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +13,7 @@ import {CuratorInterface} from "../../assets/models/curator.interface";
 export class CuratorService {
   private jsonUrl = 'assets/demo-data/curator-homeworks.json';
   private apiUrl = 'http://127.0.0.1:8000/api/curator';
+  private learnerApiUrl = 'http://127.0.0.1:8000/api/learner_course';
   private userService = inject(UserService);
   private http = inject(HttpClient)
   constructor() { }
@@ -28,6 +31,20 @@ export class CuratorService {
       .pipe(
         catchError((error) => {
           console.error('Error fetching curators:', error);
+          return throwError(error);
+        })
+      );
+  }
+
+  public getCuratorFlows(): Observable<CuratorFlowsInterface[]> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    return this.http
+      .get<CuratorFlowsInterface[]>(`${this.apiUrl}/get_my_flows/`, { headers })
+      .pipe(
+        catchError((error) => {
+          console.error('Error fetching curator flows:', error);
           return throwError(error);
         })
       );
@@ -61,7 +78,6 @@ export class CuratorService {
     return this.http.get<CuratorInterface>(`${this.apiUrl}/get_curator/`, { headers, params });
   }
 
-
   deleteCurator(id: number): Observable<any> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
@@ -74,6 +90,15 @@ export class CuratorService {
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
     return this.http.get<any>(`${this.apiUrl}/get_my_flows/`, {headers });
+  }
+
+  getLearnersLessonProgress(flowId: number): Observable<LearnersLessonProgress[]> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    const params = new HttpParams().set('flow_id', flowId.toString());
+
+    return this.http.get<LearnersLessonProgress[]>(`${this.learnerApiUrl}/get_learners_lessons_progress/`, { headers, params });
   }
 
 }
