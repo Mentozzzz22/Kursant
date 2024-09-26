@@ -202,7 +202,7 @@ export class TestPageComponent implements OnInit {
     const durationInMilliseconds = this.learnerTest.duration * 60 * 1000;
     this.endsAt = now + durationInMilliseconds;
     localStorage.setItem('endsAt', this.endsAt.toString());
-    let dateToMaks = this.datePipe.transform(this.endsAt, 'dd MM yyyy HH mm')
+    let dateToMaks = this.datePipe.transform(this.endsAt, 'dd.MM.yyyy HH:mm')
 
     this.learnerTestService.startTest(dateToMaks, testId).subscribe(
       response => {
