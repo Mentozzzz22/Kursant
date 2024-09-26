@@ -9,12 +9,13 @@
 }
 
 .login-container {
+  height: 100vh;
   display: flex;
-  gap:130px;
+  gap: 130px;
 }
 
-.left-arrow{
-  padding-top:5%;
+.left-arrow {
+  padding-top: 5%;
   cursor: pointer;
 }
 
@@ -28,7 +29,6 @@
   background-repeat: no-repeat;
 
   min-height: calc(100% - 110px);
-  max-height: calc(100% - 110px);
 
   max-width: 570px;
   width: 570px;
@@ -136,7 +136,7 @@
     text-align: center;
   }
 
-  .login-input  {
+  .login-input {
     display: flex;
     align-items: center;
   }
