@@ -52,7 +52,7 @@
         <h2>Басқа курстар</h2>
       </div>
       <div class="kurstar-cards">
-        <div class="kurstar-card" *ngFor="let course of otherCourses" (click)="goToCourse(course.id)">
+        <div class="kurstar-card" *ngFor="let course of otherCourses" >
           <img [src]="course.poster" alt="subject1" class="kurs-images">
           <div class="kurs-card-content">
             <div class="kurs-info">
@@ -70,7 +70,7 @@
                 <p class="course-price">70 000 тг</p>
                 <p class="course-payment-type">бір реттік төлем</p>
               </div>
-              <button class="course-cart-button" >Алу</button>
+              <button class="course-cart-button" (click)="showDialog(course.id)">Алу</button>
             </div>
           </div>
         </div>
@@ -79,3 +79,33 @@
 
   </div>
 </div>
+
+
+<p-dialog  [modal]="true" [(visible)]="visible" [style]="{ width: '37rem' }" draggable="false">
+  <div class="main-card">
+    <div class="card-img">
+      <img src="../../../assets/images/kurska-jazylu-img.svg" alt="kurska-jazylu">
+    </div>
+    <div class="card-content">
+      <h2>Курсқа жазылу</h2>
+      <p>Төмендегі ақпараттарды толтырып курс жайлы ақпарат ала аласыз</p>
+    </div>
+    <div class="card-form">
+      <form [formGroup]="orderForm">
+        <div class="card-input">
+          <p>Аты-жөніңіз</p>
+          <input type="text" pInputText placeholder="Аты-жөніңіз" formControlName = "fullname"/>
+        </div>
+        <div class="card-input">
+          <p>Телефон номеріңіз</p>
+          <input type="text" pInputText placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'" prefix="+7 " formControlName = "phone_number"/>
+        </div>
+        <div class="card-submit">
+          <button class="card-button" (click)="submitOrder()">
+            Заявка қалдыру
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</p-dialog>

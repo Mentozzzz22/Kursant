@@ -154,6 +154,7 @@
 .kurs-images {
   width: 289px;
   height: 138px;
+  padding:10px;
 }
 
 .subject-info h3 {
@@ -274,6 +275,7 @@ p-progressBar {
 .kurs-images {
   width: 289px;
   height: 138px;
+  border-radius:10px;
 }
 
 .subject-info h3 {
@@ -349,6 +351,87 @@ p-progressBar {
   margin-bottom: 7px;
 }
 
+.main-card {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+  background-color: white;
+  padding: 25px;
+  border-radius: 20px;
+  height: 500px;
+}
+
+.card-button{
+  padding:20px;
+  background-color:#2A6DB3;
+  text-align:center;
+  border-radius:15px;
+  border:none;
+  color:white;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-content h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.card-content p {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 15px;
+}
+
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-input {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.card-submit {
+  display: flex;
+  flex-direction: column;
+  margin-top:20px;
+}
+
+.card-input p {
+  font-size: 13px;
+}
+
+.card-input input {
+  width: 100%;
+  height: 38px;
+  background-color: #fdfafa;
+  padding: 10px;
+}
+
+.card-input input::placeholder {
+  font-size: 11px;
+  color: #DDDDDD;
+}
+
+.card-submit {
+  display: flex;
+  flex-direction: column;
+  margin-top:20px;
+}
+
+:host ::ng-deep  .p-dialog-content{
+  padding:0;
+}
+
 
 
 .course-price-container {
@@ -389,6 +472,107 @@ p-progressBar {
 .course-divider {
   border: none;
   height: 1px;
-  background-color: #E0E0E0;
+  background-color: #444444;
   margin: 10px 0;
+}
+
+/* Responsive styles */
+
+@media (max-width: 1440px) {
+  .main-page {
+    padding: 20px;
+  }
+
+  .lil-cards {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+  }
+
+  .kurstar-cards {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .main-page {
+    padding: 15px;
+  }
+
+  .lil-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .kurstar-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lil-card, .kurstar-card {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .kurs-images {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-page {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .lil-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .kurstar-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .kurs-images {
+    width: 100%;
+    height: auto;
+  }
+
+.bolim{
+  padding:5px;
+  font-size: 10px;
+}
+
+  .main-right {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 425px) {
+  .main-page {
+    padding: 10px;
+  }
+
+  .lil-card, .kurstar-card {
+    padding: 10px;
+    max-width: 100%;
+  }
+
+  .kurs-images {
+    width: 100%;
+    height: auto;
+  }
+
+  .main-left, .main-right {
+    width: 100%;
+    padding: 0;
+  }
+
+  .card-content h2, .subject-info h3 {
+    font-size: 16px;
+  }
+
+  .card-content p, .subject-info p {
+    font-size: 12px;
+  }
 }

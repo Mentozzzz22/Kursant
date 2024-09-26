@@ -239,7 +239,7 @@
   align-items: center;
 }
 
-.kurs-footer button {
+.course-cart-button {
   display: flex;
   height: 28px;
   border: 1px solid #2A6DB3;
@@ -249,6 +249,12 @@
   padding: 8px 12px 8px 12px;
   font-size: 12px;
   align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.course-cart-button:hover {
+  background-color: #2A6DB3;
+  color: white;
 }
 
 .kurs-price h3 {

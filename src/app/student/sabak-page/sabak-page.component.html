@@ -40,20 +40,21 @@
           </div>
         </div>
 
-        <div class="sabaktar">
-          <div *ngFor="let item of lessonsAndTests; let i = index"
-               class="sabak"
-               [ngClass]="{'inactive': item.status !== 'passed' && item.status !== 'opened'}"
-               [routerLink]="getRouterLink(item)"
-               [style.cursor]="item.status === 'passed' || item.status === 'opened' ? 'pointer' : 'default'">
+        <div *ngFor="let item of lessonsAndTests; let i = index"
+             class="sabak"
+             [ngClass]="{'inactive': item.status !== 'passed' && item.status !== 'opened'}"
+             [routerLink]="getRouterLink(item)"
+             [style.cursor]="item.status === 'passed' || item.status === 'opened' ? 'pointer' : 'default'">
 
-            <img [src]="getTemaStatusIcon(item.status)" alt="status">
-            <p>{{ i + 1 }}
-              {{ item.type === 'test' ? 'тест' : item.type === 'homework' ? 'үй жұмысы' : 'сабақ' }}.
-              {{ item.type === 'test' ? 'Тест' : item.type === 'homework' ? 'Үй жұмысы' : item.name }}
-            </p>
-          </div>
+          <img [src]="getTemaStatusIcon(item.status)" alt="status">
+          <p>{{ i + 1 }}
+            {{ item.type === 'test' ? 'тест' : item.type === 'homework' ? 'үй жұмысы' : 'сабақ' }}.
+            {{ item.type === 'test' ? 'Тест' : item.type === 'homework' ? 'Үй жұмысы' : item.name }}
+          </p>
         </div>
+
+
+
       </div>
 
     </div>

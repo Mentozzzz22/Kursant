@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {NgForOf} from "@angular/common";
+import {DecimalPipe, NgForOf} from "@angular/common";
 import {kurs} from "../main-page/main-page.component";
 import {CourseService} from "../../service/course.service";
 import {Course} from "../../../assets/models/course.interface";
@@ -18,7 +18,8 @@ import {NgxMaskDirective} from "ngx-mask";
     PrimeTemplate,
     FormsModule,
     ReactiveFormsModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    DecimalPipe
   ],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
@@ -30,18 +31,23 @@ export class CartComponent implements OnInit{
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
   totalCurrentPrice: number = 0;
+  public searchText: string = '';
   totalOldPrice: number = 0;
   visible: boolean = false;
 
   ngOnInit(): void {
-    this.loadCourses()
+    this.courseService.getSearchText().subscribe((searchText: string) => {
+      this.searchText = searchText;
+      this.loadCourses()
+    });
+
   }
 
   loadCourses(): void {
     const cartIds = JSON.parse(localStorage.getItem('cart') || '[]');
 
     if (cartIds.length > 0) {
-      this.courseService.getCourses(undefined, cartIds).subscribe(
+      this.courseService.getCourses(this.searchText, cartIds).subscribe(
         (data: Course[]) => {
           this.courses = data.map(course => ({
             ...course,
@@ -95,7 +101,7 @@ export class CartComponent implements OnInit{
   submitOrder(): void {
     const courseIds = this.courses
       .map(course => course.id)
-      .filter((id): id is number => id !== undefined); // Фильтруем undefined значения
+      .filter((id): id is number => id !== undefined);
 
     this.orderForm.patchValue({
       courses: courseIds
@@ -135,6 +141,16 @@ export class CartComponent implements OnInit{
       console.log('Form is invalid');
       this.messageService.add({ severity: 'info', summary: 'Форма қатесі', detail: 'Форма дұрыс толтырлмады' });
     }
+  }
+
+  transform(value: number | string): string {
+    if (value === null || value === undefined) {
+      return '';
+    }
+
+    return value
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ' '); // Add space as thousands separator
   }
 
   cancelDialog(){

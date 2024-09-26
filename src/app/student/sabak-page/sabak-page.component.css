@@ -176,3 +176,146 @@ p-progressBar {
   border-radius: 5px;
   background-color: #E0E0E0;
 }
+
+@media (max-width: 1024px) {
+  .test-container {
+    padding: 30px;
+  }
+  .test-video-container {
+    flex-direction: column;
+  }
+  .video-container {
+    width: 100%;
+  }
+  .test-right {
+    width: 100%;
+    padding: 24px;
+    max-width: none;
+    height:auto;
+    border-radius: 20px;
+  }
+
+  .next-sabak-button {
+    width: 18%;
+  }
+
+  .test-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .test-video-container {
+    gap: 20px;
+  }
+
+  .sabaktar {
+    gap: 10px;
+  }
+
+  .test-right h3 {
+    font-size: 18px;
+  }
+
+  .sabak p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .test-container {
+    padding: 20px;
+  }
+
+  .test-video-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .test-right {
+    width: 100%;
+    padding: 20px;
+    max-width: none;
+    border-radius: 15px;
+  }
+
+  .next-sabak-button {
+    width: 25%;
+    justify-content: center;
+  }
+
+  .test-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .video-container {
+    width: 100%;
+  }
+
+
+  .sabaktar {
+    gap: 10px;
+  }
+
+  .sabak p {
+    font-size: 14px;
+  }
+
+  .test-right h3 {
+    font-size: 18px;
+  }
+
+  .progress-wrapper p {
+    font-size: 12px;
+  }
+
+  .breadcrumb-container {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 425px) {
+  .test-container {
+    padding: 10px;
+  }
+
+  .test-right {
+    padding: 16px;
+    border-radius: 15px;
+  }
+
+  .test-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .next-sabak-button {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .test-right h3 {
+    font-size: 16px;
+  }
+
+  .sabak p {
+    font-size: 12px;
+  }
+
+  .progress-wrapper p {
+    font-size: 11px;
+  }
+
+  .breadcrumb-label-text {
+    font-size: 13px;
+  }
+
+  .custom-progress-bar {
+    height: 3px;
+  }
+
+  .sabaktar {
+    gap: 8px;
+  }
+}

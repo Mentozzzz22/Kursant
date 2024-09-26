@@ -37,8 +37,8 @@
     <div class="confirm-block">
       <div>
         <p>Сумма</p>
-        <h2>{{ totalCurrentPrice }} тг</h2>
-        <h3>{{ totalOldPrice }} тг</h3>
+        <h2>{{ transform(totalCurrentPrice) }} тг</h2>
+        <h3>{{ transform(totalOldPrice) }} тг</h3>
       </div>
       <button (click)="showDialog()">Заявка қалдыру</button>
     </div>

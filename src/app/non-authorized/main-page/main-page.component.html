@@ -38,14 +38,14 @@
         <p>Барлық пәндер тізімі</p>
       </div>
       <div class="kurstar-cards" >
-        <div class="kurstar-card" *ngFor="let kurs of courses" (click)="openDetails(kurs.id!)">>
+        <div class="kurstar-card" *ngFor="let kurs of courses" (click)="openDetails(kurs.id!)">
           <img [src]="kurs.poster" alt="subject1" class="kurs-images">
-          <div class="kurs-card-content">
-            <div class="kurs-info">
+          <div class="kurs-card-content" >
+            <div class="kurs-info" >
               <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ kurs.modules_count }} бөлім</p>
               <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ kurs.lessons_count }} сабақ</p>
             </div>
-            <div class="subject-info">
+            <div class="subject-info" >
               <h3>{{ kurs.name }}</h3>
               <p>Ең жақын поток: {{ kurs.flow_date }}</p>
               <hr>
@@ -55,7 +55,7 @@
                 <h3>{{ kurs.price }} тг</h3>
                 <p>бір реттік төлем</p>
               </div>
-              <button (click)="addToCart(kurs.id!)">Корзинаға</button>
+              <button (click)="addToCart(kurs.id!); $event.stopPropagation()" class="course-cart-button">Корзинаға</button>
             </div>
           </div>
         </div>
