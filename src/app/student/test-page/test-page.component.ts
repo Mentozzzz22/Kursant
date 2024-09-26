@@ -319,23 +319,23 @@ export class TestPageComponent implements OnInit {
   submitTest() {
     console.log(this.testForm.getRawValue())
 
-    // this.learnerTestService.finishTest(this.testId, this.testForm.value.answers).subscribe({
-    //   next: (response) => {
-    //     if (response.success) {
-    //       this.messageService.add({
-    //         severity: 'success',
-    //         summary: 'Тест завершен',
-    //         detail: 'Ваши ответы успешно сохранены.'
-    //       });
-    //     }
-    //   }, error: (error) => {
-    //     this.messageService.add({
-    //       severity: 'error',
-    //       summary: 'Ошибка',
-    //       detail: 'Не удалось завершить тест.'
-    //     });
-    //   }
-    // });
+    this.learnerTestService.finishTest(this.testId, this.testForm.value.answers).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Тест завершен',
+            detail: 'Ваши ответы успешно сохранены.'
+          });
+        }
+      }, error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось завершить тест.'
+        });
+      }
+    });
 
     this.clearTestState();
   }
