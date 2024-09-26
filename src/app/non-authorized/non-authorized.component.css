@@ -2,15 +2,22 @@
   padding: 30px 80px;
 }
 
-@media (max-width: 768px){
+.non-authorized {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
   :host {
-    padding:0;
+    padding: 0;
   }
 
 }
 
 @media (max-width: 425px) {
   :host {
-    padding:0;
+    padding: 0;
   }
 }

@@ -1,4 +1,5 @@
 .navbar-container {
+  width: 100vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -8,7 +9,6 @@
   gap: 20px;
   background-color: white;
   max-width: 1440px;
-  margin: 0 auto;
 }
 
 .nav-logo {
@@ -73,22 +73,22 @@
   right: -10px;
   z-index: 1;
   background-color: #FF0000;
-  border-radius:10px;
+  border-radius: 10px;
   color: #FFFFFF;
 }
-
-
 
 
 .nav-login button {
   justify-content: center;
   font-size: 22px;
 }
-@media (max-width: 768px){
+
+@media (max-width: 768px) {
   .nav-search {
-    display:none;
+    display: none;
   }
 }
+
 @media (max-width: 425px) {
   .navbar-container {
     height: auto;
@@ -97,7 +97,7 @@
   }
 
   .nav-search {
-    display:none;
+    display: none;
   }
 
   .nav-buttons {
