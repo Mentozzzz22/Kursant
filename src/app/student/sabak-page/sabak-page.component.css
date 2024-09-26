@@ -65,14 +65,13 @@
 
 
 .test-right {
-  width: 420px;
   display: flex;
   flex-direction: column;
   gap: 30px;
   padding: 36px;
   border: 1px solid #BBBBBB;
   border-radius: 30px;
-  width:400px;
+  min-width: 408px;
   max-width: 600px;
 }
 
