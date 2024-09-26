@@ -186,7 +186,7 @@
 }
 
 .kurs-images {
-  width: 289px;
+  max-width: 289px;
   height: 138px;
 }
 
