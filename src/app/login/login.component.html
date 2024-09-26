@@ -1,6 +1,8 @@
 <div class="login-container">
-  <div class="login-left">
-    <img src="assets/images/Login.png" alt="login-image">
+<!--  <div class="login-left">-->
+<!--    &lt;!&ndash;    <img src="assets/images/Login.png" alt="login-image">&ndash;&gt;-->
+<!--  </div>-->
+  <div class="kursant-image" style="background-image: url(assets/images/Login.png)">
   </div>
 
   <div class="login-right" *ngIf="!loginSuccess">
@@ -18,7 +20,8 @@
       <form [formGroup]="loginForm" (ngSubmit)="sendCode()">
         <div class="login-input">
           <p>Телефон номер</p>
-          <input type="text" formControlName="phone" placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'" prefix="+7 ">
+          <input type="text" formControlName="phone" placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'"
+                 prefix="+7 ">
           <div *ngIf="loginForm.get('phone')?.invalid && loginForm.get('phone')?.touched">
             <small>Введите корректный номер телефона</small>
           </div>

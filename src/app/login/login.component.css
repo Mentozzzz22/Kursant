@@ -22,12 +22,37 @@
   margin-top: auto;
 }
 
-.login-left img {
-  width: 111%;    /* The image will be 111% of the parent container's width */
-  max-width: 111%; /* Ensure it doesn’t exceed 111% */
-  height: auto;    /* Maintain aspect ratio */
-  object-fit: cover; /* Cover the container while cropping parts that overflow */
+.kursant-image {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  min-height: calc(100% - 110px);
+  max-height: calc(100% - 110px);
+
+  max-width: 570px;
+  width: 570px;
+  padding: 55px;
+
+  display: flex;
+  padding-right: 85px;
+
+  flex-direction: column;
+  justify-content: end;
+
+  border-radius: 22px;
+  color: white;
+
+  transition: 0.5s;
+  z-index: 2;
 }
+
+/*.login-left img {*/
+/*  width: 111%;    !* The image will be 111% of the parent container's width *!*/
+/*  max-width: 111%; !* Ensure it doesn’t exceed 111% *!*/
+/*  height: auto;    !* Maintain aspect ratio *!*/
+/*  object-fit: cover; !* Cover the container while cropping parts that overflow *!*/
+/*}*/
 
 
 .login-right {
