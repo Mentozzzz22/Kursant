@@ -37,7 +37,7 @@
 
 
   <div class="login-right" *ngIf="loginSuccess">
-    <div class="left-arrow">
+    <div class="left-arrow" (click)="returnBack()">
       <img src="assets/images/left-arrow.svg" alt="left" width="20" height="20">Артқа
     </div>
     <div class="login-content">
@@ -49,11 +49,8 @@
         <div class="login-input">
           <p>SMS код</p>
           <input type="text" formControlName="sms" placeholder="__ __ __" mask="000 000">
-          <div *ngIf="smsCode.get('sms')?.invalid && smsCode.get('sms')?.touched">
-            <small>Введите корректный код</small>
-          </div>
         </div>
-        <button class="login-button" type="submit" [disabled]="smsCode.invalid">Енгізу</button>
+        <button class="login-button" type="submit" >Енгізу</button>
       </form>
     </div>
     <div class="login-footer">

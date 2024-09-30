@@ -30,17 +30,23 @@ export class LoginComponent implements OnInit {
   });
 
   public smsCode = this.fb.group({
-    sms: ['', Validators.required]
+    sms: ['', [Validators.required, Validators.pattern('[0-9]{6}')]]
   });
 
   ngOnInit(): void {
+    // this.smsCode.get('sms')?.valueChanges.subscribe(() => {
+    //   const smsControl = this.smsCode.get('sms');
+    //   if (smsControl?.invalid && (smsControl.dirty || smsControl.touched)) {
+    //     this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Введите корректный код' });
+    //   }
+    // });
   }
 
   sendCode() {
     let phone = this.loginForm.get('phone')?.value;
 
     if (phone) {
-      phone = phone.replace(/\D/g, ''); // Убираем все символы, кроме цифр
+      phone = phone.replace(/\D/g, '');
       phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
     }
 
@@ -62,6 +68,11 @@ export class LoginComponent implements OnInit {
 
 
   checkSmsCode() {
+    if (this.smsCode.invalid) {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Введите корректный код' });
+      return;
+    }
+
     let phone = this.loginForm.get('phone')?.value;
 
     if (phone) {
@@ -101,11 +112,18 @@ export class LoginComponent implements OnInit {
         (error) => {
           console.error('Ошибка проверки кода', error);
           if (error.status === 401) {
-            if (error.error.detail === "Code not found" || error.error.detail === "User not found") {
-              console.error('Код или пользователь не найден');
+            if (error.error.detail === "Code not found") {
+              console.error('Код не найден');
+              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Код не найден'});
+            } else if (error.error.detail === "User not found") {
+              console.error('Пользователь не найден');
+              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Пользователь не найден'});
             }
-          } else if (error.status === 403) {
+          } else if (error.status === 403 && error.error.detail === "User has no role") {
             console.error('У пользователя нет роли');
+            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'У пользователя нет роли'});
+          } else {
+            console.error('Неизвестная ошибка', error);
           }
           this.isCodeValid = false;
         }
@@ -117,5 +135,9 @@ export class LoginComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/']);
+  }
+
+  returnBack() {
+    this.loginSuccess = false;
   }
 }
