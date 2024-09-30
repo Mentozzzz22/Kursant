@@ -44,8 +44,8 @@
         </ng-template>
         <ng-template pTemplate="body" let-progresses >
           <tr (click)="openDetails(progresses.flow_homework_id)">
-            <td>{{progresses.module_name}}</td>
-            <td>{{progresses.topic_name}}</td>
+            <td> <strong>Бөлім {{ progresses.module_index }}. </strong> {{progresses.module_name}}</td>
+            <td>{{ progresses.topic_index }} тақырып. {{progresses.topic_name}}</td>
             <td>{{progresses.deadline}}</td>
             <td>
               {{ progresses.sent_count }} из {{ progresses.total_count }}
@@ -73,7 +73,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-progresses >
           <tr (click)="openTestDetails(progresses.flow_test_id)">
-            <td><span style="font-weight: bold">Бөлім. {{progresses.module_index}}</span> {{progresses.module_name}}</td>
+            <td><span style="font-weight: bold">Бөлім {{progresses.module_index}}.</span> {{progresses.module_name}}</td>
             <td>{{progresses.topic_index}} тақырып. {{progresses.topic_name}}</td>
             <td>{{progresses.deadline | date:'dd.MM.yyyy HH:mm'}}</td>
             <td>

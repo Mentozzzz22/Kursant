@@ -1,6 +1,6 @@
 <div class="supplier-header" *ngIf="homeWorkDetails">
-  <div class="supplier-container">
-    <h1 class="supplier-title"><i class="pi pi-angle-left" (click)="goBack()"></i> <span style="font-weight: bold">{{homeWorkDetails.topic_index}} тақырып. </span>
+  <div class="supplier-container"  (click)="goBack()">
+    <h1 class="supplier-title"><i class="pi pi-angle-left"></i> <span style="font-weight: bold">{{homeWorkDetails.topic_index}} тақырып. </span>
       {{homeWorkDetails.topic_name}}</h1>
   </div>
 </div>
@@ -11,8 +11,7 @@
       <div class="description">
 
         <span style="font-weight: bold">Описание ДЗ:</span>
-        <span> {{ homeWorkDetails.description }} </span>
-
+        <div [innerHTML]="homeWorkDetails.description"></div>
       </div>
 
       <div class="description-deadline"> Дедлайн: {{homeWorkDetails.deadline}} </div>
@@ -44,13 +43,12 @@
           <th>Сдал?</th>
           <th>Дата сабмита</th>
           <th>Балл</th>
-          <th></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-progresses >
         <tr >
 
-          <td>{{progresses.learner_fullname}}</td>
+          <td *ngIf="progresses.is_expired">{{progresses.learner_fullname}}</td>
 
           <td>
             <ng-container *ngIf="progresses.uploaded_file; else noFile">
@@ -59,27 +57,37 @@
             <ng-template #noFile>____</ng-template>
           </td>
 
-          <td>{{ progresses.passed_at | date:'dd.MM.yyyy HH:mm' }}</td>
+          <td [ngClass]="{'is_expired': progresses.is_expired}">{{ progresses.passed_at | date:'dd.MM.yyyy HH:mm' }}</td>
+
 
           <td>
-            <ng-container *ngIf="progresses.status === 'opened_retake'">
-              <span style="color: #F93C65"> Пересдача </span>
+            <ng-container *ngIf="progresses.mark > 0; else noMark">
+              <span>{{ progresses.mark }}/100</span>
             </ng-container>
-            <ng-container *ngIf="progresses.status === 'passed'">
-              <ng-container *ngIf="progresses.mark !== null; else giveMarkBtn">
-                {{ progresses.mark }}/100
+
+            <ng-template #noMark>
+              <ng-container *ngIf="progresses.status === 'retake'">
+                <span style="color: #F93C65">Пересдача</span>
               </ng-container>
-              <ng-template #giveMarkBtn>
+
+              <ng-container *ngIf="progresses.status === 'passed'">
+                <ng-container *ngIf="progresses.mark !== null; else giveMarkBtn">
+                  {{ progresses.mark }}/100
+                </ng-container>
+                <ng-template #giveMarkBtn>
+                  <button (click)="giveMark(progresses.learner_homework_id)" class="submit-mark">Ставить оценку</button>
+                </ng-template>
+              </ng-container>
+
+              <ng-container *ngIf="progresses.status === 'passed_retake'">
                 <button (click)="giveMark(progresses.learner_homework_id)" class="submit-mark">Ставить оценку</button>
-              </ng-template>
-            </ng-container>
-            <ng-container *ngIf="progresses.status === 'passed_retake'">
-              <button (click)="giveMark(progresses.learner_homework_id)" class="submit-mark">Ставить оценку</button>
-              <span style="color: #F93C65"> Пересдача </span>
-            </ng-container>
-            <ng-container *ngIf="progresses.status === ''">
-              ____
-            </ng-container>
+                <span style="color: #F93C65">Пересдача</span>
+              </ng-container>
+
+              <ng-container *ngIf="!progresses.status || progresses.status === ''">
+                ____
+              </ng-container>
+            </ng-template>
           </td>
 
         </tr>
@@ -95,7 +103,8 @@
   [(visible)]="isVisible"
   [modal]="true"
   [style]="{ width: '40rem' }"
-  draggable="false">
+  draggable="false"
+  (onHide)="closeModal()">
   <ng-template pTemplate="header">
 
     <ng-container *ngIf="visible">

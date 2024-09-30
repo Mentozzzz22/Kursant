@@ -10,6 +10,7 @@ import {DatePipe, NgClass, NgIf} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
 import {LearnerHomework} from "../../../../assets/models/curatorLearnerHomeWork.interface";
 import {FormsModule} from "@angular/forms";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-homework-detail',
@@ -46,6 +47,7 @@ export class HomeworkDetailComponent implements OnInit{
   private route = inject(ActivatedRoute);
   private learnerHomeWorkService = inject(LearnerHomeworkService);
   private router = inject(Router);
+  private sanitizer = inject(DomSanitizer);
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -58,6 +60,10 @@ export class HomeworkDetailComponent implements OnInit{
         console.error('ID is null');
       }
     });
+  }
+
+  sanitizeHtmlContent(htmlContent: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(htmlContent);
   }
 
 
@@ -120,6 +126,9 @@ export class HomeworkDetailComponent implements OnInit{
             this.visibleRetake = false;
             if(this.homeworkId!=null){
               this.loadLearnerHomeWork(this.activeStatus, this.homeworkId);
+              this.retakeText = '';
+              this.mark = null;
+
             }
             this.messageService.add({
               severity: 'success',
@@ -193,8 +202,18 @@ export class HomeworkDetailComponent implements OnInit{
   closeDialog(): void {
     this.visible = false;
     this.visibleRetake = false;
+    this.retakeText = '';
+    this.mark = null;
     this.messageService.add({severity:'info', summary:'Отмена', detail:'Никаких изменений'});
   }
+
+  closeModal(): void {
+    this.visible = false;
+    this.visibleRetake = false;
+    this.retakeText = '';
+    this.mark = null;
+  }
+
 
   goBack() {
     window.history.back();
