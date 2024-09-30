@@ -33,6 +33,7 @@ import {LearnerHomeworkComponent} from "./student/learner-homework/learner-homew
 import {AuthGuard} from "./service/auth.guard";
 import {NonAuthGuard} from "./service/nonauth.guard";
 import {AboutCourseNonAuthComponent} from "./non-authorized/about-course-non-auth/about-course-non-auth.component";
+import {pendingChangeGuard} from "./service/pending-change.guard";
 
 export const routes: Routes = [
   {
@@ -85,7 +86,8 @@ export const routes: Routes = [
             children: [
               {
                 path: 'edit-topic/:topicId',
-                component: EditTopicComponent
+                component: EditTopicComponent,
+                canDeactivate: [pendingChangeGuard]
               }
             ]
           }

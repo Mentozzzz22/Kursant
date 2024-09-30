@@ -20,6 +20,10 @@ import {EditorModule} from "primeng/editor";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
+import {CanComponentDeactivate} from "../../../service/pending-change.guard";
+import {Observable} from "rxjs";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {ConfirmationDialogComponent} from "../../../confirmation-dialog/confirmation-dialog.component";
 
 type FormAnswer = FormGroup<{
   text: FormControl<string>;
@@ -59,13 +63,14 @@ function atLeastOneCorrectAnswer(control: AbstractControl): ValidationErrors | n
   templateUrl: './edit-topic.component.html',
   styleUrl: './edit-topic.component.css'
 })
-export class EditTopicComponent implements OnInit {
+export class EditTopicComponent implements OnInit, CanComponentDeactivate {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private topicService = inject(TopicService);
   private fb = inject(NonNullableFormBuilder);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
+  private dialogService = inject(DialogService)
 
   private courseId!: number;
   private moduleId!: number;
@@ -144,7 +149,7 @@ export class EditTopicComponent implements OnInit {
     console.log(this.questions())
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `Вы действительно хотите удалить вопрос - "${this.questions().value[index].text}" ?`,
+      message: `Вы действительно хотите удалить этот вопрос ?`,
       icon: 'pi pi-info-circle',
       rejectLabel: 'Нет',
       acceptLabel: 'Да',
@@ -202,9 +207,7 @@ export class EditTopicComponent implements OnInit {
         this.homeworkDescription = data.homework.description;
 
         this.testForm.get('description')?.setValue(this.homeworkDescription);
-
-        console.log('Topic Content Loaded:', data);
-      },
+        },
       error: (error) => {
         console.error('Error loading topic content:', error);
       }
@@ -226,7 +229,7 @@ export class EditTopicComponent implements OnInit {
   public deleteLesson(event: Event, index: number) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `Вы действительно хотите удалить урок - "${this.lessons[index].name}" ?`,
+      message: `Вы действительно хотите удалить этот урок ?`,
       icon: 'pi pi-info-circle',
       rejectLabel: 'Нет',
       acceptLabel: 'Да',
@@ -235,7 +238,7 @@ export class EditTopicComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Успешно',
-          detail: `Урок - "${this.lessons[index].name}" успешно удален!`
+          detail: `Урок успешно удален!`
         });
         this.lessons.splice(index, 1);
       }
@@ -245,7 +248,7 @@ export class EditTopicComponent implements OnInit {
   public deleteTopic(event: Event, topicId: number) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `Вы действительно хотите удалить тему - "${this.topicName}" ?`,
+      message: `Вы действительно хотите удалить эту тему ?`,
       icon: 'pi pi-info-circle',
       acceptLabel: 'Да',
       rejectLabel: 'Нет',
@@ -257,7 +260,7 @@ export class EditTopicComponent implements OnInit {
             this.messageService.add({
               severity: 'success',
               summary: 'Успешно',
-              detail: `Тема - "${this.topicName}" успешно удалена!`
+              detail: `Тема успешно удалена!`
             });
           },
           error: (err) => {
@@ -272,9 +275,9 @@ export class EditTopicComponent implements OnInit {
 
     if (this.testForm.invalid) {
       this.messageService.add({
-        severity: 'error',
-        summary: 'Ошибка',
-        detail: 'Есть ошибки в форме. Пожалуйста, убедитесь, что на все вопросы выбран правильный ответ.'
+        severity: 'warn',
+        summary: 'Предупреждение',
+        detail: 'Для сохранения полностью заполните форму.'
       });
       return;
     } else {
@@ -394,5 +397,14 @@ export class EditTopicComponent implements OnInit {
   public triggerHomeworkFileInput(): void {
     const fileInput = document.getElementById('homeworkFile') as HTMLInputElement;
     fileInput.click();
+  }
+
+  public canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+    const dialogRef: DynamicDialogRef = this.dialogService.open(ConfirmationDialogComponent, {
+      header: 'Подтверждение',
+      width: '350px',
+      data: 'У вас есть несохраненные изменения. Вы уверены, что хотите покинуть страницу?'
+    });
+    return dialogRef.onClose.toPromise();
   }
 }

@@ -231,6 +231,10 @@ h1 {
     margin-bottom: 20px;
   }
 
+  .course-item {
+    width: 100%;
+  }
+
   .image-overlay{
     background:white;
   }
@@ -259,7 +263,7 @@ h1 {
     font-size: 12px;
   }
 
-  .progress-bar {
+  :host ::ng-deep .progress-bar {
     width: 100%;
   }
 

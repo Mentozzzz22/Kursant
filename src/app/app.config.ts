@@ -8,6 +8,7 @@ import {ToastModule} from "primeng/toast";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {DatePipe} from "@angular/common";
 import {provideNgxMask} from 'ngx-mask';
+import {DialogService} from "primeng/dynamicdialog";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     importProvidersFrom(ToastModule),
     {provide: MessageService, useClass: MessageService},
+    {provide: DialogService, useClass: DialogService},
     {provide: ConfirmationService, useClass: ConfirmationService},
     {provide:DatePipe, useClass:DatePipe},
     provideNgxMask()
