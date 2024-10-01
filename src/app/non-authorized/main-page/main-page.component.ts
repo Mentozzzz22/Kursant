@@ -5,7 +5,7 @@ import {InputTextModule} from "primeng/inputtext";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {Course} from "../../../assets/models/course.interface";
 import {CourseService} from "../../service/course.service";
-import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {OrderService} from "../../service/order.service";
 import {MessageService} from "primeng/api";
 import {NgxMaskDirective} from "ngx-mask";
@@ -38,6 +38,7 @@ export interface kurs {
     NgClass,
     NgIf,
     DialogModule,
+    FormsModule,
 
   ],
   templateUrl: './main-page.component.html',
@@ -61,43 +62,14 @@ export class MainPageComponent implements OnInit{
     this.checkWindowSize();
   }
 
-  public subjectAndTeacher: any = [
-    {
-      subject: 'Физика',
-      teacher: 'Мендыбаев Абай'
-    },{
-      subject: 'Физика',
-      teacher: 'Мендыбаев Абай'
-    },{
-      subject: 'Информатика',
-      teacher: 'Мендыбаев Абай'
-    },{
-      subject: 'Информатика',
-      teacher: 'Мендыбаев Абай'
-    },{
-      subject: 'Математика',
-      teacher: 'Мендыбаев Абай'
-    },{
-      subject: 'Математика',
-      teacher: 'Мендыбаев Абай'
-    },{
-      subject: 'Тарих',
-      teacher: 'Мендыбаев Абай'
-    }, {
-      subject: 'Тарих',
-      teacher: 'Мендыбаев Абай'
-    },
-  ]
 
   ngOnInit(): void {
     this.courseService.getSearchText().subscribe((searchText: string) => {
       this.searchText = searchText;
       this.loadCourses();
+      this.loadFlows();
     });
-
     this.checkWindowSize();
-
-    this.loadFlows();
   }
 
   loadCourses(): void {
@@ -107,11 +79,22 @@ export class MainPageComponent implements OnInit{
           ...course,
           poster: `http://127.0.0.1:8000/${course.poster}`
         }));
+        if (this.searchText && this.searchText.trim() !== '') {
+          const courseSection = document.querySelector('.kurstar');
+          if (courseSection) {
+            courseSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       },
       (error) => {
         console.error('Error fetching courses:', error);
       }
     );
+  }
+
+  executeSearch(): void {
+      this.loadCourses();
+      this.loadFlows();
   }
 
   loadFlows() {

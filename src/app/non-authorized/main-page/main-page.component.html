@@ -7,7 +7,7 @@
     </div>
     <div class="nav-search">
       <i class="pi pi-search" ></i>
-      <input type="text" pInputText placeholder="Курс или поток" />
+      <input type="text" pInputText [(ngModel)]="searchText" placeholder="Курс или поток" (keydown.enter)="executeSearch()" />
     </div>
     <div class="lil-cards">
       <div class="lil-card">
@@ -52,7 +52,7 @@
             </div>
             <div class="kurs-footer">
               <div class="kurs-price">
-                <h3>{{ kurs.price }} тг</h3>
+                <h3>{{ kurs.current_price }} тг</h3>
                 <p>бір реттік төлем</p>
               </div>
               <button (click)="addToCart(kurs.id!); $event.stopPropagation()" class="course-cart-button">Корзинаға</button>

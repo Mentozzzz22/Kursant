@@ -418,7 +418,8 @@
   }
 
   .potok-footer {
-    flex-direction: column;
+    display:flex;
+    justify-content: center;
     gap: 10px;
   }
 
@@ -533,7 +534,8 @@
   }
 
   .potok-footer {
-    flex-direction: column;
+    display:flex;
+    justify-content: left;
     gap: 10px;
   }
 }
@@ -574,7 +576,8 @@
   }
 
   .potok-footer {
-    flex-direction: column;
+    display:flex;
+    justify-content: left;
     gap: 8px;
   }
 

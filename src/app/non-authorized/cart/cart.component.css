@@ -40,6 +40,8 @@
   padding: 30px;
   height: 197px;
   width: 313px;
+  position: sticky; /* фиксированное положение */
+  top: 20px;
 }
 
 .confirm-block {
@@ -79,7 +81,6 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
-  padding: 20px 0;
 }
 
 .kurstar-card {
@@ -88,7 +89,7 @@
   gap: 10px;
   background-color: white;
   border-radius: 15px;
-  padding: 1px;
+  padding: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }
@@ -98,8 +99,7 @@
 }
 
 .kurs-images {
-  width: 100%;
-  height: auto;
+  height: 138px;
   border-radius: 15px;
 }
 
@@ -123,6 +123,7 @@
 .kurs-info {
   display: flex;
   gap: 7px;
+  margin-bottom:15px;
 }
 
 .bolim, .sabak {
@@ -266,6 +267,7 @@
   .cart-container {
     flex-direction: column;
     gap: 20px;
+    padding:10px;
     margin-top: 20px;
   }
 
@@ -274,6 +276,8 @@
     height: auto;
     padding: 20px;
     order: -1;
+    position: static;
+    top: auto;
   }
 
   .main-right {
@@ -282,13 +286,30 @@
 
   .kurstar-cards {
     grid-template-columns: repeat(2, 1fr);
-    grid-gap: 15px;
+    gap:80px;
   }
 
   .kurs-images {
     width: 100%;
     height: auto;
   }
+
+  .price-line h3 {
+    font-size: 16px;
+  }
+
+  .kurs-price p {
+    font-size:12px;
+  }
+
+  .subject-info h3 {
+    font-size: 18px;
+  }
+  .subject-info p {
+    font-size: 16px;
+  }
+
+
 }
 
 @media (max-width: 425px) {
@@ -303,6 +324,11 @@
     width: 100%;
     padding: 15px;
     border-radius: 10px;
+  }
+
+  .main-left {
+    position: static;
+    top: auto;
   }
 
   .main-left {
