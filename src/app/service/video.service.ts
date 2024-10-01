@@ -19,7 +19,6 @@ export class VideoService {
   }
 
 
-
   sendVideoTimeUpdate(startTime: number, endTime: number, lessonId:number): Observable<any> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);

@@ -323,12 +323,22 @@ h1 {
   align-items: center;
   gap: 15px;
   font-size: 13px;
-  text-decoration: underline;
 }
 
 .tema-item img {
   width: 17px;
   height: 17px;
+}
+
+.topic-names{
+  text-decoration: underline;
+
+}
+
+.trial-lesson {
+  color: #00BE5F;
+  margin-left: 10px;
+  text-decoration: none;
 }
 
 .details-list {

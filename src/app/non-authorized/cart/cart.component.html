@@ -23,7 +23,7 @@
               </div>
               <p>бір реттік төлем</p>
             </div>
-            <button class="remove-button" (click)="removeFromCart(kurs.id!)">
+            <button class="remove-button" (click)="confirm($event, kurs.id)" >
              <img src="assets/images/delete_icon.svg" width="20" height="20">
             </button>
           </div>
@@ -40,11 +40,27 @@
         <h2>{{ transform(totalCurrentPrice) }} тг</h2>
         <h3>{{ transform(totalOldPrice) }} тг</h3>
       </div>
-      <button (click)="showDialog()">Заявка қалдыру</button>
+      <button  (click)="showDialog()"
+               [disabled]="courses.length === 0"
+               [ngClass]="{ 'disabled-button': courses.length === 0 }">Заявка қалдыру</button>
     </div>
   </div>
 </div>
 </div>
+
+
+
+<p-confirmPopup #confirmPopupRef>
+  <ng-template pTemplate="headless" let-message let-test>
+    <div class="border-round p-3">
+      <span>{{ message.message }}</span>
+      <div class="flex align-items-center gap-2 mt-3">
+        <p-button (onClick)="accept()" label="Ия" size="small" severity="danger" />
+        <p-button (onClick)="reject()" label="Жоқ" [outlined]="true" severity="secondary" size="small" />
+      </div>
+    </div>
+  </ng-template>
+</p-confirmPopup>
 
 
 <p-dialog

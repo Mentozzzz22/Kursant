@@ -1,0 +1,63 @@
+<div class="test-container">
+  <div class="test-content">
+
+    <div class="breadcrumb-container" (click)="back()">
+      <img src="assets/images/back-arrow.svg" alt="back">
+      <span class="breadcrumb-label-text">{{ courseName }} / {{ topicName }}
+        / {{ lessonName }}</span>
+    </div>
+
+    <div class="test-header">
+      <div class="header-text">
+        <h2>{{ lessonIndex }} сабақ</h2>
+        <p>Мұғалім: {{ teacherName }}</p>
+      </div>
+      <button class="next-sabak-button"
+              (click)="nextLesson()"
+              *ngIf="nextLessonIsAvailable && lessonStatus !== 'opened'">
+        Келесі сабақ
+      </button>
+
+    </div>
+
+    <div class="test-video-container">
+
+      <div class="video">
+        <div class="video-container">
+          <video #plyrID id="plyrID" playsinline controls></video>
+
+        </div>
+      </div>
+
+      <div class="test-right">
+        <h3><strong>{{ topicName }}. {{ lessonName }}</strong></h3>
+        <div class="progress-wrapper">
+          <p>Тақырып прогрессі</p>
+          <div class="custom-progress-bar">
+            <div class="progress-segment" *ngFor="let segment of progressSegments"
+                 [ngStyle]="{'background-color': segment.filled ? '#00B69B' : '#E0E0E0'}">
+            </div>
+          </div>
+        </div>
+
+        <div *ngFor="let item of lessonsAndTests; let i = index"
+             class="sabak"
+             [ngClass]="{'inactive': item.status !== 'passed' && item.status !== 'opened'}"
+             [routerLink]="getRouterLink(item)"
+             [style.cursor]="item.status === 'passed' || item.status === 'opened' ? 'pointer' : 'default'">
+
+          <img [src]="getTemaStatusIcon(item.status)" alt="status">
+          <p>{{ i + 1 }}
+            {{ item.type === 'test' ? 'тест' : item.type === 'homework' ? 'үй жұмысы' : 'сабақ' }}.
+            {{ item.type === 'test' ? 'Тест' : item.type === 'homework' ? 'Үй жұмысы' : item.name }}
+          </p>
+        </div>
+
+
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

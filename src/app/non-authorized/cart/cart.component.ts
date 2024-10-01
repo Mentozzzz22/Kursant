@@ -1,13 +1,15 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {DecimalPipe, NgForOf} from "@angular/common";
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
+import {DecimalPipe, NgClass, NgForOf} from "@angular/common";
 import {kurs} from "../main-page/main-page.component";
 import {CourseService} from "../../service/course.service";
 import {Course} from "../../../assets/models/course.interface";
 import {OrderService} from "../../service/order.service";
-import {MessageService, PrimeTemplate} from "primeng/api";
+import {ConfirmationService, MessageService, PrimeTemplate} from "primeng/api";
 import {DialogModule} from "primeng/dialog";
 import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgxMaskDirective} from "ngx-mask";
+import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
+import {Button} from "primeng/button";
 
 @Component({
   selector: 'app-cart',
@@ -19,17 +21,24 @@ import {NgxMaskDirective} from "ngx-mask";
     FormsModule,
     ReactiveFormsModule,
     NgxMaskDirective,
-    DecimalPipe
+    DecimalPipe,
+    ConfirmPopupModule,
+    Button,
+    NgClass
   ],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
 export class CartComponent implements OnInit{
+
+  @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
+
   courses: Course[] = [];
   private courseService = inject(CourseService);
   private orderService = inject(OrderService);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
+  private confirmationService = inject(ConfirmationService);
   totalCurrentPrice: number = 0;
   public searchText: string = '';
   totalOldPrice: number = 0;
@@ -65,7 +74,7 @@ export class CartComponent implements OnInit{
     }
   }
 
-  removeFromCart(courseId: number): void {
+  removeFromCart(courseId: number|undefined): void {
     let cartIds = JSON.parse(localStorage.getItem('cart') || '[]');
 
     cartIds = cartIds.filter((id: number) => id !== courseId);
@@ -76,7 +85,7 @@ export class CartComponent implements OnInit{
 
     this.orderService.updateCartCount(cartIds.length);
 
-    this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Курс удален из корзины.'});
+    this.messageService.add({severity: 'success', summary: 'Жетістік', detail: 'Курс Себеттен алынып тасталды.'});
 
     this.calculateTotalPrices();
 
@@ -150,11 +159,32 @@ export class CartComponent implements OnInit{
 
     return value
       .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ' '); // Add space as thousands separator
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   }
 
   cancelDialog(){
     this.visible = false;
-    this.messageService.add({severity:'custom', summary:'Отклонить', detail:'Заявка отклонена',icon: 'pi-file-excel'});
+    this.messageService.add({severity:'custom', summary:'Бас тарту', detail:'Өтінім қабылданбады',icon: 'pi-file-excel'});
+  }
+
+  confirm(event: Event, courseId:number|undefined) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Сіз жалғастырғыңыз келетініне сенімдісіз бе?',
+      accept: () => {
+        this.removeFromCart(courseId);
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Қабылданбады', detail: 'Сіз бас тарттыңыз', life: 3000 });
+      }
+    });
+  }
+
+  accept() {
+    this.confirmPopup.accept();
+  }
+
+  reject() {
+    this.confirmPopup.reject();
   }
 }

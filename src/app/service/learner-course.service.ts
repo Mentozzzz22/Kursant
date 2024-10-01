@@ -12,6 +12,7 @@ import {LearnerLesson} from "../../assets/models/learner_lesson.interface";
 export class LearnerCourseService {
 
   private apiUrl = 'http://127.0.0.1:8000/api/learner_course';
+  private courseUrl = 'http://127.0.0.1:8000/api/course';
   private userService = inject(UserService);
   private http = inject(HttpClient)
 
@@ -42,5 +43,11 @@ export class LearnerCourseService {
     const params = {learner_lesson_id: learnerLessonId};
 
     return this.http.get<LearnerLesson>(`${this.apiUrl}/get_lesson/`, {headers, params});
+  }
+
+  public getLessonFree(course_Id: number): Observable<LearnerLesson> {
+
+    const params = {course_id: course_Id};
+    return this.http.get<LearnerLesson>(`${this.courseUrl}/get_free_lesson/`, { params});
   }
 }
