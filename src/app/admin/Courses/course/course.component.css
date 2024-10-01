@@ -1,5 +1,17 @@
 :host ::ng-deep .p-dialog-content {
   padding: 0px 54px 33px 45px;
+  overflow: auto; /* Оставляем прокрутку */
+}
+
+/* Скрываем скроллбар для браузеров на основе WebKit (Chrome, Safari) */
+:host ::ng-deep .p-dialog-content::-webkit-scrollbar {
+  width: 0; /* Убираем скроллбар */
+  background: transparent; /* Делаем его прозрачным */
+}
+
+/* Для Firefox */
+:host ::ng-deep .p-dialog-content {
+  scrollbar-width: none; /* Убираем скроллбар */
 }
 
 .supplier-container {
@@ -116,7 +128,7 @@
   gap: 10px;
   background-color: white;
   border-radius: 15px;
-  padding: 1px;
+  padding: 3px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }
@@ -126,6 +138,7 @@
 }
 
 .kurs-images {
+  max-height: 138px;
   width: 100%;
   height: auto;
   border-radius: 15px;
@@ -299,6 +312,7 @@ client-edit__header {
 }
 
 .file-upload-filename {
+  width: 140px;
   font-size: 13px;
   padding: 12px 16px;
   color: #444444;
@@ -306,10 +320,22 @@ client-edit__header {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  background-color: #E3E3E3;
+  border-radius: 0 9px 9px 0;
+  cursor: pointer;
 }
 
-.custom-file-upload:hover .file-upload-button {
+.file-upload-filename a {
+  color: #444444;
+  font-size: 13px;
+}
+
+.file-upload-button:hover {
   background-color: #009ed6;
+}
+
+.file-upload-filename:hover {
+  background-color: #efebeb;
 }
 
 .form-group button {
@@ -423,4 +449,7 @@ client-edit__header {
   color: #6E63E5;
 }
 
+.error {
+  color: red;
+}
 

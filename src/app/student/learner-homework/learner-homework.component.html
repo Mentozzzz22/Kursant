@@ -28,7 +28,10 @@
           <div class="custom-file-upload">
             <input type="file" id="homeworkFile" class="file-input" (change)="onHomeworkFileSelected($event)"/>
             <span class="file-upload-button" (click)="triggerHomeworkFileInput()">Выберите файл</span>
-            <span class="file-upload-filename">{{ homeworkFileName || 'Файл не выбран' }}</span>
+            <span class="file-upload-filename">
+              <a *ngIf="homeworkFileName" [href]="homeworkFileName" target="_blank">{{ homeworkFileName }}</a>
+                <span *ngIf="!homeworkFileName">Файл не выбран</span>
+            </span>
           </div>
         </div>
         <button *ngIf="homeworkFile" (click)="submitHomework()">Жіберу</button>

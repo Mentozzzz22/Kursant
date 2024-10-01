@@ -107,6 +107,9 @@
     <div class="form-group">
       <label for="name" class="form-label">Название</label>
       <input type="text" id="name" class="form-input" formControlName="name">
+      <div *ngIf="courseAddForm.get('name')?.invalid && courseAddForm.get('name')?.touched">
+        <small class="error">*Название обязательно для заполнения</small>
+      </div>
     </div>
 
     <div class="form-group">
@@ -120,7 +123,10 @@
         <div class="custom-file-upload">
           <input type="file" id="file" class="file-input" (change)="onPosterSelected($event)"/>
           <span class="file-upload-button" (click)="triggerFileInput('file')">Выберите файл</span>
-          <span class="file-upload-filename">{{ selectedPosterName || 'Файл не выбран' }}</span>
+          <span class="file-upload-filename">
+            <a *ngIf="selectedPosterName" [href]="selectedPosterName" target="_blank">{{ selectedPosterName }}</a>
+                <span *ngIf="!selectedPosterName">Файл не выбран</span>
+          </span>
         </div>
       </div>
       <div>
@@ -128,7 +134,10 @@
         <div class="custom-file-upload">
           <input type="file" id="file1" class="file-input" (change)="onBigPosterSelected($event)"/>
           <span class="file-upload-button" (click)="triggerFileInput('file1')">Выберите файл</span>
-          <span class="file-upload-filename">{{ selectedBigPosterName || 'Файл не выбран' }}</span>
+          <span class="file-upload-filename">
+            <a *ngIf="selectedBigPosterName" [href]="selectedBigPosterName" target="_blank">{{ selectedBigPosterName }}</a>
+                <span *ngIf="!selectedBigPosterName">Файл не выбран</span>
+          </span>
         </div>
       </div>
     </div>
@@ -136,11 +145,29 @@
     <div class="form-group">
       <label for="price" class="form-label">Цена</label>
       <input type="text" id="price" class="form-input" formControlName="price">
+      <div *ngIf="courseAddForm.get('price')?.invalid && courseAddForm.get('price')?.touched">
+        <small class="error" *ngIf="courseAddForm.get('price')?.errors?.['required']">*Цена обязательна</small>
+        <small class="error" *ngIf="courseAddForm.get('price')?.errors?.['pattern']">*Только цифры разрешены</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="percentage" class="form-label">Скидка</label>
+      <input type="text" id="percentage" class="form-input" formControlName="discount_percentage" placeholder="%">
+      <div *ngIf="courseAddForm.get('discount_percentage')?.invalid && courseAddForm.get('discount_percentage')?.touched">
+        <small class="error" *ngIf="courseAddForm.get('discount_percentage')?.errors?.['required']">*Скидка обязательна</small>
+        <small class="error" *ngIf="courseAddForm.get('discount_percentage')?.errors?.['min']">*Минимум 0%</small>
+        <small class="error" *ngIf="courseAddForm.get('discount_percentage')?.errors?.['max']">*Максимум 99%</small>
+        <small class="error" *ngIf="courseAddForm.get('discount_percentage')?.errors?.['pattern']">*Только цифры разрешены</small>
+      </div>
     </div>
 
     <div class="form-group">
       <label for="teacherFio" class="form-label">ФИО учителя</label>
       <input type="text" id="teacherFio" class="form-input" formControlName="teacher_fullname">
+      <div *ngIf="courseAddForm.get('teacher_fullname')?.invalid && courseAddForm.get('teacher_fullname')?.touched">
+        <small class="error">*Название обязательно для заполнения</small>
+      </div>
     </div>
 
     <div class="form-actions">

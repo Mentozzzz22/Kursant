@@ -190,10 +190,20 @@ p-progressBar {
   white-space: nowrap;
   background-color: #E3E3E3;
   border-radius: 0 9px 9px 0;
+  cursor: pointer;
 }
 
-.custom-file-upload:hover .file-upload-button {
+.file-upload-filename a {
+  color: #444444;
+  font-size: 13px;
+}
+
+.file-upload-button:hover {
   background-color: #009ed6;
+}
+
+.file-upload-filename:hover {
+  background-color: #efebeb;
 }
 
 .custom-progress-bar {

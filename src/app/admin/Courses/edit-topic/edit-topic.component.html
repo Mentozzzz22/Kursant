@@ -20,7 +20,10 @@
             <div class="custom-file-upload">
               <input type="file" id="file{{ i }}" class="file-input" (change)="onFileSelected($event, i)"/>
               <span class="file-upload-button" (click)="triggerFileInput(i)">Выберите файл</span>
-              <span class="file-upload-filename">{{ lesson.fileName || 'Файл не выбран' }}</span>
+              <span class="file-upload-filename">
+                <a *ngIf="lesson.fileName" [href]="lesson.fileName" target="_blank">{{ lesson.fileName }}</a>
+                <span *ngIf="!lesson.fileName">Файл не выбран</span>
+              </span>
             </div>
           </div>
           <p-confirmPopup/>
@@ -49,7 +52,8 @@
           <div class="answers" formArrayName="answers">
             <p>Нұсқалар</p>
             <div class="answer-inputs">
-              <div class="answer" *ngFor="let answer of answers(qIndex).controls; let aIndex = index" [formGroupName]="aIndex">
+              <div class="answer" *ngFor="let answer of answers(qIndex).controls; let aIndex = index"
+                   [formGroupName]="aIndex">
                 <label class="answer-label">
                   <input type="radio"
                          [attr.name]="'answer-' + qIndex"
@@ -73,7 +77,10 @@
         <div class="custom-file-upload">
           <input type="file" id="homeworkFile" class="file-input" (change)="onHomeworkFileSelected($event)"/>
           <span class="file-upload-button" (click)="triggerHomeworkFileInput()">Выберите файл</span>
-          <span class="file-upload-filename">{{ homeworkFileName || 'Файл не выбран' }}</span>
+          <span class="file-upload-filename">
+            <a *ngIf="homeworkFileName" [href]="homeworkFileName" target="_blank">{{ homeworkFileName }}</a>
+                <span *ngIf="!homeworkFileName">Файл не выбран</span>
+          </span>
         </div>
       </div>
       <div>

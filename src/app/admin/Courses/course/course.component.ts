@@ -61,8 +61,9 @@ export class CourseComponent implements OnInit {
     this.courseAddForm = this.fb.group({
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
-      price: ['', [Validators.required]],
-      discount_percentage: [1, [Validators.required]],
+      price: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
+      discount_percentage: [null, [Validators.required, Validators.min(0),
+        Validators.max(99), Validators.pattern("^[0-9]*$")]],
       teacher_fullname: ['', [Validators.required]],
       poster: [null, Validators.required],
       big_poster: [null, Validators.required]
@@ -90,49 +91,63 @@ export class CourseComponent implements OnInit {
   }
 
   public onSubmitAddCourse(): void {
-    const formData: FormData = new FormData();
+    if(this.courseAddForm.valid) {
 
-    const posterFile = this.selectedPosterFile;
-    const poster = this.courseAddForm.get('poster')?.value;
+      const formData: FormData = new FormData();
 
-    if (posterFile) {
-      formData.append('poster_uploaded_file', posterFile);
-      formData.append('poster', 'poster_uploaded_file');
-    } else if (poster && poster !== 'poster_uploaded_file') {
-      formData.append('poster', poster);
-    } else {
-      console.error('Poster is required but not provided.');
-      return;
-    }
+      const posterFile = this.selectedPosterFile;
+      const poster = this.courseAddForm.get('poster')?.value;
 
-    const bigPosterFile = this.selectedBigPosterFile;
-    const bigPoster = this.courseAddForm.get('big_poster')?.value;
-
-    if (bigPosterFile) {
-      formData.append('big_poster_uploaded_file', bigPosterFile);
-      formData.append('big_poster', 'big_poster_uploaded_file');
-    } else if (bigPoster && bigPoster !== 'big_poster_uploaded_file') {
-      formData.append('big_poster', bigPoster);
-    } else {
-      console.error('Big poster is required but not provided.');
-      return;
-    }
-
-    formData.append('name', this.courseAddForm.get('name')?.value);
-    formData.append('description', this.courseAddForm.get('description')?.value);
-    formData.append('price', this.courseAddForm.get('price')?.value);
-    formData.append('discount_percentage', this.courseAddForm.get('discount_percentage')?.value);
-    formData.append('teacher_fullname', this.courseAddForm.get('teacher_fullname')?.value);
-
-    this.courseService.saveCourse(formData).subscribe({
-      next: (response) => {
-        this.visibleAddCourseModal = false;
-        this.loadCourses();
-      },
-      error: (err) => {
-        console.error('Error adding course:', err);
+      if (posterFile) {
+        formData.append('poster_uploaded_file', posterFile);
+        formData.append('poster', 'poster_uploaded_file');
+      } else if (poster && poster !== 'poster_uploaded_file') {
+        formData.append('poster', poster);
+      } else {
+        console.error('Poster is required but not provided.');
+        return;
       }
-    });
+
+      const bigPosterFile = this.selectedBigPosterFile;
+      const bigPoster = this.courseAddForm.get('big_poster')?.value;
+
+      if (bigPosterFile) {
+        formData.append('big_poster_uploaded_file', bigPosterFile);
+        formData.append('big_poster', 'big_poster_uploaded_file');
+      } else if (bigPoster && bigPoster !== 'big_poster_uploaded_file') {
+        formData.append('big_poster', bigPoster);
+      } else {
+        console.error('Big poster is required but not provided.');
+        return;
+      }
+
+      formData.append('name', this.courseAddForm.get('name')?.value);
+      formData.append('description', this.courseAddForm.get('description')?.value);
+      formData.append('price', this.courseAddForm.get('price')?.value);
+      formData.append('discount_percentage', this.courseAddForm.get('discount_percentage')?.value);
+      formData.append('teacher_fullname', this.courseAddForm.get('teacher_fullname')?.value);
+
+      this.courseService.saveCourse(formData).subscribe({
+        next: (response) => {
+          this.visibleAddCourseModal = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: 'Курс успешно создан!'
+          });
+          this.loadCourses();
+        },
+        error: (err) => {
+          console.error('Error adding course:', err);
+        }
+      });
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Заполните все поля!'
+      });
+    }
   }
 
   public onCancel(): void {

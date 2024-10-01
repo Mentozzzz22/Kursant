@@ -9,6 +9,9 @@ import {CourseService} from "../../../service/course.service";
 import {filter, Subscription} from "rxjs";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
+import {Course} from "../../../../assets/models/course.interface";
+import {AutoExpandDirective} from "../../../auto-expand.directive";
+import {EditorModule} from "primeng/editor";
 
 @Component({
   selector: 'app-edit-course',
@@ -20,7 +23,9 @@ import {ConfirmPopupModule} from "primeng/confirmpopup";
     RouterOutlet,
     NgIf,
     ReactiveFormsModule,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    AutoExpandDirective,
+    EditorModule
   ],
   templateUrl: './edit-course.component.html',
   styleUrl: './edit-course.component.css'
@@ -34,14 +39,22 @@ export class EditCourseComponent implements OnInit, OnDestroy {
   private confirmationService = inject(ConfirmationService);
   private fb = inject(FormBuilder);
   public EditModuleVisible: boolean = false;
+  public EditCourseVisible: boolean = false;
   public AddModuleVisible: boolean = false;
   public isModuleOpened: boolean = false;
   public modules: Module[] = []
   public courseId!: number;
   public selectedModuleId!: number;
+  public selectedCourseId!: number;
   public addModuleForm!: FormGroup;
   public editModuleForm!: FormGroup;
+  public editCourseForm!: FormGroup;
   public courseName!: string;
+  private course!: Course;
+  public selectedPosterName: string | undefined;
+  public selectedBigPosterName: string | undefined;
+  public selectedPosterFile: File | null = null;
+  public selectedBigPosterFile: File | null = null;
   private navigationSubscription: Subscription;
 
   constructor() {
@@ -56,6 +69,7 @@ export class EditCourseComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe(params => {
       this.courseId = +params.get('courseId')!;
       this.loadModules()
+      this.getCourse(this.courseId)
     });
 
     this.moduleService.moduleUpdated$.subscribe(() => {
@@ -65,6 +79,37 @@ export class EditCourseComponent implements OnInit, OnDestroy {
     this.initAddModuleForm();
     this.initEditModuleForm();
     this.checkModuleOpened();
+    this.editCourseForm = this.fb.group({
+      name: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+      price: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
+      discount_percentage: [null, [Validators.required, Validators.min(0),
+        Validators.max(99), Validators.pattern("^[0-9]*$")]],
+      teacher_fullname: ['', [Validators.required]],
+      poster: [null, Validators.required],
+      big_poster: [null, Validators.required]
+    });
+  }
+
+  public getCourse(courseId: number) {
+    this.courseService.getCourse(courseId).subscribe(data => {
+      this.course = data
+
+      // Обновляем значения формы с данными курса
+      this.editCourseForm.patchValue({
+        name: this.course.name,
+        description: this.course.description,
+        price: this.course.price,
+        discount_percentage: this.course.discount_percentage,
+        teacher_fullname: this.course.teacher_fullname,
+        poster: this.course.poster,
+        big_poster: this.course.big_poster
+      });
+
+      // Устанавливаем имена постеров в UI
+      this.selectedPosterName = this.course.poster ? this.course.poster.split('/').pop() : undefined;
+      this.selectedBigPosterName = this.course.big_poster ? this.course.big_poster.split('/').pop() : undefined;
+    });
   }
 
   private checkModuleOpened() {
@@ -179,6 +224,10 @@ export class EditCourseComponent implements OnInit, OnDestroy {
     this.AddModuleVisible = true;
   }
 
+  public showEditCourseDialog() {
+    this.EditCourseVisible = true;
+  }
+
   public navigateToCourses() {
     this.router.navigate(['/admin/course']);
   }
@@ -186,5 +235,104 @@ export class EditCourseComponent implements OnInit, OnDestroy {
   public navigateToEditModule(moduleId: number) {
     this.router.navigate([`/admin/edit-course/${this.courseId}/edit-module`, moduleId]);
     this.isModuleOpened = true;
+  }
+
+  public triggerFileInput(fileInputId: string): void {
+    const fileInput = document.getElementById(fileInputId) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  public onPosterSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedPosterFile = input.files[0];
+      this.selectedPosterName = this.selectedPosterFile.name;
+      console.log(this.selectedPosterFile.name)
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Успешно',
+        detail: `Файл: ${this.selectedPosterName} загружен!`
+      });
+    }
+  }
+
+  public onBigPosterSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedBigPosterFile = input.files[0];
+      this.selectedBigPosterName = this.selectedBigPosterFile.name;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Успешно',
+        detail: `Файл: ${this.selectedBigPosterName} загружен!`
+      });
+    }
+  }
+
+  public onSubmitAddCourse(): void {
+    if(this.editCourseForm.valid) {
+
+      const formData: FormData = new FormData();
+      const courseId = this.courseId
+      formData.append('id', courseId.toString());
+      const posterFile = this.selectedPosterFile;
+      const poster = this.editCourseForm.get('poster')?.value;
+
+      if (posterFile) {
+        formData.append('poster_uploaded_file', posterFile);
+        formData.append('poster', 'poster_uploaded_file');
+      } else if (poster && poster !== 'poster_uploaded_file') {
+        formData.append('poster', poster);
+      } else {
+        console.error('Poster is required but not provided.');
+        return;
+      }
+
+      const bigPosterFile = this.selectedBigPosterFile;
+      const bigPoster = this.editCourseForm.get('big_poster')?.value;
+
+      if (bigPosterFile) {
+        formData.append('big_poster_uploaded_file', bigPosterFile);
+        formData.append('big_poster', 'big_poster_uploaded_file');
+      } else if (bigPoster && bigPoster !== 'big_poster_uploaded_file') {
+        formData.append('big_poster', bigPoster);
+      } else {
+        console.error('Big poster is required but not provided.');
+        return;
+      }
+
+      formData.append('name', this.editCourseForm.get('name')?.value);
+      formData.append('description', this.editCourseForm.get('description')?.value);
+      formData.append('price', this.editCourseForm.get('price')?.value);
+      formData.append('discount_percentage', this.editCourseForm.get('discount_percentage')?.value);
+      formData.append('teacher_fullname', this.editCourseForm.get('teacher_fullname')?.value);
+
+      this.courseService.saveCourse(formData).subscribe({
+        next: (response) => {
+          this.EditCourseVisible = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: 'Курс успешно изменен!'
+          });
+          this.loadModules();
+        },
+        error: (err) => {
+          console.error('Error adding course:', err);
+        }
+      });
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Заполните все поля!'
+      });
+    }
+  }
+
+  public onCancel(): void {
+    this.EditCourseVisible = false;
   }
 }
