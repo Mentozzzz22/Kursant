@@ -197,6 +197,11 @@
   filter: invert(24%) sepia(92%) saturate(6595%) hue-rotate(351deg) brightness(94%) contrast(107%);
 }
 
+.disabled-button {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /**MODAL**/
 .modal-content {
   display: flex;

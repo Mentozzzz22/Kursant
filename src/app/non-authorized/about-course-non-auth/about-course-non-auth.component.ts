@@ -54,6 +54,7 @@ export class AboutCourseNonAuthComponent implements OnInit {
         description:data.description,
         price:data.price,
       };
+
       this.modules = data.modules
       this.additional_courses = data.additional_courses
       this.poster = `http://127.0.0.1:8000${data.big_poster}`
@@ -91,6 +92,10 @@ export class AboutCourseNonAuthComponent implements OnInit {
 
   getCoursePoster(posterPath: string): string {
     return `http://127.0.0.1:8000${posterPath}`;
+  }
+
+  navigateToCourseDetail(): void {
+    this.router.navigate(['/course-detail', this.courseId]);
   }
 
 }

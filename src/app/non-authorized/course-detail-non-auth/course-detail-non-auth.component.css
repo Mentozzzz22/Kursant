@@ -1,0 +1,320 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.test-container {
+  background-color: white;
+  max-width:1440px;
+  padding:20px;
+  margin:auto;
+  margin-top:20px;
+  border-radius:10px;
+}
+
+.test-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.video {
+}
+
+.test-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.next-sabak-button {
+  color: #2A6DB3;
+  border: 1px solid #2A6DB3;
+  background: none;
+  height: 40px;
+  border-radius: 10px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+}
+
+.test-video-container {
+  display: flex;
+  width: 100%;
+  gap: 30px;
+}
+
+.video {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.video-container {
+  width: 100%;
+  max-width: 100%;
+
+  overflow: hidden;
+}
+
+.video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.test-right {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 36px;
+  border: 1px solid #BBBBBB;
+  border-radius: 30px;
+  min-width: 408px;
+  max-width: 600px;
+}
+
+.test-right h3 {
+  font-size: 20px;
+}
+
+p-progressBar {
+  height: 5px;
+}
+
+.sabaktar img {
+  width: 17px;
+  height: 17px;
+}
+
+.sabaktar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sabak {
+  display: flex;
+  gap: 15px;
+}
+
+.sabak p {
+  font-size: 15px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.progress-wrappper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-wrappper p {
+  font-size: 13px;
+  color: #000000;
+  font-weight: 500;
+}
+
+::ng-deep .p-breadcrumb {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+::ng-deep .p-breadcrumb-list {
+  margin: 0;
+  padding: 0;
+}
+
+::ng-deep .p-menuitem-separator {
+  margin: 0;
+  padding: 0;
+}
+
+.p-menuitem-link {
+  text-decoration: none;
+}
+
+.breadcrumb-container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+}
+
+::ng-deep a {
+  text-decoration: none;
+}
+
+.breadcrumb-label-text {
+  color: #444444;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+
+.start-test{
+  background-color:#8ced47;
+  border-radius:10px;
+}
+
+
+.custom-progress-bar {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+  height: 5px;
+}
+
+.progress-segment {
+  flex: 1;
+  height: 100%;
+  border-radius: 5px;
+  background-color: #E0E0E0;
+}
+
+@media (max-width: 1024px) {
+  .test-container {
+    padding: 30px;
+  }
+  .test-video-container {
+    flex-direction: column;
+  }
+  .video-container {
+    width: 100%;
+  }
+  .test-right {
+    width: 100%;
+    padding: 24px;
+    max-width: none;
+    height:auto;
+    border-radius: 20px;
+  }
+
+  .next-sabak-button {
+    width: 18%;
+  }
+
+  .test-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .test-video-container {
+    gap: 20px;
+  }
+
+  .sabaktar {
+    gap: 10px;
+  }
+
+  .test-right h3 {
+    font-size: 18px;
+  }
+
+  .sabak p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .test-container {
+    padding: 20px;
+  }
+
+  .test-video-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .test-right {
+    width: 100%;
+    padding: 20px;
+    max-width: none;
+    border-radius: 15px;
+  }
+
+  .next-sabak-button {
+    width: 25%;
+    justify-content: center;
+  }
+
+  .test-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .video-container {
+    width: 100%;
+  }
+
+
+  .sabaktar {
+    gap: 10px;
+  }
+
+  .sabak p {
+    font-size: 14px;
+  }
+
+  .test-right h3 {
+    font-size: 18px;
+  }
+
+  .progress-wrapper p {
+    font-size: 12px;
+  }
+
+  .breadcrumb-container {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 425px) {
+  .test-container {
+    padding: 10px;
+  }
+
+  .test-right {
+    padding: 16px;
+    border-radius: 15px;
+  }
+
+  .test-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .next-sabak-button {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .test-right h3 {
+    font-size: 16px;
+  }
+
+  .sabak p {
+    font-size: 12px;
+  }
+
+  .progress-wrapper p {
+    font-size: 11px;
+  }
+
+  .breadcrumb-label-text {
+    font-size: 13px;
+  }
+
+  .custom-progress-bar {
+    height: 3px;
+  }
+
+  .sabaktar {
+    gap: 8px;
+  }
+}

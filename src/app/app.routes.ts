@@ -34,13 +34,15 @@ import {AuthGuard} from "./service/auth.guard";
 import {NonAuthGuard} from "./service/nonauth.guard";
 import {AboutCourseNonAuthComponent} from "./non-authorized/about-course-non-auth/about-course-non-auth.component";
 import {pendingChangeGuard} from "./service/pending-change.guard";
+import {CourseDetailNonAuthComponent} from "./non-authorized/course-detail-non-auth/course-detail-non-auth.component";
 
 export const routes: Routes = [
   {
     path: '', component: NonAuthorizedComponent,canActivate: [NonAuthGuard], children: [
       {path: '', component: MainPageComponent,canActivate: [NonAuthGuard]},
       {path: 'cart', component: CartComponent,canActivate: [NonAuthGuard]},
-      {path:'about/:course_id',component: AboutCourseNonAuthComponent,canActivate: [NonAuthGuard]}
+      {path:'about/:course_id',component: AboutCourseNonAuthComponent,canActivate: [NonAuthGuard]},
+      {path:'course-detail/:course_id',component: CourseDetailNonAuthComponent,canActivate: [NonAuthGuard]}
     ]
   },
   {path: 'login', component: LoginComponent},
