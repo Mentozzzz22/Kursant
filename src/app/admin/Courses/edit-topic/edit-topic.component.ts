@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TopicService} from "../../../service/topic.service";
@@ -21,13 +21,14 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
 import {CanComponentDeactivate} from "../../../service/pending-change.guard";
-import {Observable} from "rxjs";
-import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {AutoExpandDirective} from "../../../auto-expand.directive";
 import {ConfirmationDialogComponent} from "../../../confirmation-dialog/confirmation-dialog.component";
+import {Observable} from "rxjs";
+import {DialogService} from "primeng/dynamicdialog";
 
 type FormAnswer = FormGroup<{
   text: FormControl<string>;
-  is_correct: FormControl<boolean>;  // Булевое значение для правильного ответа
+  is_correct: FormControl<boolean>;
 }>;
 
 type FormQuestion = FormGroup<{
@@ -40,7 +41,6 @@ type Form = FormGroup<{
   questions: FormArray<FormQuestion>;
 }>;
 
-// Custom validator to ensure at least one correct answer is selected
 function atLeastOneCorrectAnswer(control: AbstractControl): ValidationErrors | null {
   const answersArray = control.get('answers') as FormArray;
   const hasCorrectAnswer = answersArray.controls.some(answerCtrl => answerCtrl.get('is_correct')?.value === true);
@@ -59,6 +59,7 @@ function atLeastOneCorrectAnswer(control: AbstractControl): ValidationErrors | n
     EditorModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
+    AutoExpandDirective,
   ],
   templateUrl: './edit-topic.component.html',
   styleUrl: './edit-topic.component.css'
@@ -70,13 +71,11 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
   private fb = inject(NonNullableFormBuilder);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
-  private dialogService = inject(DialogService)
+  private dialogService = inject(DialogService);
 
   private courseId!: number;
   private moduleId!: number;
   public topicId!: number;
-  public selectedFile: File | null = null;
-  public selectedFileName: string | undefined;
   public homeworkFile: File | null = null;
   public homeworkFileName: string | undefined;
   public homeworkDescription?: string;
@@ -87,6 +86,8 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
   public homework!: Homework;
   public AddLessonVisible: boolean = false;
   public addLessonForm!: FormGroup;
+
+  private isFormChanged: boolean = false;
 
   public testForm: FormGroup = this.fb.group({
     duration: [15, Validators.required],
@@ -105,13 +106,13 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
       this.topicId = +params.get('topicId')!;
       this.loadTopicContent();
     });
-    // this.testForm.get('description')?.valueChanges.subscribe(value => {
-    //   this.homeworkDescription = value;
-    // });
+
+    this.testForm.valueChanges.subscribe(() => {
+      this.isFormChanged = true;
+    });
 
     this.initializeForm();
     this.initAddTopicForm();
-
   }
 
   private initAddTopicForm() {
@@ -170,7 +171,7 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
 
     answers.controls.forEach((ctrl, index) => {
       const isCorrectControl = ctrl.get('is_correct') as FormControl;
-      isCorrectControl.setValue(index === correctAnswerIndex);  // Устанавливаем true для выбранного, false для остальных
+      isCorrectControl.setValue(index === correctAnswerIndex);
     });
   }
 
@@ -182,7 +183,6 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
     const questionForm = this.questions().at(questionIndex) as FormGroup;
     let answersArray = questionForm.get('answers') as FormArray;
 
-    // Проверяем, есть ли уже 4 ответа, если нет - добавляем недостающие
     while (answersArray.length < 4) {
       answersArray.push(this.generateAnswer());
     }
@@ -207,7 +207,7 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
         this.homeworkDescription = data.homework.description;
 
         this.testForm.get('description')?.setValue(this.homeworkDescription);
-        },
+      },
       error: (error) => {
         console.error('Error loading topic content:', error);
       }
@@ -272,7 +272,6 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
   }
 
   public saveContent(): void {
-
     if (this.testForm.invalid) {
       this.messageService.add({
         severity: 'warn',
@@ -280,51 +279,64 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
         detail: 'Для сохранения полностью заполните форму.'
       });
       return;
-    } else {
-
-      const formData = new FormData();
-      formData.append('topic_id', String(this.topicId));
-
-      const lessonsData = this.lessons.map((lesson, index) => {
-        return {
-          name: lesson.name,
-          file: lesson.file instanceof File ? `lesson_file_${index}.mp4` : lesson.file
-        };
-      });
-
-      formData.append('lessons', JSON.stringify(lessonsData));
-
-      // Добавляем новые файлы в FormData (бинарные данные)
-      this.lessons.forEach((lesson, index) => {
-        if (lesson.file instanceof File) {
-          formData.append(`lesson_file_${index}.mp4`, lesson.file);
-        }
-      });
-
-      const homeworkData = {
-        description: this.testForm.get('description')?.value,
-        file: this.homeworkFile instanceof File ? 'homework_file' : this.homeworkFileName || ''
-      };
-      formData.append('homework', JSON.stringify(homeworkData));
-
-      if (this.homeworkFile instanceof File) {
-        formData.append('homework_file', this.homeworkFile);
-      }
-
-      formData.append('test', JSON.stringify(this.testForm.value));
-
-      this.topicService.saveTopicContent(formData).subscribe({
-        next: response => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Успешно',
-            detail: `Успешно сохранено!`
-          });
-        },
-        error: error => console.error('Failed to save content:', error)
-      });
     }
+
+    if (!this.validateLessons()) {
+      return;
+    }
+
+    if (!this.validateHomework()) {
+      return;
+    }
+
+    if (!this.validateQuestions()) {
+      return;
+    }
+
+    this.isFormChanged = false;
+    const formData = new FormData();
+    formData.append('topic_id', String(this.topicId));
+
+    const lessonsData = this.lessons.map((lesson, index) => {
+      return {
+        name: lesson.name,
+        file: lesson.file instanceof File ? `lesson_file_${index}.mp4` : lesson.file
+      };
+    });
+    formData.append('lessons', JSON.stringify(lessonsData));
+
+    this.lessons.forEach((lesson, index) => {
+      if (lesson.file instanceof File) {
+        formData.append(`lesson_file_${index}.mp4`, lesson.file);
+      }
+    });
+
+    const homeworkData = {
+      description: this.testForm.get('description')?.value,
+      file: this.homeworkFile ? 'homework_file' : this.homeworkFileName || ''
+    };
+    formData.append('homework', JSON.stringify(homeworkData));
+
+    if (this.homeworkFile instanceof File) {
+      formData.append('homework_file', this.homeworkFile);
+    } else if (this.homeworkFileName) {
+      formData.append('homework_file_name', this.homeworkFileName);
+    }
+
+    formData.append('test', JSON.stringify(this.testForm.value));
+
+    this.topicService.saveTopicContent(formData).subscribe({
+      next: response => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Успешно',
+          detail: `Успешно сохранено!`
+        });
+      },
+      error: error => console.error('Failed to save content:', error)
+    });
   }
+
 
   public removeLessonFile(event: Event, index: number): void {
     this.confirmationService.confirm({
@@ -368,7 +380,6 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
     if (input.files?.length) {
       const file = input.files[0];
 
-      // Check if the file is an mp4
       const fileType = file.type;
       if (fileType !== 'video/mp4') {
         this.messageService.add({
@@ -376,7 +387,7 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
           summary: 'Ошибка',
           detail: 'Только .mp4 файлы могут быть загружены для уроков.'
         });
-        return;  // Prevent further action if the file is not an mp4
+        return;
       }
 
       this.lessons[index].file = file;
@@ -399,12 +410,73 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
     fileInput.click();
   }
 
-  public canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
-    const dialogRef: DynamicDialogRef = this.dialogService.open(ConfirmationDialogComponent, {
-      header: 'Подтверждение',
-      width: '350px',
-      data: 'У вас есть несохраненные изменения. Вы уверены, что хотите покинуть страницу?'
+  private validateLessons(): boolean {
+    const invalidLesson = this.lessons.some(lesson => !lesson.file);
+    if (invalidLesson) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Предупреждение',
+        detail: 'Каждый урок должен иметь прикрепленный файл.'
+      });
+      return false;
+    }
+    return true;
+  }
+
+  private validateHomework(): boolean {
+    const descriptionControl = this.testForm.get('description');
+    const description = descriptionControl?.value?.trim();
+
+    if ((!this.homeworkFile && !this.homeworkFileName) || !description || description === '<p></p>' || description === '<br>' || description.length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Предупреждение',
+        detail: 'Домашнее задание должно содержать файл и описание.'
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+
+  private validateQuestions(): boolean {
+    const invalidQuestion = this.questions().controls.some(questionControl => {
+      const text = questionControl.get('text')?.value.trim();
+      const answers = (questionControl.get('answers') as FormArray).controls;
+      const hasEmptyAnswer = answers.some(answerControl => !answerControl.get('text')?.value.trim());
+      return !text || hasEmptyAnswer;
     });
-    return dialogRef.onClose.toPromise();
+
+    if (invalidQuestion) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Предупреждение',
+        detail: 'Каждый вопрос должен содержать текст и хотя бы один ответ.'
+      });
+      return false;
+    }
+    return true;
+  }
+
+  public canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
+    if (this.isFormChanged) {
+      return this.confirmLeavePage();
+    }
+    return true;
+  }
+
+  public confirmLeavePage(): Promise<boolean> {
+    return new Promise((resolve) => {
+      const dialogRef = this.dialogService.open(ConfirmationDialogComponent, {
+        header: 'Подтверждение',
+        width: '350px',
+        data: 'Вы уверены, что хотите покинуть страницу? Все несохраненные изменения будут потеряны.'
+      });
+
+      dialogRef.onClose.subscribe((result: boolean) => {
+        resolve(result === true);  // Разрешаем навигацию, если пользователь подтвердил выход
+      });
+    });
   }
 }

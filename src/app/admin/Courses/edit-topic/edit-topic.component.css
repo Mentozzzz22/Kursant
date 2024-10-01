@@ -346,3 +346,11 @@ input[type="radio"]:checked + .radio-custom::after {
   text-align: center;
   cursor: pointer;
 }
+
+.ui-inputtext {
+  overflow: hidden !important;  /* Отключаем скролл */
+  height: auto !important;      /* Устанавливаем высоту на автоматическую */
+  min-height: 50px;             /* Задаем минимальную высоту */
+  max-height: none;             /* Убираем максимальную высоту */
+  resize: none;                 /* Отключаем ручное изменение размера */
+}

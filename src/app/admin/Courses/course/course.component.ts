@@ -10,6 +10,7 @@ import {Course} from "../../../../assets/models/course.interface";
 import {FlowService} from "../../../service/flow.service";
 import {GetFlows} from "../../../../assets/models/getFlows.interface";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
+import {AutoExpandDirective} from "../../../auto-expand.directive";
 
 @Component({
   selector: 'app-course',
@@ -23,7 +24,8 @@ import {ConfirmPopupModule} from "primeng/confirmpopup";
     EditorModule,
     NgIf,
     NgClass,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    AutoExpandDirective
   ],
   templateUrl: './course.component.html',
   styleUrl: './course.component.css'
