@@ -21,7 +21,7 @@ import Plyr from "plyr";
   templateUrl: './course-detail-non-auth.component.html',
   styleUrl: './course-detail-non-auth.component.css'
 })
-export class CourseDetailNonAuthComponent implements OnInit,OnDestroy {
+export class CourseDetailNonAuthComponent implements OnInit{
 
   @ViewChild('plyrID', { static: true }) videoElement!: ElementRef;
 
@@ -34,7 +34,7 @@ export class CourseDetailNonAuthComponent implements OnInit,OnDestroy {
   private cd =  inject(ChangeDetectorRef);
 
   videoUrl!: string;
-  public lessonId!: number;
+  public courseId!: number;
   public lessons: LearnerLessons[] = [];
   public lesson!: LearnerLesson;
   public courseName!: string;
@@ -81,14 +81,14 @@ export class CourseDetailNonAuthComponent implements OnInit,OnDestroy {
     this.cd.detectChanges();
 
     this.player = new Plyr(this.videoElement.nativeElement, { captions: { active: true } });
-    this.player.on('timeupdate', this.saveVideoTimeUpdate.bind(this));
-    this.player.on('ended', this.saveVideoFinish.bind(this));
+    // this.player.on('timeupdate', this.saveVideoTimeUpdate.bind(this));
+    // this.player.on('ended', this.saveVideoFinish.bind(this));
     this.route.paramMap.subscribe(params => {
       const lessonIdParam = params.get('course_id');
       if (lessonIdParam) {
-        this.lessonId = +lessonIdParam;
-        this.getLesson(this.lessonId);
-        this.loadLessonVideo();
+        this.courseId = +lessonIdParam;
+        this.getLesson(this.courseId);
+        this.loadLessonVideo(this.courseId);
       } else {
         console.error('Lesson ID is missing or invalid');
       }
@@ -108,7 +108,6 @@ export class CourseDetailNonAuthComponent implements OnInit,OnDestroy {
       this.lessonIndex = data.lesson_number;
       this.lessonStatus = data.lesson_status;
       this.lessonsAndTests = [...this.lessons];
-      this.lessonVideo = data.video ? `http://127.0.0.1:8000${data.video}` : '';
       if (data.test) {
         this.lessonsAndTests.push({
           id: data.test.id,
@@ -144,11 +143,11 @@ export class CourseDetailNonAuthComponent implements OnInit,OnDestroy {
   }
 
 
-
-
-  ngOnDestroy() {
-    this.clearIntervals();
-  }
+  //
+  //
+  // ngOnDestroy() {
+  //   this.clearIntervals();
+  // }
 
 
   public calculateProgress() {
@@ -170,91 +169,91 @@ export class CourseDetailNonAuthComponent implements OnInit,OnDestroy {
   }
 
   public back() {
-    this.router.navigate([`/student/courses/${this.lesson.course_id}`]);
+    this.router.navigate([`/about/${this.courseId}`]);
   }
 
-  public nextLesson() {
-    this.router.navigate([`/student/lesson/${this.lesson.next_lesson_id}`]).then(() => {
-      this.clearIntervals();
-    });
-  }
+  // public nextLesson() {
+  //   this.router.navigate([`/student/lesson/${this.lesson.next_lesson_id}`]).then(() => {
+  //     this.clearIntervals();
+  //   });
+  // }
+  //
+  // clearIntervals(): void {
+  //   if (this.autoSaveInterval) {
+  //     clearInterval(this.autoSaveInterval);
+  //     this.autoSaveInterval = null;
+  //   }
+  //   if (this.checkProgressInterval) {
+  //     clearInterval(this.checkProgressInterval);
+  //     this.checkProgressInterval = null;
+  //   }
+  // }
+  //
+  //
+  // saveVideoTimeUpdate(): void {
+  //   if (!this.nextLessonIsAvailable) {
+  //     const currentTime = this.player.currentTime;
+  //
+  //     if (!this.firstVideoStartTimeSaved) {
+  //       this.firstVideoStartTimeSaved = true;
+  //       this.videoStartTime = currentTime;
+  //       this.prevVideoTime = currentTime;
+  //     }
+  //
+  //     if (Math.abs(currentTime - this.prevVideoTime) > 2) {
+  //       this.videoService.sendVideoTimeUpdate(this.videoStartTime, this.prevVideoTime,this.courseId).subscribe(() => {
+  //         console.log(`start = ${this.videoStartTime}, prev = ${this.prevVideoTime}`);
+  //       });
+  //       this.videoStartTime = currentTime;
+  //       this.prevVideoTime = currentTime;
+  //     } else {
+  //       this.prevVideoTime = currentTime;
+  //     }
+  //   }
+  // }
+  //
+  // autoSaveVideoProgress(): void {
+  //   const currentTime = this.player.currentTime;
+  //   this.videoService.sendVideoTimeUpdate(this.videoStartTime, currentTime, this.courseId).subscribe(() => {
+  //     console.log(` start = ${this.videoStartTime},  = ${currentTime}`);
+  //     this.videoStartTime = currentTime;
+  //   });
+  // }
+  //
+  //
+  // saveVideoFinish(): void {
+  //   if (!this.nextLessonIsAvailable) {
+  //     this.videoService.sendVideoTimeUpdate(this.videoStartTime, this.prevVideoTime,this.courseId).subscribe(() => {
+  //       this.getLesson(this.courseId);
+  //       this.firstVideoStartTimeSaved = false;
+  //       this.videoStartTime = 0;
+  //       this.prevVideoTime = 0;
+  //     });
+  //   }
+  // }
 
-  clearIntervals(): void {
-    if (this.autoSaveInterval) {
-      clearInterval(this.autoSaveInterval);
-      this.autoSaveInterval = null;
-    }
-    if (this.checkProgressInterval) {
-      clearInterval(this.checkProgressInterval);
-      this.checkProgressInterval = null;
-    }
-  }
 
-
-  saveVideoTimeUpdate(): void {
-    if (!this.nextLessonIsAvailable) {
-      const currentTime = this.player.currentTime;
-
-      if (!this.firstVideoStartTimeSaved) {
-        this.firstVideoStartTimeSaved = true;
-        this.videoStartTime = currentTime;
-        this.prevVideoTime = currentTime;
-      }
-
-      if (Math.abs(currentTime - this.prevVideoTime) > 2) {
-        this.videoService.sendVideoTimeUpdate(this.videoStartTime, this.prevVideoTime,this.lessonId).subscribe(() => {
-          console.log(`start = ${this.videoStartTime}, prev = ${this.prevVideoTime}`);
-        });
-        this.videoStartTime = currentTime;
-        this.prevVideoTime = currentTime;
-      } else {
-        this.prevVideoTime = currentTime;
-      }
-    }
-  }
-
-  autoSaveVideoProgress(): void {
-    const currentTime = this.player.currentTime;
-    this.videoService.sendVideoTimeUpdate(this.videoStartTime, currentTime, this.lessonId).subscribe(() => {
-      console.log(` start = ${this.videoStartTime},  = ${currentTime}`);
-      this.videoStartTime = currentTime;
-    });
-  }
-
-
-  saveVideoFinish(): void {
-    if (!this.nextLessonIsAvailable) {
-      this.videoService.sendVideoTimeUpdate(this.videoStartTime, this.prevVideoTime,this.lessonId).subscribe(() => {
-        this.getLesson(this.lessonId);
-        this.firstVideoStartTimeSaved = false;
-        this.videoStartTime = 0;
-        this.prevVideoTime = 0;
-      });
-    }
-  }
-
-
-  loadLessonVideo() {
-    if (!this.lessonVideo) {
-      console.error('Видео не доступно');
-      return;
-    }
+  loadLessonVideo(lessonId: number) {
+    this.videoUrl = this.videoService.getLessonFreeVideoUrl(lessonId, 720);
+    const video480Url = this.videoService.getLessonFreeVideoUrl(lessonId, 480);
+    const video720Url = this.videoService.getLessonFreeVideoUrl(lessonId, 720);
+    const video1080Url = this.videoService.getLessonFreeVideoUrl(lessonId, 1080);
 
     this.player.source = {
       type: 'video',
       sources: [
         {
-          src: this.lessonVideo,
+          src: video1080Url,
           type: 'video/mp4',
           size: 1080
         },
         {
-          src: this.lessonVideo,
+          src: video720Url,
           type: 'video/mp4',
           size: 720
         },
         {
-          src: this.lessonVideo,
+          src: video480Url,
           type: 'video/mp4',
           size: 480
         }
@@ -262,34 +261,34 @@ export class CourseDetailNonAuthComponent implements OnInit,OnDestroy {
     };
   }
 
-  changeQuality(quality: number) {
-    let videoUrl: string = '';
-
-    if (quality === 720) {
-      videoUrl = this.videoService.getLessonVideoUrl(this.lessonId, 720);
-    } else if (quality === 480) {
-      videoUrl = this.videoService.getLessonVideoUrl(this.lessonId, 480);
-    }
-
-    if (videoUrl) {
-      this.player.source = {
-        type: 'video',
-        sources: [
-          {
-            src: videoUrl,
-            type: 'video/mp4',
-            size: quality
-          }
-        ]
-      };
-
-      this.player.once('loadedmetadata', () => {
-        this.player.play();
-      });
-    } else {
-      console.error('Video URL is not defined for the selected quality.');
-    }
-  }
+  // changeQuality(quality: number) {
+  //   let videoUrl: string = '';
+  //
+  //   if (quality === 720) {
+  //     videoUrl = this.videoService.getLessonVideoUrl(this.courseId, 720);
+  //   } else if (quality === 480) {
+  //     videoUrl = this.videoService.getLessonVideoUrl(this.courseId, 480);
+  //   }
+  //
+  //   if (videoUrl) {
+  //     this.player.source = {
+  //       type: 'video',
+  //       sources: [
+  //         {
+  //           src: videoUrl,
+  //           type: 'video/mp4',
+  //           size: quality
+  //         }
+  //       ]
+  //     };
+  //
+  //     this.player.once('loadedmetadata', () => {
+  //       this.player.play();
+  //     });
+  //   } else {
+  //     console.error('Video URL is not defined for the selected quality.');
+  //   }
+  // }
 
 
 

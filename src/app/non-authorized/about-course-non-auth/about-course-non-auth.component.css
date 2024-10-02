@@ -334,6 +334,15 @@ h1 {
   text-decoration: underline;
 
 }
+.clickable {
+  cursor: pointer;
+  color: #00BE5F;
+}
+
+.non-clickable {
+  cursor: not-allowed;
+  color: #444444;
+}
 
 .trial-lesson {
   color: #00BE5F;
@@ -397,7 +406,7 @@ h1 {
 
   .text-overlay {
     max-width: 100%;
-    padding: 45px 25px;
+    padding: 25px 25px;
   }
 
   h1 {

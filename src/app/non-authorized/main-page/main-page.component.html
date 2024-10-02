@@ -35,10 +35,10 @@
     <div class="kurstar">
       <div class="kurstar-text">
         <h2>Курстар</h2>
-        <p>Барлық пәндер тізімі</p>
+        <p (click)="toggleShowAll()">{{ showAll ? 'Жабу' : 'Барлық пәндер тізімі' }}</p>
       </div>
       <div class="kurstar-cards" >
-        <div class="kurstar-card" *ngFor="let kurs of courses" (click)="openDetails(kurs.id!)">
+        <div class="kurstar-card" *ngFor="let kurs of (showAll ? courses : courses.slice(0, 3))"  (click)="openDetails(kurs.id!)">
           <img [src]="kurs.poster" alt="subject1" class="kurs-images">
           <div class="kurs-card-content" >
             <div class="kurs-info" >

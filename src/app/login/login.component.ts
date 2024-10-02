@@ -43,6 +43,10 @@ export class LoginComponent implements OnInit {
   }
 
   sendCode() {
+    if (this.loginForm.invalid) {
+      this.messageService.add({ severity: 'error', summary: 'Қате', detail: 'Дұрыс телефон нөмірін енгізіңіз' });
+      return;
+    }
     let phone = this.loginForm.get('phone')?.value;
 
     if (phone) {
@@ -69,7 +73,7 @@ export class LoginComponent implements OnInit {
 
   checkSmsCode() {
     if (this.smsCode.invalid) {
-      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Введите корректный код' });
+      this.messageService.add({ severity: 'error', summary: 'Қате', detail: 'Дұрыс кодты енгізіңіз' });
       return;
     }
 

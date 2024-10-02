@@ -13,7 +13,6 @@
         <p>Мұғалім: {{ teacherName }}</p>
       </div>
       <button class="next-sabak-button"
-              (click)="nextLesson()"
               *ngIf="nextLessonIsAvailable && lessonStatus !== 'opened'">
         Келесі сабақ
       </button>

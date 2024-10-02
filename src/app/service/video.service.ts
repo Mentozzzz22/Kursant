@@ -8,6 +8,7 @@ import {UserService} from "./user.service";
 })
 export class VideoService {
   private apiUrl = 'http://127.0.0.1:8000/api/learner_course/';
+  private courseUrl = 'http://127.0.0.1:8000/api/course/free_lesson/';
   private http = inject(HttpClient);
   private userService = inject(UserService);
   constructor() { }
@@ -15,6 +16,11 @@ export class VideoService {
   getLessonVideoUrl(lesson_id: number, quality: number): string {
     const token = this.userService.token;
     const videoUrl = `${this.apiUrl}${token}/lesson/${lesson_id}/video/${quality}/`;
+    return videoUrl;
+  }
+
+  getLessonFreeVideoUrl(course_id: number, quality: number): string {
+    const videoUrl = `${this.courseUrl}${course_id}/video/${quality}/`;
     return videoUrl;
   }
 

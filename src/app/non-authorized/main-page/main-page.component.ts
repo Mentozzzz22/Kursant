@@ -56,6 +56,7 @@ export class MainPageComponent implements OnInit{
   private router = inject(Router);
   public searchText: string = '';
   visible: boolean = false;
+  showAll: boolean = false;
 
   @HostListener('window:resize', [])
   onResize() {
@@ -72,12 +73,16 @@ export class MainPageComponent implements OnInit{
     this.checkWindowSize();
   }
 
+  toggleShowAll() {
+    this.showAll = !this.showAll;
+  }
+
   loadCourses(): void {
     this.courseService.getCourses(this.searchText).subscribe(
       (data: Course[]) => {
         this.courses = data.map(course => ({
           ...course,
-          poster: `http://127.0.0.1:8000/${course.poster}`
+          poster: `http://127.0.0.1:8000${course.poster}`
         }));
         if (this.searchText && this.searchText.trim() !== '') {
           const courseSection = document.querySelector('.kurstar');

@@ -52,11 +52,13 @@
 
 <p-confirmPopup #confirmPopupRef>
   <ng-template pTemplate="headless" let-message let-test>
-    <div class="border-round p-3">
-      <span>{{ message.message }}</span>
+    <div class="border-round p-3  w-full" >
+      <div class="flex align-items-center">
+        <i class="pi pi-question-circle" style="margin-right: 10px"></i><span>{{ message.message }}</span>
+      </div>
       <div class="flex align-items-center gap-2 mt-3">
-        <p-button (onClick)="accept()" label="Ия" size="small" severity="danger" />
-        <p-button (onClick)="reject()" label="Жоқ" [outlined]="true" severity="secondary" size="small" />
+        <button class="accept-button" (click)="accept()"><i class="pi pi-trash" style="color: white; margin-right:5px"></i>Ия</button>
+        <button class="decline-button" (click)="reject()"><i class="pi pi-times" style="margin-right:5px"></i>Жоқ</button>
       </div>
     </div>
   </ng-template>

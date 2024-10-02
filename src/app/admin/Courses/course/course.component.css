@@ -125,7 +125,8 @@
 .kurstar-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
+  max-width:350px;
   background-color: white;
   border-radius: 15px;
   padding: 3px;
@@ -138,7 +139,6 @@
 }
 
 .kurs-images {
-  max-height: 138px;
   width: 100%;
   height: auto;
   border-radius: 15px;
