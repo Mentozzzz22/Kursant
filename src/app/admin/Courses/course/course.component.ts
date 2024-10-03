@@ -91,7 +91,9 @@ export class CourseComponent implements OnInit {
   }
 
   public onSubmitAddCourse(): void {
-    if(this.courseAddForm.valid) {
+    console.log(this.courseAddForm.getRawValue())
+
+    if (this.courseAddForm.valid) {
 
       const formData: FormData = new FormData();
 
@@ -174,7 +176,7 @@ export class CourseComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       this.selectedPosterFile = input.files[0];
       this.selectedPosterName = this.selectedPosterFile.name;
-      console.log(this.selectedPosterFile.name)
+      this.courseAddForm.get('poster')?.setValue(this.selectedPosterFile);
       this.messageService.add({
         severity: 'success',
         summary: 'Успешно',
@@ -188,6 +190,7 @@ export class CourseComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       this.selectedBigPosterFile = input.files[0];
       this.selectedBigPosterName = this.selectedBigPosterFile.name;
+      this.courseAddForm.get('big_poster')?.setValue(this.selectedBigPosterFile);
       this.messageService.add({
         severity: 'success',
         summary: 'Успешно',

@@ -250,6 +250,7 @@ export class EditCourseComponent implements OnInit, OnDestroy {
       this.selectedPosterFile = input.files[0];
       this.selectedPosterName = this.selectedPosterFile.name;
       console.log(this.selectedPosterFile.name)
+      this.editCourseForm.get('poster')?.setValue(this.selectedPosterFile);
       this.messageService.add({
         severity: 'success',
         summary: 'Успешно',
@@ -263,6 +264,7 @@ export class EditCourseComponent implements OnInit, OnDestroy {
     if (input.files && input.files.length > 0) {
       this.selectedBigPosterFile = input.files[0];
       this.selectedBigPosterName = this.selectedBigPosterFile.name;
+      this.editCourseForm.get('big_poster')?.setValue(this.selectedBigPosterFile);
       this.messageService.add({
         severity: 'success',
         summary: 'Успешно',
@@ -279,6 +281,7 @@ export class EditCourseComponent implements OnInit, OnDestroy {
       formData.append('id', courseId.toString());
       const posterFile = this.selectedPosterFile;
       const poster = this.editCourseForm.get('poster')?.value;
+      console.log(this.editCourseForm.get('poster')?.value)
 
       if (posterFile) {
         formData.append('poster_uploaded_file', posterFile);
@@ -286,7 +289,6 @@ export class EditCourseComponent implements OnInit, OnDestroy {
       } else if (poster && poster !== 'poster_uploaded_file') {
         formData.append('poster', poster);
       } else {
-        console.error('Poster is required but not provided.');
         return;
       }
 
