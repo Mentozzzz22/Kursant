@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, ViewChild} from '@angular/core';
-import {DecimalPipe, NgClass, NgForOf} from "@angular/common";
+import {DecimalPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {kurs} from "../main-page/main-page.component";
 import {CourseService} from "../../service/course.service";
 import {Course} from "../../../assets/models/course.interface";
@@ -24,7 +24,8 @@ import {Button} from "primeng/button";
     DecimalPipe,
     ConfirmPopupModule,
     Button,
-    NgClass
+    NgClass,
+    NgIf
   ],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
