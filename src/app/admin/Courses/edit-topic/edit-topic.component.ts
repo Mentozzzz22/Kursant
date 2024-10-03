@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, inject, OnDestroy, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TopicService} from "../../../service/topic.service";
@@ -64,7 +64,7 @@ function atLeastOneCorrectAnswer(control: AbstractControl): ValidationErrors | n
   templateUrl: './edit-topic.component.html',
   styleUrl: './edit-topic.component.css'
 })
-export class EditTopicComponent implements OnInit, CanComponentDeactivate {
+export class EditTopicComponent implements OnInit{
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private topicService = inject(TopicService);
@@ -113,6 +113,13 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
 
     this.initializeForm();
     this.initAddTopicForm();
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any): void {
+    if (this.isFormChanged) {
+      $event.returnValue = true; // Стандартное сообщение браузера
+    }
   }
 
   private initAddTopicForm() {
@@ -364,8 +371,14 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
     this.AddLessonVisible = true;
   }
 
-  public back() {
-    this.router.navigate([`/admin/edit-course/${this.courseId}/edit-module/${this.moduleId}`]);
+  public back(): void {
+    if (this.isFormChanged) {
+      if (confirm('У вас есть несохраненные изменения. Вы уверены, что хотите покинуть страницу?')) {
+        this.router.navigate([`/admin/edit-course/${this.courseId}/edit-module/${this.moduleId}`]);
+      }
+    } else {
+      this.router.navigate([`/admin/edit-course/${this.courseId}/edit-module/${this.moduleId}`]);
+    }
   }
 
   public triggerFileInput(index: number): void {
@@ -457,26 +470,5 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
       return false;
     }
     return true;
-  }
-
-  public canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
-    if (this.isFormChanged) {
-      return this.confirmLeavePage();
-    }
-    return true;
-  }
-
-  public confirmLeavePage(): Promise<boolean> {
-    return new Promise((resolve) => {
-      const dialogRef = this.dialogService.open(ConfirmationDialogComponent, {
-        header: 'Подтверждение',
-        width: '350px',
-        data: 'Вы уверены, что хотите покинуть страницу? Все несохраненные изменения будут потеряны.'
-      });
-
-      dialogRef.onClose.subscribe((result: boolean) => {
-        resolve(result === true);  // Разрешаем навигацию, если пользователь подтвердил выход
-      });
-    });
   }
 }
