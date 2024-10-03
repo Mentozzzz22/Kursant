@@ -186,8 +186,8 @@
 }
 
 .kurs-images {
-  max-width: 289px;
-  height: 138px;
+  width:100%;
+  height: auto;
 }
 
 .subject-info h3 {
