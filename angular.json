@@ -62,35 +62,24 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
-              ],
+              ]
+            },
+            "test": {
               "optimization": true,
               "sourceMap": false,
               "extractLicenses": true,
-              "inspect": false,
-              "namedChunks": false,
-              "aot": true,
-              "vendorChunk": false,
-              "buildOptimizer": true
-            },
-            "development": {
-              "optimization": false,
-              "sourceMap": true,
-              "extractLicenses": false,
-              "namedChunks": true,
-              "aot": false,
-              "vendorChunk": true
-            },
-            "test": {
+              "outputHashing": "all",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.prod.ts",
                   "with": "src/environments/environment.ts"
                 }
-              ],
-              "optimization": true,
-              "sourceMap": false,
-              "extractLicenses": true,
-              "outputHashing": "all"
+              ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
