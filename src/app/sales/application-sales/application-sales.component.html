@@ -86,10 +86,10 @@
 
     <div class="block-one">
       <h5>В корзине</h5>
-      <ol class="cart-list">
-        <li *ngFor="let course of coursesList let i = index">
+      <ol class="cart-list" formArrayName="courses">
+        <li *ngFor="let course of coursesList; let i = index">
           <span class="item-name">{{ course.name }}</span>
-          <span class="price">{{ course.current_price}} тг</span>
+          <input type="date" class="deadline" [formControlName]="i" />
           <button class="delete-btn" (click)="removeCourse(i)" *ngIf="status !== 'waiting_admin'">
             <i class="pi pi-trash"></i>
           </button>
@@ -97,7 +97,7 @@
       </ol>
       <div class="total">
         <div>
-          <strong>К оплате:</strong> <span class="total-price">{{ calculateTotalPrice() }}</span>
+          <strong>К оплате:</strong> <span class="total-price">{{ calculateTotalPrice() }} тг</span>
         </div>
 
         <div >
@@ -196,7 +196,8 @@
         <ol class="cart-list">
           <li *ngFor="let course of coursesAddList let i = index">
             <span class="item-name">{{ course.name }}</span>
-            <span class="price">{{ course.current_price}} тг</span>
+<!--            <span class="price">{{ course.current_price}} тг</span>-->
+            <input type="date" class="deadline" formControlName="expires_at" (change)="updateCourseExpiration(i)">
             <button class="delete-btn" (click)="removeAddCourse(i)">
               <i class="pi pi-trash"></i>
             </button>
@@ -224,6 +225,14 @@
               </div>
             </p-overlayPanel>
           </div>
+
+          <p-overlayPanel #pop>
+            <div class="flex flex-line gap-3 w-20rem">
+              <input type="text" id="expires_at" class="form-control" formControlName="expires_at">
+              <button class="add-btn" ><i class="pi pi-check"></i></button>
+              <button class="close-btn"><i class="pi pi-times"></i></button>
+            </div>
+          </p-overlayPanel>
 
         </div>
       </div>
@@ -329,3 +338,6 @@
 
 
 </p-dialog>
+
+
+

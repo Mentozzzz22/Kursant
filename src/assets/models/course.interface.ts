@@ -1,6 +1,7 @@
 export interface Course {
   id?: number;
   name: string;
+  expires_at: string;
   description: string;
   poster: string;
   big_poster: string;

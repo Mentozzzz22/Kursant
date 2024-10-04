@@ -5,7 +5,10 @@ export interface SalesApplication {
   learner_region: string;
   paid_check: File | string | null;
   comments: string;
-  courses: number[];
+  courses: {
+    course_id: number;
+    expires_at: string;
+  }[];
   handled_by: string | null;
   status: string;
   status_display: string;
