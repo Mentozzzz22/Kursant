@@ -20,11 +20,9 @@ import {EditorModule} from "primeng/editor";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
-import {CanComponentDeactivate} from "../../../service/pending-change.guard";
 import {AutoExpandDirective} from "../../../auto-expand.directive";
-import {ConfirmationDialogComponent} from "../../../confirmation-dialog/confirmation-dialog.component";
-import {Observable} from "rxjs";
 import {DialogService} from "primeng/dynamicdialog";
+import {CanComponentDeactivate} from "../../../can-deactivate-guard.guard";
 
 type FormAnswer = FormGroup<{
   text: FormControl<string>;
@@ -64,7 +62,7 @@ function atLeastOneCorrectAnswer(control: AbstractControl): ValidationErrors | n
   templateUrl: './edit-topic.component.html',
   styleUrl: './edit-topic.component.css'
 })
-export class EditTopicComponent implements OnInit{
+export class EditTopicComponent implements OnInit, CanComponentDeactivate {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private topicService = inject(TopicService);
@@ -87,8 +85,6 @@ export class EditTopicComponent implements OnInit{
   public AddLessonVisible: boolean = false;
   public addLessonForm!: FormGroup;
 
-  private isFormChanged: boolean = false;
-
   public testForm: FormGroup = this.fb.group({
     duration: [15, Validators.required],
     questions: this.fb.array([]),
@@ -107,20 +103,52 @@ export class EditTopicComponent implements OnInit{
       this.loadTopicContent();
     });
 
-    this.testForm.valueChanges.subscribe(() => {
-      this.isFormChanged = true;
-    });
-
     this.initializeForm();
     this.initAddTopicForm();
   }
 
+  canDeactivate(): boolean {
+    if (this.hasUnsavedChanges()) {
+      return window.confirm('У вас есть несохранённые изменения. Вы действительно хотите уйти?');
+    }
+    return true;
+  }
+
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any): void {
-    if (this.isFormChanged) {
+    if (this.hasUnsavedChanges()) {
       $event.returnValue = true; // Стандартное сообщение браузера
     }
   }
+
+  private hasUnsavedChanges(): boolean {
+    return (
+      this.testForm.dirty ||
+      this.areLessonsChanged() ||
+      this.areQuestionsChanged() ||
+      this.isHomeworkChanged()
+    );
+  }
+
+  private areLessonsChanged(): boolean {
+    return this.lessons.some(lesson => lesson.file instanceof File || lesson.fileName === '');
+  }
+
+  private areQuestionsChanged(): boolean {
+    return this.questions().controls.some(questionControl => {
+      return questionControl.dirty ||
+        (questionControl.get('answers') as FormArray).controls.some(answerControl => answerControl.dirty);
+    });
+  }
+
+  private isHomeworkChanged(): boolean {
+    return (
+      this.homeworkFile instanceof File ||
+      this.homeworkFileName !== this.homework?.file ||
+      (this.testForm.get('description')?.dirty ?? false)
+    );
+  }
+
 
   private initAddTopicForm() {
     this.addLessonForm = this.fb.group({
@@ -149,12 +177,12 @@ export class EditTopicComponent implements OnInit{
     }, {validators: atLeastOneCorrectAnswer});
   }
 
-  public addQuestion() {
+  public addQuestion(): void {
     this.questions().push(this.generateQuestion());
+    this.testForm.markAsDirty(); // Помечаем форму как "грязную" после добавления вопроса
   }
 
-  public deleteQuestion(event: Event, index: number) {
-    console.log(this.questions())
+  public deleteQuestion(event: Event, index: number): void {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: `Вы действительно хотите удалить этот вопрос ?`,
@@ -166,9 +194,10 @@ export class EditTopicComponent implements OnInit{
         this.messageService.add({
           severity: 'success',
           summary: 'Успешно',
-          detail: `Вопрос успешно удален`!
+          detail: `Вопрос успешно удален!`
         });
         this.questions().removeAt(index);
+        this.testForm.markAsDirty(); // Помечаем форму как "грязную" после удаления вопроса
       }
     });
   }
@@ -180,6 +209,8 @@ export class EditTopicComponent implements OnInit{
       const isCorrectControl = ctrl.get('is_correct') as FormControl;
       isCorrectControl.setValue(index === correctAnswerIndex);
     });
+
+    this.testForm.markAsDirty(); // Помечаем форму как "грязную" после изменения правильного ответа
   }
 
   public questions(): FormArray {
@@ -193,6 +224,12 @@ export class EditTopicComponent implements OnInit{
     while (answersArray.length < 4) {
       answersArray.push(this.generateAnswer());
     }
+
+    answersArray.controls.forEach(answer => {
+      answer.valueChanges.subscribe(() => {
+        this.testForm.markAsDirty(); // Помечаем форму как "грязную" при изменении текста ответа
+      });
+    });
 
     return answersArray;
   }
@@ -221,7 +258,7 @@ export class EditTopicComponent implements OnInit{
     });
   }
 
-  public addLesson() {
+  public addLesson(): void {
     if (this.addLessonForm.invalid) {
       return;
     }
@@ -231,9 +268,10 @@ export class EditTopicComponent implements OnInit{
     this.lessons.push(newLesson);
     this.AddLessonVisible = false;
     this.addLessonForm.reset();
+    this.testForm.markAsDirty(); // Помечаем форму как "грязную" после добавления урока
   }
 
-  public deleteLesson(event: Event, index: number) {
+  public deleteLesson(event: Event, index: number): void {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: `Вы действительно хотите удалить этот урок ?`,
@@ -248,6 +286,7 @@ export class EditTopicComponent implements OnInit{
           detail: `Урок успешно удален!`
         });
         this.lessons.splice(index, 1);
+        this.testForm.markAsDirty(); // Помечаем форму как "грязную" после удаления урока
       }
     });
   }
@@ -300,7 +339,6 @@ export class EditTopicComponent implements OnInit{
       return;
     }
 
-    this.isFormChanged = false;
     const formData = new FormData();
     formData.append('topic_id', String(this.topicId));
 
@@ -334,6 +372,7 @@ export class EditTopicComponent implements OnInit{
 
     this.topicService.saveTopicContent(formData).subscribe({
       next: response => {
+        this.testForm.markAsPristine(); // Сброс состояния формы после успешного сохранения
         this.messageService.add({
           severity: 'success',
           summary: 'Успешно',
@@ -357,6 +396,7 @@ export class EditTopicComponent implements OnInit{
         if (this.lessons[index]) {
           this.lessons[index].file = '';
           this.lessons[index].fileName = undefined;
+          this.testForm.markAsDirty(); // Помечаем форму как "грязную" после удаления файла
           this.messageService.add({
             severity: 'success',
             summary: 'Успешно',
@@ -372,13 +412,7 @@ export class EditTopicComponent implements OnInit{
   }
 
   public back(): void {
-    if (this.isFormChanged) {
-      if (confirm('У вас есть несохраненные изменения. Вы уверены, что хотите покинуть страницу?')) {
-        this.router.navigate([`/admin/edit-course/${this.courseId}/edit-module/${this.moduleId}`]);
-      }
-    } else {
-      this.router.navigate([`/admin/edit-course/${this.courseId}/edit-module/${this.moduleId}`]);
-    }
+    this.router.navigate([`/admin/edit-course/${this.courseId}/edit-module/${this.moduleId}`]);
   }
 
   public triggerFileInput(index: number): void {
@@ -405,6 +439,7 @@ export class EditTopicComponent implements OnInit{
 
       this.lessons[index].file = file;
       this.lessons[index].fileName = file.name;
+      this.testForm.markAsDirty(); // Помечаем форму как "грязную" после выбора файла
       console.log(`Файл для урока ${index + 1}: ${file.name}`);
     }
   }

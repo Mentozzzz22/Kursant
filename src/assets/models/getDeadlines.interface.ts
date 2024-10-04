@@ -28,4 +28,5 @@ export interface GetDeadlines {
   modules: FlowModules[]
   flow_index: number;
   flow_course_name: string;
+  starts_at: string;
 }

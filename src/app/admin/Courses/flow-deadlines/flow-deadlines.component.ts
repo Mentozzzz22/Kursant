@@ -1,26 +1,26 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, HostListener, inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {
   FlowHomework,
   FlowLessons,
   FlowModules,
   FlowTest,
-  FlowTopics,
-  GetDeadlines
+
 } from "../../../../assets/models/getDeadlines.interface";
 import {FlowService} from "../../../service/flow.service";
-import {JsonPipe, NgForOf, NgIf} from "@angular/common";
+import {JsonPipe, Location, NgForOf, NgIf} from "@angular/common";
 import {
   AbstractControl,
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule, ValidationErrors, ValidatorFn,
   Validators
 } from "@angular/forms";
 import {DialogModule} from "primeng/dialog";
-import {MessageService, PrimeTemplate} from "primeng/api";
+import {ConfirmationService, MessageService, PrimeTemplate} from "primeng/api";
+import {ConfirmPopupModule} from "primeng/confirmpopup";
+import {CanComponentDeactivate} from "../../../can-deactivate-guard.guard";
 
 function dateTimeValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -46,21 +46,24 @@ function dateTimeValidator(): ValidatorFn {
     NgIf,
     JsonPipe,
     DialogModule,
-    PrimeTemplate
+    PrimeTemplate,
+    ConfirmPopupModule
   ],
   templateUrl: './flow-deadlines.component.html',
   styleUrl: './flow-deadlines.component.css'
 })
-export class FlowDeadlinesComponent implements OnInit {
+export class FlowDeadlinesComponent implements OnInit, CanComponentDeactivate {
 
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private flowService = inject(FlowService);
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
 
   public modules!: FlowModules[];
   public test!: any;
+  public startsAt!: string;
   public homework!: any;
   public deadlineForm!: FormGroup;
   public flowEditForm!: FormGroup;
@@ -82,9 +85,28 @@ export class FlowDeadlinesComponent implements OnInit {
     });
 
     this.flowEditForm = this.fb.group({
-      name: ['', [Validators.required]],
-      starts_at: ['', [Validators.required]],
-    })
+      name: [this.flow_course_name, [Validators.required]],  // Установи начальное значение
+      starts_at: [this.formatDateForInput(this.startsAt || ''), [Validators.required]] // Установи начальное значение даты
+    });
+
+  }
+
+  canDeactivate(): boolean {
+    if (this.hasUnsavedChanges()) {
+      return window.confirm('У вас есть несохранённые изменения. Вы действительно хотите уйти?');
+    }
+    return true;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any): void {
+    if (this.hasUnsavedChanges()) {
+      $event.returnValue = true;
+    }
+  }
+
+  private hasUnsavedChanges(): boolean {
+    return this.deadlineForm.dirty || this.flowEditForm.dirty;
   }
 
   get modulesControls(): FormArray {
@@ -102,7 +124,9 @@ export class FlowDeadlinesComponent implements OnInit {
   private loadDeadlines(courseId: number) {
     this.flowService.getCourseDeadlines(courseId).subscribe({
       next: (data) => {
+        console.log(data)
         this.modules = data.modules;
+        this.startsAt = data.starts_at
         this.initForm(data.modules);
         this.initialFormData = data.modules;
         this.flow_index = data.flow_index
@@ -142,23 +166,21 @@ export class FlowDeadlinesComponent implements OnInit {
   }
 
 
-
   private formatDateToDateTimeLocal(dateStr: string): string {
-    if (!dateStr) {
-      // Handle the case where dateStr is null or empty
-      // You could return a default value or handle it in a way that fits your app's logic
-      return ''; // Just as an example
-    }
+    if (!dateStr) return '';
 
-    const parts = dateStr.split(/[\s.:-]/).map(Number);
-    if (parts.length < 5) {
-      // If the split operation does not produce the expected number of parts,
-      // it means the format is not as expected. Handle this case appropriately.
-      return ''; // Just as an example
-    }
+    // Проверяем, есть ли время в дате
+    if (dateStr.includes(' ')) {
+      const [datePart, timePart] = dateStr.split(' ');
+      const [day, month, year] = datePart.split('.').map(Number);
+      const [hours, minutes] = timePart.split(':').map(Number);
 
-    const [day, month, year, hour, minute] = parts;
-    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+      return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    } else {
+      // Если времени нет, добавляем стандартное время
+      const [day, month, year] = dateStr.split('.').map(Number);
+      return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T00:00`;
+    }
   }
 
   private formatDateToServerFormat(dateTimeLocalStr: string): string {
@@ -176,6 +198,8 @@ export class FlowDeadlinesComponent implements OnInit {
       this.flowService.saveCourseDeadlines(formattedData).subscribe({
         next: (response) => {
           this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Дедлайны успешно обновлены!'});
+          this.deadlineForm.markAsPristine(); // Сброс состояния формы после успешного сохранения
+
         },
         error: (error) => {
           console.error('Ошибка при сохранении данных', error);
@@ -207,12 +231,29 @@ export class FlowDeadlinesComponent implements OnInit {
     };
   }
 
-  public cancelChanges(): void {
-    this.initForm(this.initialFormData);  // Инициализация формы с начальными данными
+  public cancelChanges(event: Event,): void {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Вы действительно отменить изменения ?`,
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'Да',
+      rejectLabel: 'Нет',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      accept: () => {
+        this.initForm(this.initialFormData);  // Инициализация формы с начальными данными
+      }
+    });
   }
 
   public back() {
-    this.router.navigate([`/admin/flow-details/${this.flowId}`])
+    if (this.hasUnsavedChanges()) {
+      const confirmLeave = window.confirm('У вас есть несохранённые изменения. Вы действительно хотите уйти?');
+      if (confirmLeave) {
+        this.router.navigate([`/admin/flow-details/${this.flowId}`]);
+      }
+    } else {
+      this.router.navigate([`/admin/flow-details/${this.flowId}`]);
+    }
   }
 
   public onCancel(): void {
@@ -220,10 +261,28 @@ export class FlowDeadlinesComponent implements OnInit {
   }
 
   public showEditFlowDialog() {
+    // Проверь, что данные уже загружены перед открытием диалога
+    if (!this.flowEditForm) return;
+
+    // Заполняем форму начальными значениями потока
+    const currentFlowData = {
+      name: this.flow_course_name,  // Название потока
+      starts_at: this.formatDateForInput(this.startsAt) // Форматирование даты для инпута
+    };
+
+    // Используем patchValue, чтобы задать значения для формы
+    this.flowEditForm.patchValue(currentFlowData);
     this.visibleEditFlowModal = true;
   }
 
-  public onSubmitAddFlow(flowId :number) {
+  private formatDateForInput(dateStr: string): string {
+    if (!dateStr) return '';
+
+    const [day, month, year] = dateStr.split('.'); // Предполагаем, что дата приходит в формате "DD.MM.YYYY"
+    return `${year}-${month}-${day}`; // Возвращаем в формате "YYYY-MM-DD"
+  }
+
+  public onSubmitAddFlow(flowId: number) {
     if (!this.flowEditForm.valid) {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Необходимо заполнить все поля!'});
       return;

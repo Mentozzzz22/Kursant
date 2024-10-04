@@ -35,6 +35,7 @@
 }
 
 .header-text {
+  cursor: pointer;
   display: flex;
   gap: 10px;
 }

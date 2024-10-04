@@ -111,6 +111,11 @@ export class FlowDetailsComponent implements OnInit {
       this.courses = data.courses
       this.flowIndex = data.index
       this.flowName = data.name
+
+      this.flowEditForm.patchValue({
+        name: this.flow.name,  // Устанавливаем название потока
+        starts_at: this.formatDateForInput(this.flow.starts_at)  // Устанавливаем дату начала
+      });
     });
   }
 
@@ -162,7 +167,21 @@ export class FlowDetailsComponent implements OnInit {
   }
 
   public showEditFlowDialog() {
+    // Убедимся, что данные потока загружены
+    if (!this.flowEditForm || !this.flow) {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Данные потока не загружены' });
+      return;
+    }
+
+    // Показываем модальное окно с заполненными полями
     this.visibleEditFlowModal = true;
+  }
+
+  private formatDateForInput(dateStr: string): string {
+    if (!dateStr) return '';
+
+    const [day, month, year] = dateStr.split('.');  // Предполагаем, что дата приходит в формате "DD.MM.YYYY"
+    return `${year}-${month}-${day}`;  // Преобразуем в формат "YYYY-MM-DD"
   }
 
   public onCancel(): void {

@@ -33,23 +33,23 @@ import {LearnerHomeworkComponent} from "./student/learner-homework/learner-homew
 import {AuthGuard} from "./service/auth.guard";
 import {NonAuthGuard} from "./service/nonauth.guard";
 import {AboutCourseNonAuthComponent} from "./non-authorized/about-course-non-auth/about-course-non-auth.component";
-import {pendingChangeGuard} from "./service/pending-change.guard";
 import {CourseDetailNonAuthComponent} from "./non-authorized/course-detail-non-auth/course-detail-non-auth.component";
+import {canDeactivateGuard} from "./can-deactivate-guard.guard";
 
 export const routes: Routes = [
   {
-    path: '', component: NonAuthorizedComponent,canActivate: [NonAuthGuard], children: [
-      {path: '', component: MainPageComponent,canActivate: [NonAuthGuard]},
-      {path: 'cart', component: CartComponent,canActivate: [NonAuthGuard]},
-      {path:'about/:course_id',component: AboutCourseNonAuthComponent,canActivate: [NonAuthGuard]},
-      {path:'course-detail/:course_id',component: CourseDetailNonAuthComponent,canActivate: [NonAuthGuard]}
+    path: '', component: NonAuthorizedComponent, canActivate: [NonAuthGuard], children: [
+      {path: '', component: MainPageComponent, canActivate: [NonAuthGuard]},
+      {path: 'cart', component: CartComponent, canActivate: [NonAuthGuard]},
+      {path: 'about/:course_id', component: AboutCourseNonAuthComponent, canActivate: [NonAuthGuard]},
+      {path: 'course-detail/:course_id', component: CourseDetailNonAuthComponent, canActivate: [NonAuthGuard]}
     ]
   },
   {path: 'login', component: LoginComponent},
   {path: 'access-denied', component: AccessDeniedComponent},
 
   {
-    path: 'student', component: StudentComponent, canActivate: [AuthGuard], data: { role: 'learner' },
+    path: 'student', component: StudentComponent, canActivate: [AuthGuard], data: {role: 'learner'},
     children: [
       {path: 'courses', component: CoursesComponent, children: []},
       {path: 'courses/:courseId', component: AboutCourseComponent},
@@ -62,25 +62,28 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    component: AdminComponent,canActivate: [AuthGuard], data: { role: 'employee' },
+    component: AdminComponent, canActivate: [AuthGuard], data: {role: 'employee'},
     children: [
       {
-        path: 'applications', component: ApplicationComponent,canActivate: [AuthGuard], data: { role: 'employee' }
+        path: 'applications', component: ApplicationComponent, canActivate: [AuthGuard], data: {role: 'employee'}
       },
       {
-        path: 'course', component: CourseComponent,canActivate: [AuthGuard], data: { role: 'employee' }
+        path: 'course', component: CourseComponent, canActivate: [AuthGuard], data: {role: 'employee'}
       },
       {
-        path: 'employees', component: EmployeeComponent,canActivate: [AuthGuard], data: { role: 'employee' }
+        path: 'employees', component: EmployeeComponent, canActivate: [AuthGuard], data: {role: 'employee'}
       },
       {
-        path: 'curator-add', component: CuratorAddComponent,canActivate: [AuthGuard], data: { role: 'employee' }
+        path: 'curator-add', component: CuratorAddComponent, canActivate: [AuthGuard], data: {role: 'employee'}
       },
       {
-        path: 'learner-add', component: LearnerComponent,canActivate: [AuthGuard], data: { role: 'employee' }
+        path: 'learner-add', component: LearnerComponent, canActivate: [AuthGuard], data: {role: 'employee'}
       },
       {
-        path: 'edit-course/:courseId', component: EditCourseComponent,canActivate: [AuthGuard], data: { role: 'employee' },
+        path: 'edit-course/:courseId',
+        component: EditCourseComponent,
+        canActivate: [AuthGuard],
+        data: {role: 'employee'},
         children: [
           {
             path: 'edit-module/:moduleId',
@@ -89,7 +92,7 @@ export const routes: Routes = [
               {
                 path: 'edit-topic/:topicId',
                 component: EditTopicComponent,
-                canDeactivate: [pendingChangeGuard]
+                canDeactivate: [canDeactivateGuard]
               }
             ]
           }
@@ -98,14 +101,14 @@ export const routes: Routes = [
       {
         path: 'flow-details/:flowId', component: FlowDetailsComponent,
         children: [
-          {path: 'flow-deadlines/:courseId', component: FlowDeadlinesComponent},
+          {path: 'flow-deadlines/:courseId', component: FlowDeadlinesComponent, canDeactivate: [canDeactivateGuard],},
         ]
       }
     ]
   },
   {
     path: 'curator',
-    component: CuratorComponent,canActivate: [AuthGuard], data: { role: 'curator' },
+    component: CuratorComponent, canActivate: [AuthGuard], data: {role: 'curator'},
     children: [
       {
         path: 'curator-homework', component: HomeworksComponent
@@ -127,7 +130,7 @@ export const routes: Routes = [
 
   {
     path: 'sales',
-    component: SalesComponent,canActivate: [AuthGuard], data: { role: 'sales' },
+    component: SalesComponent, canActivate: [AuthGuard], data: {role: 'sales'},
     children: [
       {
         path: 'application-sales', component: ApplicationSalesComponent
