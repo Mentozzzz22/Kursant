@@ -7,12 +7,13 @@ import {BehaviorSubject} from "rxjs";
 import {tap} from "rxjs/operators";
 import {LearnerCourse} from "../../assets/models/learner_course.interface";
 import {CourseInfo} from "../../assets/models/CourseInfo.interface";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
-  private apiUrl = 'http://127.0.0.1:8000/api/course/';
+  private apiUrl = environment.apiUrl + '/api/course/';
   private http = inject(HttpClient);
   private searchTextSubject = new BehaviorSubject<string>('');
   private userService = inject(UserService);

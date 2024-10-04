@@ -8,12 +8,13 @@ import {GetFlows} from "../../assets/models/getFlows.interface";
 import {GetFlow} from "../../assets/models/getFlow.interface";
 import {GetDeadlines} from "../../assets/models/getDeadlines.interface";
 import {tap} from "rxjs/operators";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FlowService {
-  private apiUrl = 'http://127.0.0.1:8000/api/flow';
+  private apiUrl = environment.apiUrl + '/api/flow';
   private http = inject(HttpClient);
   private userService = inject(UserService);
 

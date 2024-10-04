@@ -7,12 +7,13 @@ import {LearnerHomework} from "../../assets/models/curatorLearnerHomeWork.interf
 import {LearnerTest} from "../../assets/models/curatorLearnerTest.interface";
 import {getLearnerTest} from "../../assets/models/getLearner_test.interface";
 import {GetLearnerQuestions} from "../../assets/models/getLearnerQuestions.interface";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LearnerTestService {
-  private apiUrl = 'http://127.0.0.1:8000/api/learner_test';
+  private apiUrl = environment.apiUrl + '/api/learner_test';
   private http = inject(HttpClient);
   private userService = inject(UserService);
 

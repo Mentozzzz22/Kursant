@@ -5,12 +5,13 @@ import {Course} from "../../assets/models/course.interface";
 import {Employee} from "../../assets/models/employee.interface";
 import {UserService} from "./user.service";
 import {SalesApplication} from "../../assets/models/salesApplication.interface";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeService {
-  private apiUrl = 'http://127.0.0.1:8000/api/employee/';
+  private apiUrl = environment.apiUrl + '/api/employee/';
   private http = inject(HttpClient);
   private userService = inject(UserService);
 

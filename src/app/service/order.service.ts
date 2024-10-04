@@ -3,12 +3,13 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {BehaviorSubject, Observable} from "rxjs";
 import {SalesApplication} from "../../assets/models/salesApplication.interface";
 import {UserService} from "./user.service";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = 'http://127.0.0.1:8000/api/order/';
+  private apiUrl = environment.apiUrl + '/api/order/';
   private http = inject(HttpClient)
   private cartCount = new BehaviorSubject<number>(this.getCartCountFromLocalStorage());
   private userService = inject(UserService);

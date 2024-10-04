@@ -3,7 +3,6 @@ import {DialogModule} from "primeng/dialog";
 import {MessageService, PrimeTemplate} from "primeng/api";
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {TableModule} from "primeng/table";
-import {ApplicationService} from "../../service/application.service";
 import {FormBuilder, FormsModule} from "@angular/forms";
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {CuratorService} from "../../service/curator.service";

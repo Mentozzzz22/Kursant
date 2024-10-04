@@ -5,13 +5,14 @@ import {catchError, Observable, Subject, throwError} from "rxjs";
 import {GetModules} from "../../assets/models/getModules.interface";
 import {Module} from "../../assets/models/module.interface";
 import {tap} from "rxjs/operators";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModuleService {
 
-  private apiUrl = 'http://127.0.0.1:8000/api/course';
+  private apiUrl = environment.apiUrl + '/api/course';
   private http = inject(HttpClient);
   private userService = inject(UserService);
 

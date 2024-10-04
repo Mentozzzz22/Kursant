@@ -6,14 +6,15 @@ import {GetModules} from "../../assets/models/getModules.interface";
 import {CuratorInterface} from "../../assets/models/curator.interface";
 import {CuratorFlowsInterface} from "../../assets/models/curatorFlows.interface";
 import {LearnersLessonProgress} from "../../assets/models/LearnersLessonProgress.interface";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CuratorService {
   private jsonUrl = 'assets/demo-data/curator-homeworks.json';
-  private apiUrl = 'http://127.0.0.1:8000/api/curator';
-  private learnerApiUrl = 'http://127.0.0.1:8000/api/learner_course';
+  private apiUrl = environment.apiUrl + '/api/curator';
+  private learnerApiUrl = environment.apiUrl + '/api/learner_course';
   private userService = inject(UserService);
   private http = inject(HttpClient)
   constructor() { }

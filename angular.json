@@ -56,7 +56,25 @@
                   "maximumError": "8kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "staging": {
+              "optimization": true,
+              "sourceMap": false,
+              "extractLicenses": true,
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
@@ -74,6 +92,9 @@
           "configurations": {
             "production": {
               "buildTarget": "Kursant:build:production"
+            },
+            "staging": {
+              "buildTarget": "Kursant:build:staging"
             },
             "development": {
               "buildTarget": "Kursant:build:development"

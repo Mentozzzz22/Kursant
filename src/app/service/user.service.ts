@@ -2,6 +2,7 @@ import {inject, Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {BehaviorSubject, catchError, Observable, throwError} from "rxjs";
 import {tap} from "rxjs/operators";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import {tap} from "rxjs/operators";
 export class UserService implements OnInit {
 
   private http = inject(HttpClient);
-  private userUrl = 'http://127.0.0.1:8000/api/user/';
+  private userUrl = environment.apiUrl + '/api/user/';
   private role: string | null = null;
   token: string | null = null;
   phone:string|null = null;

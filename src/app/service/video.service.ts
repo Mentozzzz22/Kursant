@@ -2,13 +2,14 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {UserService} from "./user.service";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class VideoService {
-  private apiUrl = 'http://127.0.0.1:8000/api/learner_course/';
-  private courseUrl = 'http://127.0.0.1:8000/api/course/free_lesson/';
+  private apiUrl = environment.apiUrl + '/api/learner_course/';
+  private courseUrl = environment.apiUrl + '/api/course/free_lesson/';
   private http = inject(HttpClient);
   private userService = inject(UserService);
   constructor() { }

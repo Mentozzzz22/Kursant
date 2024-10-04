@@ -4,12 +4,13 @@ import {Observable} from "rxjs";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Learner} from "../../assets/models/learner.interface";
 import {CuratorInterface} from "../../assets/models/curator.interface";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LearnerService {
-  private apiUrl = 'http://127.0.0.1:8000/api/learner';
+  private apiUrl = environment.apiUrl + '/api/learner';
   private userService = inject(UserService);
   private http = inject(HttpClient)
 

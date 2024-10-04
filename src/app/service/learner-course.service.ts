@@ -5,14 +5,15 @@ import {UserService} from "./user.service";
 import {LearnerCourses, OtherCourses} from "../../assets/models/learner_courses.interface";
 import {LearnerCourse, LearnerLessons} from "../../assets/models/learner_course.interface";
 import {LearnerLesson} from "../../assets/models/learner_lesson.interface";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LearnerCourseService {
 
-  private apiUrl = 'http://127.0.0.1:8000/api/learner_course';
-  private courseUrl = 'http://127.0.0.1:8000/api/course';
+  private apiUrl = environment.apiUrl + '/api/learner_course';
+  private courseUrl = environment.apiUrl + '/api/course';
   private userService = inject(UserService);
   private http = inject(HttpClient)
 

@@ -8,13 +8,14 @@ import {GetTopic} from "../../assets/models/getTopics.interface";
 import {Topic} from "../../assets/models/topic.interface";
 import {GetTopicContent} from "../../assets/models/getTopicContent.interface";
 import {tap} from "rxjs/operators";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TopicService {
 
-  private apiUrl = 'http://127.0.0.1:8000/api/course';
+  private apiUrl = environment.apiUrl + '/api/course';
   private http = inject(HttpClient);
   private userService = inject(UserService);
 
