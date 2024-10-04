@@ -9,6 +9,7 @@ export interface Curator {
 export interface flowCourses {
   course_id: number;
   name: string;
+  edit_course_id : number;
   curators: Curator[];
 }
 
