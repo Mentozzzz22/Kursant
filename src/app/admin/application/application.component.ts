@@ -1,6 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
-import {ApplicationService} from "../../service/application.service";
 import {TableModule} from "primeng/table";
 import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
@@ -139,8 +138,8 @@ export class ApplicationComponent implements OnInit{
       });
 
       if (data.courses && data.courses.length > 0) {
-        this.coursesList = data.courses.map((courseId: number) => {
-          return this.courses.find(course => course.id === courseId);
+        this.coursesList = data.courses.map((courseData) => {
+          return this.courses.find(course => course.id === courseData.course_id);
         }).filter(course => course !== undefined) as Course[];
       }
 

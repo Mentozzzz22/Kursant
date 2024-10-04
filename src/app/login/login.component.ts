@@ -84,7 +84,14 @@ export class LoginComponent implements OnInit {
       phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
     }
 
-    const code = this.smsCode.get('sms')?.value;
+    let code = this.smsCode.get('sms')?.value;
+
+    if (code) {
+      code = code.replace(/\D/g, '');
+      if (code.length === 6) {
+        code = `${code.slice(0, 3)} ${code.slice(3)}`;
+      }
+    }
 
     if (this.smsCode.valid) {
       this.userService.checkSmsCode(phone, code).subscribe(

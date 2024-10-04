@@ -51,6 +51,7 @@ export class FlowDetailsComponent implements OnInit {
   public visibleEditFlowModal: boolean = false;
   public addCuratorForm!: FormGroup;
   public selectedCourseId!: number;
+  public editCourseId!: number;
   private navigationSubscription: Subscription;
 
   constructor() {
@@ -62,7 +63,6 @@ export class FlowDetailsComponent implements OnInit {
   }
 
   private checkModuleOpened() {
-    // Здесь мы проверяем URL или параметры роута, чтобы определить, должен ли быть открыт модуль
     this.isDeadlinesOpened = this.route.firstChild != null;
   }
 
@@ -112,6 +112,10 @@ export class FlowDetailsComponent implements OnInit {
       this.flowIndex = data.index
       this.flowName = data.name
 
+      if (data.courses && data.courses.length > 0) {
+        this.editCourseId = data.courses[0].edit_course_id;
+      }
+
       this.flowEditForm.patchValue({
         name: this.flow.name,  // Устанавливаем название потока
         starts_at: this.formatDateForInput(this.flow.starts_at)  // Устанавливаем дату начала
@@ -159,6 +163,11 @@ export class FlowDetailsComponent implements OnInit {
 
   public navigateToDeadlines(courseId: number) {
     this.router.navigate([`/admin/flow-details/${this.flowId}/flow-deadlines/`, courseId]);
+    this.isDeadlinesOpened = true;
+  }
+
+  public navigateToCourse() {
+    this.router.navigate([`/admin/edit-course/${this.editCourseId}`]);
     this.isDeadlinesOpened = true;
   }
 

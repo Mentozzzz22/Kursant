@@ -6,7 +6,7 @@ import {OrderService} from "../../service/order.service";
 import {SalesApplication} from "../../../assets/models/salesApplication.interface";
 import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
-import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormArray, FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Course} from "../../../assets/models/course.interface";
 import {CourseService} from "../../service/course.service";
 import {UserService} from "../../service/user.service";
@@ -69,6 +69,13 @@ export class ApplicationSalesComponent implements OnInit{
     this.loadCourses();
   }
 
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const day = ('0' + date.getDate()).slice(-2);
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  }
 
 
   public applicationsForm = this.fb.group({
@@ -76,6 +83,7 @@ export class ApplicationSalesComponent implements OnInit{
     learner_phone_number: [''],
     learner_region: [''],
     course:[''],
+    courses: this.fb.array([]),
     paid_check: [null as File | null],
     comments:['']});
 
@@ -84,9 +92,8 @@ export class ApplicationSalesComponent implements OnInit{
     learner_phone_number: [''],
     learner_region: [''],
     course:[''],
+    expires_at: [''],
     comments:['']});
-
-
 
 
   get isVisible(): boolean {
@@ -117,10 +124,17 @@ export class ApplicationSalesComponent implements OnInit{
     })
   }
 
+  get coursesFormArray(): FormArray {
+    return this.applicationsForm.get('courses') as FormArray;
+  }
+
   showDialog(application: SalesApplication) {
     this.visible  = true;
     this.loadCourses();
     this.coursesList = [];
+
+    this.applicationsForm.reset();
+    this.coursesFormArray.clear();
 
     this.orderService.getApplicationById(application.order_id).subscribe(data => {
       this.selectedApplication = data;
@@ -153,9 +167,21 @@ export class ApplicationSalesComponent implements OnInit{
       }
 
       if (data.courses && data.courses.length > 0) {
-        this.coursesList = data.courses.map((courseId: number) => {
-          return this.courses.find(course => course.id === courseId);
-        }).filter(course => course !== undefined) as Course[];
+        this.coursesList = data.courses.map((courseData) => {
+          const matchedCourse = this.courses.find(course => course.id === courseData.course_id);
+          if (matchedCourse) {
+            const dateParts = courseData.expires_at.split('.');
+            const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+            this.coursesFormArray.push(this.fb.control(formattedDate, Validators.required));
+
+            return {
+              ...matchedCourse,
+              expires_at: formattedDate
+            };
+          }
+          return null;
+        }).filter(course => course !== null) as Course[];
       }
     });
   }
@@ -163,11 +189,40 @@ export class ApplicationSalesComponent implements OnInit{
 
   addCourseToCart() {
     if (this.selectedCourse) {
-      this.coursesAddList.push(this.selectedCourse);
+      const rawExpiresAt = this.applicationAddForm.value.expires_at || '';
+      const expiresAt = rawExpiresAt ? this.formatDate(rawExpiresAt) : '';
+
+      const courseExists = this.coursesAddList.some(course => course.id === this.selectedCourse.id);
+
+      if (courseExists) {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Проверка',
+          detail: 'Курс уже добавлен в корзину',
+        });
+      } else {
+        this.coursesAddList.push({
+          ...this.selectedCourse,
+          expires_at: expiresAt
+        });
+      }
 
       this.selectedCourse = null;
     }
   }
+
+
+  updateCourseExpiration(index: number) {
+    const rawExpiresAt = this.applicationAddForm.value.expires_at;
+    const expiresAt = rawExpiresAt ? this.formatDate(rawExpiresAt) : '';
+
+    if (expiresAt && this.coursesAddList[index]) {
+      this.coursesAddList[index].expires_at = expiresAt;
+      console.log(`Updated course at index ${index} with expires_at:`, expiresAt);
+    }
+  }
+
+
 
   addCourseToUpdate() {
     if (this.selectedCourse) {
@@ -184,7 +239,11 @@ export class ApplicationSalesComponent implements OnInit{
 
         if (this.selectedApplication) {
           this.selectedApplication.courses = this.selectedApplication.courses || [];
-          this.selectedApplication.courses.push(this.selectedCourse.id);
+          this.selectedApplication.courses.push({
+            course_id: this.selectedCourse.id,
+            expires_at: ''
+          });
+          this.coursesFormArray.push(this.fb.control('', Validators.required));
         } else {
           console.error('Selected application is null.');
         }
@@ -193,13 +252,6 @@ export class ApplicationSalesComponent implements OnInit{
     }
   }
 
-
-
-
-
-  closeImageModal() {
-    this.isModalVisible = false;
-  }
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
@@ -278,12 +330,22 @@ export class ApplicationSalesComponent implements OnInit{
         return;
       }
 
-      if (this.selectedApplication.courses && this.selectedApplication.courses.length > 0) {
-        form.append('courses', JSON.stringify(this.selectedApplication.courses));
+      const coursesWithDates = this.selectedApplication.courses.map((course, index) => {
+        const expiresAt = this.coursesFormArray.at(index).value;
+        return {
+          course_id: course.course_id,
+          expires_at: this.formatDate(expiresAt)
+        };
+      });
+
+      if (coursesWithDates.length > 0) {
+        form.append('courses', JSON.stringify(coursesWithDates));
       } else {
         console.error("Courses are missing");
         return;
       }
+
+
 
       this.orderService.acceptSalesManagerOrder(form).subscribe(
         response => {
@@ -328,12 +390,14 @@ export class ApplicationSalesComponent implements OnInit{
       }
 
       if (this.coursesAddList && this.coursesAddList.length > 0) {
-        const courseIds = this.coursesAddList.map(course => course.id);
-        form.append('courses', JSON.stringify(courseIds));
-      } else {
-        console.error('Courses are missing');
-        return;
+        const courseData = this.coursesAddList.map(course => ({
+          course_id: course.id,
+          expires_at: this.formatDate(course.expires_at)
+        }));
+        form.append('courses', JSON.stringify(courseData));
       }
+
+
 
       this.orderService.acceptSalesManagerOrder(form).subscribe(
         response => {

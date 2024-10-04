@@ -67,7 +67,8 @@
 
 .flow-card-header {
   display: flex;
-  max-width: 500px;
+  max-width: 650px;
+  gap:10px;
   justify-content: space-between;
   align-items: center;
 }
@@ -80,8 +81,9 @@
   font-size: 13px;
   font-weight: 600;
   display: flex;
-  gap: 10px;
+  gap: 15px;
   align-items: center;
+  margin-right:10px;
 }
 
 .flow-page-container p {
