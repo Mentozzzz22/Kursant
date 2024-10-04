@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ConfirmationService, MessageService, PrimeTemplate} from "primeng/api";
 import {Employee} from "../../../assets/models/employee.interface";
 import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
@@ -47,12 +47,12 @@ export class LearnerComponent implements OnInit {
   visible: boolean = false;
   visibleShow: boolean = false;
   public selectedCurator: Employee | null = null;
-  public regions:any[]=[];
+  public regions: any[] = [];
   public filteredRegions: string[] = [];
 
 
-
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
+
   ngOnInit(): void {
     this.loadLeaner()
     this.loadRegions();
@@ -109,88 +109,126 @@ export class LearnerComponent implements OnInit {
       this.visibleShow = value;
     }
   }
+
   showDialog() {
     this.visible = true;
   }
 
 
   public learnerForm = this.fb.group({
-    fullname: [''],
-    phone_number: [''],
-    region: [''],
-    is_active: [true]
+    fullname: ['', Validators.required],
+    phone_number: ['', Validators.required],
+    region: ['', Validators.required],
+    is_active: [true, Validators.required]
   });
 
   public learnerUpdateForm = this.fb.group({
-    fullname: [''],
-    phone_number: [''],
-    region: [''],
-    is_active: [true]
+    fullname: ['', Validators.required],
+    phone_number: ['', Validators.required],
+    region: ['', Validators.required],
+    is_active: [true, Validators.required]
   });
 
   onSubmit(): void {
+    if (this.learnerForm.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Ошибка',
+        detail: `Заполните все поля`
+      });
+    } else {
+      const phone = this.learnerForm.value.phone_number || '';
 
-    const phone = this.learnerForm.value.phone_number || '';
+      const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
 
-    const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
+      const learnerData: Learner = {
+        id: this.selectedCurator?.id,
+        fullname: this.learnerForm.value.fullname || '',
+        phone_number: formattedPhone || '',
+        region: this.learnerForm.value.region || '',
+        is_active: this.learnerForm.value.is_active ?? true
+      };
 
-    const learnerData: Learner = {
-      id: this.selectedCurator?.id,
-      fullname: this.learnerForm.value.fullname || '',
-      phone_number: formattedPhone || '',
-      region: this.learnerForm.value.region || '',
-      is_active: this.learnerForm.value.is_active ?? true
-    };
+      this.learnerService.saveLeaner(learnerData).subscribe(
+        response => {
 
-    this.learnerService.saveLeaner(learnerData).subscribe(
-      response => {
+          this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Ученик успешно создан'});
 
-        this.messageService.add({ severity: 'success', summary: 'Успешно', detail: 'Ученик успешно создан' });
-
-        this.visible = false;
-        this.loadLeaner();
-      },
-      error => {
-        if (error.status === 409) {
-          this.messageService.add({ severity: 'warn', summary: 'Конфликт', detail: 'Ученик с таким номером телефона уже существует' });
-        } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: `Ошибка на стороне сервера (${error.status})` });
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так' });
+          this.visible = false;
+          this.learnerForm.reset()
+          this.learnerForm.patchValue({ is_active: true });
+          this.loadLeaner();
+        },
+        error => {
+          if (error.status === 409) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Конфликт',
+              detail: 'Ученик с таким номером телефона уже существует'
+            });
+          } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: `Ошибка на стороне сервера (${error.status})`
+            });
+          } else {
+            this.messageService.add({severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так'});
+          }
         }
-      }
-    );
+      );
+    }
   }
 
   onUpdate(): void {
-    const phone = this.learnerUpdateForm.value.phone_number || '';
+    if (this.learnerUpdateForm.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Ошибка',
+        detail: `Заполните все поля`
+      });
+    } else {
+      const phone = this.learnerUpdateForm.value.phone_number || '';
 
-    const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
+      const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
 
-    const learnerData: Learner = {
-      id: this.selectedCurator?.id,
-      fullname: this.learnerUpdateForm.value.fullname || '',
-      phone_number: formattedPhone || '',
-      region: this.learnerForm.value.region || '',
-      is_active: this.learnerUpdateForm.value.is_active ?? true
-    };
+      const learnerData: Learner = {
+        id: this.selectedCurator?.id,
+        fullname: this.learnerUpdateForm.value.fullname || '',
+        phone_number: formattedPhone || '',
+        region: this.learnerForm.value.region || '',
+        is_active: this.learnerUpdateForm.value.is_active ?? true
+      };
 
-    this.learnerService.saveLeaner(learnerData).subscribe(
-      response => {
-        this.messageService.add({ severity: 'success', summary: 'Успешно', detail: 'Данные ученика успешно обновлены' });
-        this.visibleShow = false;
-        this.loadLeaner();
-      },
-      error => {
-        if (error.status === 409) {
-          this.messageService.add({ severity: 'warn', summary: 'Конфликт', detail: 'Ученик с таким номером телефона уже существует' });
-        } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: `Ошибка на стороне сервера (${error.status})` });
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так' });
+      this.learnerService.saveLeaner(learnerData).subscribe(
+        response => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: 'Данные ученика успешно обновлены'
+          });
+          this.visibleShow = false;
+          this.loadLeaner();
+        },
+        error => {
+          if (error.status === 409) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Конфликт',
+              detail: 'Ученик с таким номером телефона уже существует'
+            });
+          } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: `Ошибка на стороне сервера (${error.status})`
+            });
+          } else {
+            this.messageService.add({severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так'});
+          }
         }
-      }
-    );
+      );
+    }
   }
 
 
@@ -208,7 +246,11 @@ export class LearnerComponent implements OnInit {
         this.visibleShow = true;
       },
       error => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Не удалось загрузить данные сотрудника'});
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось загрузить данные сотрудника'
+        });
       }
     );
   }
@@ -219,15 +261,23 @@ export class LearnerComponent implements OnInit {
       this.learnerService.deleteLearner(learnerId).subscribe(
         response => {
           this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Ученик успешно удален'});
-          this.visibleShow=false;
+          this.visibleShow = false;
           this.loadLeaner();
         },
         error => {
-          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Произошла ошибка при удалении ученика'});
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Произошла ошибка при удалении ученика'
+          });
         }
       );
     } else {
-      this.messageService.add({severity: 'warn', summary: 'Внимание', detail: 'Не удалось определить ученика для удаления'});
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Внимание',
+        detail: 'Не удалось определить ученика для удаления'
+      });
     }
   }
 
@@ -240,16 +290,16 @@ export class LearnerComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       accept: () => {
-        this.messageService.add({ severity: 'success', summary: 'Успешно', detail: 'Ученик удален'});
+        this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Ученик удален'});
       },
       reject: () => {
-        this.messageService.add({ severity: 'info', summary: 'Отмена', detail: 'Вы отклонили'});
+        this.messageService.add({severity: 'info', summary: 'Отмена', detail: 'Вы отклонили'});
       }
     });
   }
 
   closeDialog() {
-    this.visible  = false;
+    this.visible = false;
   }
 
 

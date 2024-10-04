@@ -37,7 +37,7 @@
           <td>{{ progress.accepted_at }}</td>
           <td>
             {{ progress.lessons_passed }} из {{ progress.total_lessons }}
-            <div class="progress-bar-outer" style="background-color: #D9D9D9;">
+            <div class="progress-bar-outer" style="background-color: #D9D9D9;" *ngIf="progress.total_lessons>0">
               <div class="progress-bar-inner" [style.width]="(progress.lessons_passed / progress.total_lessons * 100) + '%'"></div>
             </div>
           </td>

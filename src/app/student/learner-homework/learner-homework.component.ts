@@ -100,14 +100,14 @@ export class LearnerHomeworkComponent implements OnInit {
   getTemaStatusIcon(status: string): string {
     if (status === 'passed') {
       return 'assets/images/finished.svg';
-    } else if (status === 'passed-retake') {
-      return 'assets/images/passed-retake.svg';
     } else if (status === 'opened') {
       return 'assets/images/opened.svg';
     } else if (status === 'expired') {
       return 'assets/images/expired.svg';
     } else if (status === 'opened_retake') {
       return 'assets/images/opened-retake.svg';
+    } else if (status === 'passed_retake') {
+      return 'assets/images/finished.svg';
     } else {
       return 'assets/images/closed.svg';
     }
@@ -166,6 +166,7 @@ export class LearnerHomeworkComponent implements OnInit {
     if (this.homeworkFile) {
       this.learnerHomeworkService.saveLearnerHomework(this.homework.id, this.homeworkFile).subscribe({
         next: () => {
+          this.loadHomework(this.homeworkId)
           this.messageService.add({
             severity: 'success',
             summary: 'Успешно',

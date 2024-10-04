@@ -5,7 +5,7 @@
     <div class="supplier-actions">
       <div class="search-form">
         <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
-        <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input" [(ngModel)]="searchText" />
+        <input type="text" id="supplierSearch" placeholder="ФИО, номер телефона" class="search-input" [(ngModel)]="searchText" />
         <button type="submit" class="search-button" (click)="searchCurator()">Поиск</button>
       </div>
       <button class="add-course-btn" (click)="showDialog()">
@@ -24,7 +24,7 @@
           <th>ID</th>
           <th>ФИО</th>
           <th>Телефон</th>
-          <th>Статусы</th>
+          <th>Активный?</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-employee >
@@ -32,11 +32,7 @@
           <td>{{ employee.id }}</td>
           <td>{{ employee.fullname }}</td>
           <td>{{ employee.phone_number }}</td>
-          <td><p-checkbox
-            [(ngModel)]="employee.is_active"
-            [binary]="true"
-            readonly
-            inputId="binary" /></td>
+          <td>{{ employee.is_active ? 'Да' : 'Нет' }}</td>
         </tr>
 
       </ng-template>
@@ -116,7 +112,7 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group activ">
             <label for="is_active">Активный?</label>
             <p-checkbox id="is_active" formControlName="is_active" binary="true"></p-checkbox>
           </div>
@@ -176,7 +172,7 @@
           </div>
 
 
-          <div class="form-group">
+          <div class="form-group activ">
             <label for="is_activeUpdate">Активный?</label>
             <p-checkbox id="is_activeUpdate" formControlName="is_active" binary="true"></p-checkbox>
           </div>

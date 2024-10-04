@@ -7,10 +7,12 @@ import {NgForOf, NgIf} from "@angular/common";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {PaginatorModule} from "primeng/paginator";
 import {MessageService, PrimeTemplate} from "primeng/api";
-import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {TableModule} from "primeng/table";
 import {CheckboxModule} from "primeng/checkbox";
 import {MultiSelectModule} from "primeng/multiselect";
+import {NgxMaskDirective} from "ngx-mask";
+
 @Component({
   selector: 'app-employee',
   standalone: true,
@@ -25,7 +27,8 @@ import {MultiSelectModule} from "primeng/multiselect";
     ReactiveFormsModule,
     TableModule,
     CheckboxModule,
-    MultiSelectModule
+    MultiSelectModule,
+    NgxMaskDirective
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.css'
@@ -36,18 +39,19 @@ export class EmployeeComponent implements OnInit {
   private messageService = inject(MessageService);
 
   public permissions: boolean[] = [];
-  employees: Employee[]= [];
+  employees: Employee[] = [];
   searchText: string = '';
   visible: boolean = false;
   visibleShow: boolean = false;
   public selectedEmployee: Employee | null = null;
 
   public availableAccesses: any[] = [
-    { label: 'Learner', value: 'learner' },
-    { label: 'Course', value: 'course' },
-    { label: 'Order', value: 'order' },
-    { label: 'Curator', value: 'curator' },
-    { label: 'Sales Manager', value: 'sales_manager' }
+    {label: 'Сотрудники', value: 'employee'},
+    {label: 'Запросы на доступ', value: 'admin_order'},
+    {label: 'Заявки на курсы', value: 'sales_manager_order'},
+    {label: 'Ученики', value: 'learner'},
+    {label: 'Курсы', value: 'course'},
+    {label: 'Кураторы', value: 'curator'},
   ];
 
   ngOnInit(): void {
@@ -58,7 +62,7 @@ export class EmployeeComponent implements OnInit {
     this.getEmployees(this.searchText);
   }
 
-  getEmployees( search: string = '') {
+  getEmployees(search: string = '') {
     this.employeeService.getEmployees(search).subscribe(data => {
       this.employees = data;
     });
@@ -76,83 +80,118 @@ export class EmployeeComponent implements OnInit {
       this.visibleShow = value;
     }
   }
+
   showDialog() {
     this.visible = true;
   }
 
 
   public employeeForm = this.fb.group({
-    fullname: [''],
-    phone_number: [''],
-    job_title: [''],
-    is_active: [true],
-    permissions: [[] as string[]]
+    fullname: ['', Validators.required],
+    phone_number: ['', Validators.required],
+    job_title: ['', Validators.required],
+    is_active: [true, Validators.required],
+    permissions: [[] as string[], Validators.required]
   });
 
   public employeeUpdateForm = this.fb.group({
-    fullname: [''],
-    phone_number: [''],
-    job_title: [''],
-    is_active: [true],
-    permissions: [[] as string[]]
+    fullname: ['', Validators.required],
+    phone_number: ['',  Validators.required],
+    job_title: ['',  Validators.required],
+    is_active: [true,  Validators.required],
+    permissions: [[] as string[],  Validators.required]
   });
 
   onSubmit(): void {
-    const employeeData: Employee = {
-      id: this.selectedEmployee?.id,
-      fullname: this.employeeForm.value.fullname || '',
-      phone_number: this.employeeForm.value.phone_number || '',
-      job_title: this.employeeForm.value.job_title || '',
-      is_active: this.employeeForm.value.is_active ?? true,
-      permissions: this.employeeForm.value.permissions || []
-    };
+    if(this.employeeForm.invalid) {
+      this.messageService.add({
+        severity: 'warn', summary: 'Ошибка', detail: `Заполните все поля`
+      })
+    } else {
+      const employeeData: Employee = {
+        id: this.selectedEmployee?.id,
+        fullname: this.employeeForm.value.fullname || '',
+        phone_number: this.employeeForm.value.phone_number || '',
+        job_title: this.employeeForm.value.job_title || '',
+        is_active: this.employeeForm.value.is_active ?? true,
+        permissions: this.employeeForm.value.permissions || []
+      };
 
-    this.employeeService.saveEmployee(employeeData).subscribe(
-      response => {
+      this.employeeService.saveEmployee(employeeData).subscribe(
+        response => {
 
-          this.messageService.add({ severity: 'success', summary: 'Успешно', detail: 'Сотрудник успешно создан' });
+          this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Сотрудник успешно создан'});
 
-        this.visible = false;
-        this.getEmployees();
-      },
-      error => {
-        if (error.status === 409) {
-          this.messageService.add({ severity: 'warn', summary: 'Конфликт', detail: 'Сотрудник с таким номером телефона уже существует' });
-        } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: `Ошибка на стороне сервера (${error.status})` });
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так' });
+          this.visible = false;
+          this.employeeForm.reset();
+          this.employeeForm.patchValue({ is_active: true });
+          this.getEmployees();
+        },
+        error => {
+          if (error.status === 409) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Конфликт',
+              detail: 'Сотрудник с таким номером телефона уже существует'
+            });
+          } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: `Ошибка на стороне сервера (${error.status})`
+            });
+          } else {
+            this.messageService.add({severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так'});
+          }
         }
-      }
-    );
+      );
+    }
   }
 
   onUpdate(): void {
-    const employeeData: Employee = {
-      id: this.selectedEmployee?.id,
-      fullname: this.employeeUpdateForm.value.fullname || '',
-      phone_number: this.employeeUpdateForm.value.phone_number || '',
-      job_title: this.employeeUpdateForm.value.job_title || '',
-      is_active: this.employeeUpdateForm.value.is_active ?? true,
-      permissions: this.employeeUpdateForm.value.permissions || []
-    };
+    if (this.employeeUpdateForm.invalid) {
+      this.messageService.add({
+        severity: 'warn', summary: 'Ошибка', detail: `Заполните все поля`
+      })
+    } else {
+      const employeeData: Employee = {
+        id: this.selectedEmployee?.id,
+        fullname: this.employeeUpdateForm.value.fullname || '',
+        phone_number: this.employeeUpdateForm.value.phone_number || '',
+        job_title: this.employeeUpdateForm.value.job_title || '',
+        is_active: this.employeeUpdateForm.value.is_active ?? true,
+        permissions: this.employeeUpdateForm.value.permissions || []
+      };
 
-    this.employeeService.saveEmployee(employeeData).subscribe(
-      response => {
-        this.messageService.add({ severity: 'success', summary: 'Успешно', detail: 'Данные сотрудника успешно обновлены' });
-        this.visibleShow = false;
-        this.getEmployees();
-      },
-      error => {
-        if (error.status === 409) {
-          this.messageService.add({ severity: 'warn', summary: 'Конфликт', detail: 'Сотрудник с таким номером телефона уже существует' });
-        } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: `Ошибка на стороне сервера (${error.status})` });
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так' });
+      this.employeeService.saveEmployee(employeeData).subscribe(
+        response => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: 'Данные сотрудника успешно обновлены'
+          });
+          this.visibleShow = false;
+          this.getEmployees();
+        },
+        error => {
+          if (error.status === 409) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Конфликт',
+              detail: 'Сотрудник с таким номером телефона уже существует'
+            });
+          } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: `Ошибка на стороне сервера (${error.status})`
+            });
+          } else {
+            this.messageService.add({severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так'});
+          }
         }
-      }
-    );
+      );
+    }
   }
 
 
@@ -171,7 +210,11 @@ export class EmployeeComponent implements OnInit {
         this.visibleShow = true;
       },
       error => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Не удалось загрузить данные сотрудника'});
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось загрузить данные сотрудника'
+        });
       }
     );
   }
@@ -183,20 +226,29 @@ export class EmployeeComponent implements OnInit {
       this.employeeService.deleteEmployee(employeeId).subscribe(
         response => {
           this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Пользователь успешно удален'});
-          this.visibleShow=false;
+          this.getEmployees();
+          this.visibleShow = false;
         },
         error => {
-          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Произошла ошибка при удалении пользователя'});
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Произошла ошибка при удалении пользователя'
+          });
         }
       );
     } else {
-      this.messageService.add({severity: 'warn', summary: 'Внимание', detail: 'Не удалось определить пользователя для удаления'});
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Внимание',
+        detail: 'Не удалось определить пользователя для удаления'
+      });
     }
   }
 
 
   closeDialog() {
-    this.visible  = false;
+    this.visible = false;
   }
 
 

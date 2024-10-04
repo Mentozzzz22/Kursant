@@ -5,7 +5,8 @@
     <div class="supplier-actions">
       <div class="search-form">
         <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
-        <input type="text" id="supplierSearch" placeholder="ФИО, номер телефона" class="search-input" [(ngModel)]="searchText" />
+        <input type="text" id="supplierSearch" placeholder="ФИО, номер телефона" class="search-input"
+               [(ngModel)]="searchText"/>
         <button type="submit" class="search-button" (click)="searchEmployees()">Поиск</button>
       </div>
       <button class="add-course-btn" (click)="showDialog()">
@@ -24,21 +25,17 @@
           <th>ID</th>
           <th>ФИО</th>
           <th>Телефон</th>
-          <th>Статусы</th>
-          <th></th>
+          <th>Должность</th>
+          <th>Активный?</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-employee >
+      <ng-template pTemplate="body" let-employee>
         <tr (click)="getEmployeeById(employee.id)">
           <td>{{ employee.id }}</td>
           <td>{{ employee.fullname }}</td>
           <td>{{ employee.phone_number }}</td>
           <td>{{ employee.job_title }}</td>
-          <td><p-checkbox
-            [(ngModel)]="employee.is_active"
-            [binary]="true"
-            readonly
-            inputId="binary" /></td>
+          <td>{{ employee.is_active ? 'Да' : 'Нет' }}</td>
         </tr>
 
       </ng-template>
@@ -70,7 +67,7 @@
   </ng-template>
 
   <ng-container *ngIf="!visibleShow">
-    <form  [formGroup]="employeeForm">
+    <form [formGroup]="employeeForm">
       <div class="modal-content">
         <div class="block-two">
 
@@ -87,8 +84,9 @@
           <div class="form-group">
             <label for="phone">Телефон номер</label>
             <div class="input-container">
-              <input type="text" id="phone" class="form-control" formControlName="phone_number">
-              <button class="edit-btn">
+              <input type="text" id="phone" formControlName="phone_number" placeholder="+7 (___) ___ __ __"
+                     [mask]="'(000) 000 00 00'"
+                     prefix="+7 ">              <button class="edit-btn">
                 <i class="pi pi-pencil"></i>
               </button>
             </div>
@@ -106,7 +104,7 @@
 
           <div class="form-group">
             <label for="region">Доступы</label>
-            <div >
+            <div>
               <div class="input-container">
                 <p-multiSelect
                   formControlName="permissions"
@@ -124,8 +122,7 @@
           </div>
 
 
-
-          <div class="form-group">
+          <div class="form-group activ">
             <label for="region">Активный?</label>
             <p-checkbox id="is_active" formControlName="is_active" binary="true"></p-checkbox>
           </div>
@@ -137,7 +134,7 @@
   </ng-container>
 
   <ng-container *ngIf="visibleShow">
-    <form  [formGroup]="employeeUpdateForm">
+    <form [formGroup]="employeeUpdateForm">
       <div class="modal-content">
         <div class="block-two">
 
@@ -154,7 +151,9 @@
           <div class="form-group">
             <label for="phoneUpdate">Телефон номер</label>
             <div class="input-container">
-              <input type="text" id="phoneUpdate" class="form-control" formControlName="phone_number">
+              <input type="text" id="phoneUpdate" formControlName="phone_number" placeholder="+7 (___) ___ __ __"
+                     [mask]="'(000) 000 00 00'"
+                     prefix="+7 ">
               <button class="edit-btn">
                 <i class="pi pi-pencil"></i>
               </button>
@@ -173,7 +172,7 @@
 
           <div class="form-group">
             <label>Доступы</label>
-            <div >
+            <div>
               <div class="input-container">
                 <p-multiSelect
                   formControlName="permissions"
@@ -190,7 +189,7 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group activ">
             <label for="is_activeUpdate">Активный?</label>
             <p-checkbox id="is_activeUpdate" formControlName="is_active" binary="true"></p-checkbox>
           </div>
@@ -204,7 +203,7 @@
   <ng-template pTemplate="footer">
     <ng-container *ngIf="!visibleShow">
       <div class="button-group">
-        <button class="filled-button" (click)="onSubmit()" >Добавить сотрудника</button>
+        <button class="filled-button" (click)="onSubmit()">Добавить сотрудника</button>
 
         <button class="text-button" (click)="closeDialog()">Назад</button>
       </div>
@@ -212,7 +211,7 @@
 
     <ng-container *ngIf="visibleShow">
       <div class="button-group">
-        <button class="filled-button" (click)="onUpdate()" >Обновить сотрудника</button>
+        <button class="filled-button" (click)="onUpdate()">Обновить сотрудника</button>
 
         <button class="text-button" (click)="deleteEmployee()">Удалить сотрудника</button>
       </div>

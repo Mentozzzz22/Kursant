@@ -5,12 +5,10 @@ import {MultiSelectModule} from "primeng/multiselect";
 import {NgIf} from "@angular/common";
 import {PaginatorModule} from "primeng/paginator";
 import {ConfirmationService, MessageService, PrimeTemplate} from "primeng/api";
-import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {TableModule} from "primeng/table";
-import {EmployeeService} from "../../service/employee.service";
 import {Employee} from "../../../assets/models/employee.interface";
 import {CuratorService} from "../../service/curator.service";
-import {Curator} from "../../../assets/models/getFlow.interface";
 import {CuratorInterface} from "../../../assets/models/curator.interface";
 import {NgxMaskDirective} from "ngx-mask";
 import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
@@ -49,6 +47,7 @@ export class CuratorAddComponent implements OnInit {
 
 
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
+
   ngOnInit(): void {
     this.loadCurators()
   }
@@ -78,84 +77,124 @@ export class CuratorAddComponent implements OnInit {
       this.visibleShow = value;
     }
   }
+
   showDialog() {
     this.visible = true;
   }
 
 
   public curatorForm = this.fb.group({
-    fullname: [''],
-    phone_number: [''],
-    is_active: [true]
+    fullname: ['', Validators.required],
+    phone_number: ['', Validators.required],
+    is_active: [true, Validators.required]
   });
 
   public curatorUpdateForm = this.fb.group({
-    fullname: [''],
-    phone_number: [''],
-    is_active: [true]
+    fullname: ['', Validators.required],
+    phone_number: ['', Validators.required],
+    is_active: [true, Validators.required]
   });
 
   onSubmit(): void {
 
-    const phone = this.curatorForm.value.phone_number || '';
+    if (this.curatorForm.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Ошибка',
+        detail: `Заполните все поля`
+      });
+    } else {
+      const phone = this.curatorForm.value.phone_number || '';
 
-    const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
+      const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
 
-    const curatorData: CuratorInterface = {
-      id: this.selectedCurator?.id,
-      fullname: this.curatorForm.value.fullname || '',
-      phone_number: formattedPhone || '',
-      is_active: this.curatorForm.value.is_active ?? true
-    };
+      const curatorData: CuratorInterface = {
+        id: this.selectedCurator?.id,
+        fullname: this.curatorForm.value.fullname || '',
+        phone_number: formattedPhone || '',
+        is_active: this.curatorForm.value.is_active ?? true
+      };
 
-    this.curatorService.saveCurator(curatorData).subscribe(
-      response => {
+      this.curatorService.saveCurator(curatorData).subscribe(
+        response => {
 
-        this.messageService.add({ severity: 'success', summary: 'Успешно', detail: 'Куратор успешно создан' });
+          this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Куратор успешно создан'});
 
-        this.visible = false;
-        this.loadCurators();
-      },
-      error => {
-        if (error.status === 409) {
-          this.messageService.add({ severity: 'warn', summary: 'Конфликт', detail: 'Куратор с таким номером телефона уже существует' });
-        } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: `Ошибка на стороне сервера (${error.status})` });
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так' });
+          this.visible = false;
+          this.curatorForm.reset();
+          this.curatorForm.patchValue({ is_active: true });
+          this.loadCurators();
+        },
+        error => {
+          if (error.status === 409) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Конфликт',
+              detail: 'Куратор с таким номером телефона уже существует'
+            });
+          } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: `Ошибка на стороне сервера (${error.status})`
+            });
+          } else {
+            this.messageService.add({severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так'});
+          }
         }
-      }
-    );
+      );
+    }
   }
 
   onUpdate(): void {
-    const phone = this.curatorUpdateForm.value.phone_number || '';
 
-    const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
+    if (this.curatorUpdateForm.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Ошибка',
+        detail: `Заполните все поля`
+      });
+    } else {
+      const phone = this.curatorUpdateForm.value.phone_number || '';
 
-    const curatorData: CuratorInterface = {
-      id: this.selectedCurator?.id,
-      fullname: this.curatorUpdateForm.value.fullname || '',
-      phone_number: formattedPhone || '',
-      is_active: this.curatorUpdateForm.value.is_active ?? true
-    };
+      const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
 
-    this.curatorService.saveCurator(curatorData).subscribe(
-      response => {
-        this.messageService.add({ severity: 'success', summary: 'Успешно', detail: 'Данные куратора успешно обновлены' });
-        this.visibleShow = false;
-        this.loadCurators();
-      },
-      error => {
-        if (error.status === 409) {
-          this.messageService.add({ severity: 'warn', summary: 'Конфликт', detail: 'Куратор с таким номером телефона уже существует' });
-        } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: `Ошибка на стороне сервера (${error.status})` });
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так' });
+      const curatorData: CuratorInterface = {
+        id: this.selectedCurator?.id,
+        fullname: this.curatorUpdateForm.value.fullname || '',
+        phone_number: formattedPhone || '',
+        is_active: this.curatorUpdateForm.value.is_active ?? true
+      };
+
+      this.curatorService.saveCurator(curatorData).subscribe(
+        response => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: 'Данные куратора успешно обновлены'
+          });
+          this.visibleShow = false;
+          this.loadCurators();
+        },
+        error => {
+          if (error.status === 409) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Конфликт',
+              detail: 'Куратор с таким номером телефона уже существует'
+            });
+          } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: `Ошибка на стороне сервера (${error.status})`
+            });
+          } else {
+            this.messageService.add({severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так'});
+          }
         }
-      }
-    );
+      );
+    }
   }
 
 
@@ -172,7 +211,11 @@ export class CuratorAddComponent implements OnInit {
         this.visibleShow = true;
       },
       error => {
-        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Не удалось загрузить данные сотрудника'});
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось загрузить данные сотрудника'
+        });
       }
     );
   }
@@ -183,15 +226,23 @@ export class CuratorAddComponent implements OnInit {
       this.curatorService.deleteCurator(curatorId).subscribe(
         response => {
           this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Куратор успешно удален'});
-          this.visibleShow=false;
+          this.visibleShow = false;
           this.loadCurators();
         },
         error => {
-          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Произошла ошибка при удалении куратора'});
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Произошла ошибка при удалении куратора'
+          });
         }
       );
     } else {
-      this.messageService.add({severity: 'warn', summary: 'Внимание', detail: 'Не удалось определить куратора для удаления'});
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Внимание',
+        detail: 'Не удалось определить куратора для удаления'
+      });
     }
   }
 
@@ -204,16 +255,16 @@ export class CuratorAddComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       accept: () => {
-        this.messageService.add({ severity: 'success', summary: 'Успешно', detail: 'Куратор удален'});
+        this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Куратор удален'});
       },
       reject: () => {
-        this.messageService.add({ severity: 'info', summary: 'Отмена', detail: 'Вы отклонили'});
+        this.messageService.add({severity: 'info', summary: 'Отмена', detail: 'Вы отклонили'});
       }
     });
   }
 
   closeDialog() {
-    this.visible  = false;
+    this.visible = false;
   }
 
 

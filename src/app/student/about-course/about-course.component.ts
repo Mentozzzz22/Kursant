@@ -74,6 +74,8 @@ export class AboutCourseComponent implements OnInit {
       return 'assets/images/expired.svg';
     } else if (status === 'opened_retake') {
       return 'assets/images/opened-retake.svg';
+    } else if (status === 'passed_retake') {
+      return 'assets/images/finished.svg';
     } else {
       return 'assets/images/closed.svg';
     }
@@ -93,7 +95,7 @@ export class AboutCourseComponent implements OnInit {
   }
 
   goToHomework(homework: any, homeworkId: number): void {
-    if(homework.status === 'passed' || homework.status === 'opened') {
+    if(homework.status === 'passed' || homework.status === 'opened' || homework.status === 'passed_retake') {
       this.router.navigate(['/student/homework', homeworkId]);    } else {
       this.messageService.add({
         severity: 'error',

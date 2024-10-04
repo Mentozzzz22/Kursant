@@ -322,6 +322,7 @@ export class TestPageComponent implements OnInit {
     this.learnerTestService.finishTest(this.testId, this.testForm.value.answers).subscribe({
       next: (response) => {
         if (response.success) {
+          this.loadTest(this.testId)
           this.messageService.add({
             severity: 'success',
             summary: 'Тест завершен',
@@ -367,14 +368,14 @@ export class TestPageComponent implements OnInit {
   getTemaStatusIcon(status: string): string {
     if (status === 'passed') {
       return 'assets/images/finished.svg';
-    } else if (status === 'passed-retake') {
-      return 'assets/images/passed-retake.svg';
     } else if (status === 'opened') {
       return 'assets/images/opened.svg';
     } else if (status === 'expired') {
       return 'assets/images/expired.svg';
     } else if (status === 'opened_retake') {
       return 'assets/images/opened-retake.svg';
+    } else if (status === 'passed_retake') {
+      return 'assets/images/finished.svg';
     } else {
       return 'assets/images/closed.svg';
     }

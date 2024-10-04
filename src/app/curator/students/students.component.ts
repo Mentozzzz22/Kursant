@@ -40,6 +40,11 @@ export class StudentsComponent implements OnInit {
   public getCuratorFlows() {
     this.curatorService.getCuratorFlows().subscribe(data => {
       this.curatorFlows = data;
+      if (this.curatorFlows.length > 0) {
+        // Выбираем первый поток по умолчанию
+        const firstFlowId = this.curatorFlows[0].id;
+        this.getLearnersLessonProgress(firstFlowId);
+      }
     })
   }
 
