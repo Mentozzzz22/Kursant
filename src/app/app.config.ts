@@ -9,6 +9,10 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {DatePipe} from "@angular/common";
 import {provideNgxMask} from 'ngx-mask';
 import {DialogService} from "primeng/dynamicdialog";
+import {CalendarModule, CalendarUtils, DateAdapter} from 'angular-calendar';
+import {adapterFactory} from 'angular-calendar/date-adapters/date-fns'; // Импорт адаптера
+
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,9 +21,14 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideHttpClient(),
     importProvidersFrom(ToastModule),
+    importProvidersFrom(CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    })),
     {provide: MessageService, useClass: MessageService},
     {provide: DialogService, useClass: DialogService},
     {provide: ConfirmationService, useClass: ConfirmationService},
     {provide:DatePipe, useClass:DatePipe},
-    provideNgxMask()
+    provideNgxMask(),
+    {provide: CalendarUtils, useClass: CalendarUtils}
   ]};

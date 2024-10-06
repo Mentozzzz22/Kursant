@@ -35,6 +35,7 @@ import {NonAuthGuard} from "./service/nonauth.guard";
 import {AboutCourseNonAuthComponent} from "./non-authorized/about-course-non-auth/about-course-non-auth.component";
 import {CourseDetailNonAuthComponent} from "./non-authorized/course-detail-non-auth/course-detail-non-auth.component";
 import {canDeactivateGuard} from "./can-deactivate-guard.guard";
+import {CalendarPageComponent} from "./student/calendar-page/calendar-page.component";
 
 export const routes: Routes = [
   {
@@ -42,7 +43,7 @@ export const routes: Routes = [
       {path: '', component: MainPageComponent, canActivate: [NonAuthGuard]},
       {path: 'cart', component: CartComponent, canActivate: [NonAuthGuard]},
       {path: 'about/:course_id', component: AboutCourseNonAuthComponent, canActivate: [NonAuthGuard]},
-      {path: 'course-detail/:course_id', component: CourseDetailNonAuthComponent, canActivate: [NonAuthGuard]}
+      {path: 'course-detail/:course_id', component: CourseDetailNonAuthComponent, canActivate: [NonAuthGuard]},
     ]
   },
   {path: 'login', component: LoginComponent},
@@ -58,6 +59,7 @@ export const routes: Routes = [
       {path: 'homework-list', component: HomeWorkComponent},
       {path: 'homework/:homeworkId', component: LearnerHomeworkComponent},
       {path: 'results/:testId', component: ViewTestResultComponent},
+      // {path: 'calendar', component: CalendarPageComponent},
     ]
   },
   {
