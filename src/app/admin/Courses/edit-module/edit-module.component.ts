@@ -36,7 +36,7 @@ export class EditModuleComponent implements OnInit, OnDestroy {
   public EditTopicVisible: boolean = false;
   public AddTopicVisible: boolean = false;
   public isTopicOpened: boolean = false;
-  public topics: Topic[] = []; // Для хранения тем модуля
+  public topics: Topic[] = [];
   public courseId!: number;
   public moduleId!: number;
   public selectedTopicId!: number;
@@ -48,7 +48,6 @@ export class EditModuleComponent implements OnInit, OnDestroy {
   private navigationSubscription: Subscription;
 
   constructor() {
-    // Подписываемся на события роутера
     this.navigationSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
@@ -67,7 +66,6 @@ export class EditModuleComponent implements OnInit, OnDestroy {
       this.loadTopics();
     });
 
-    // Подписываемся на событие обновления топиков
     this.topicService.topicUpdated$.subscribe(() => {
       this.loadTopics();
     });
@@ -78,7 +76,6 @@ export class EditModuleComponent implements OnInit, OnDestroy {
   }
 
   private checkTopicOpened() {
-    // Здесь мы проверяем URL или параметры роута, чтобы определить, должен ли быть открыт модуль
     this.isTopicOpened = this.route.firstChild != null;
   }
 
@@ -90,13 +87,13 @@ export class EditModuleComponent implements OnInit, OnDestroy {
 
   private initAddTopicForm() {
     this.addTopicForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]], // Поле "Название модуля" обязательно
+      name: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
 
   private initEditTopicForm() {
     this.editTopicForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]], // Поле "Название модуля" обязательно
+      name: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
 
@@ -117,7 +114,7 @@ export class EditModuleComponent implements OnInit, OnDestroy {
     if (this.addTopicForm.invalid) {
       return;
     }
-    const newTopic: Topic = this.addTopicForm.value; // Получаем данные из формы
+    const newTopic: Topic = this.addTopicForm.value;
     this.topicService.saveTopic(newTopic, this.moduleId).subscribe({
       next: () => {
         this.loadTopics();
@@ -167,11 +164,19 @@ export class EditModuleComponent implements OnInit, OnDestroy {
             this.router.navigate([`/admin/edit-course/${this.courseId}`]);
           },
           error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Ошибка при удалении модуля'
-            });
+            if (error.status === 409) {
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Ошибка',
+                detail: 'Нельзя удалить данный модуль'
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: 'Ошибка при удалении модуля'
+              });
+            }
           }
         });
       }

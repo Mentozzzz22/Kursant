@@ -10,6 +10,7 @@ import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angula
 import {NgxMaskDirective} from "ngx-mask";
 import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
 import {Button} from "primeng/button";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-cart',
@@ -38,6 +39,7 @@ export class CartComponent implements OnInit{
   private courseService = inject(CourseService);
   private orderService = inject(OrderService);
   private messageService = inject(MessageService);
+  private router = inject(Router);
   private fb = inject(FormBuilder);
   private confirmationService = inject(ConfirmationService);
   totalCurrentPrice: number = 0;
@@ -73,6 +75,10 @@ export class CartComponent implements OnInit{
     } else {
       console.log('Корзина пуста');
     }
+  }
+
+  openDetails(courseId: number) {
+    this.router.navigate(['/about', courseId]);
   }
 
   removeFromCart(courseId: number|undefined): void {

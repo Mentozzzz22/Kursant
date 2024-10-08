@@ -43,7 +43,9 @@
           <div class="test-header">
             <h5>Вопрос {{ qIndex + 1 }}</h5>
             <p-confirmPopup/>
-            <button type="button" (click)="deleteQuestion($event, qIndex)"><i class="pi pi-times"></i></button>
+            <button type="button" (click)="deleteQuestion($event, qIndex)">
+              <img src="assets/images/close_icon.svg" width="14" height="14" alt="delete">
+            </button>
           </div>
           <div class="question">
             <p>Cұрақтың берілген</p>

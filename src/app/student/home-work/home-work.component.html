@@ -14,14 +14,15 @@
         </div>
         <div class="task-score">{{ homework.mark }}/100</div>
         <div class="task-status">
-          <i *ngIf="homework.status === 'passed'" class="pi pi-check" style="color: green"></i>
-          <i *ngIf="homework.status === 'retake'" class="pi pi-times" style="color: red"></i>
-          <i *ngIf="homework.status === 'closed'" class="pi pi-lock" style="color: grey"></i>
-          <i *ngIf="homework.status === 'opened_retake'" class="pi pi-lock" style="color: grey"></i>
-          <i *ngIf="homework.status === 'passed_retake'" class="pi pi-lock" style="color: grey"></i>
+          <img src="assets/images/correct.svg" alt="right" *ngIf="homework.status === 'passed'" width="15" height="15">
+          <img src="assets/images/expired.svg" alt="right" *ngIf="homework.status === 'retake'" width="15" height="15">
+          <img src="assets/images/closed.svg" alt="right" *ngIf="homework.status === 'closed'" width="15" height="15">
+          <img src="assets/images/closed.svg" alt="right" *ngIf="homework.status === 'opened_retake'" width="15" height="15">
+          <img src="assets/images/closed.svg" alt="right" *ngIf="homework.status === 'passed_retake'" width="15" height="15">
+
         </div>
         <div class="task-arrow">
-          <i class="pi pi-angle-right"></i>
+          <img src="assets/images/right-arrow.svg" alt="right">
         </div>
       </div>
 

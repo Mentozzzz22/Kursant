@@ -59,7 +59,7 @@ export const routes: Routes = [
       {path: 'homework-list', component: HomeWorkComponent},
       {path: 'homework/:homeworkId', component: LearnerHomeworkComponent},
       {path: 'results/:testId', component: ViewTestResultComponent},
-      // {path: 'calendar', component: CalendarPageComponent},
+      {path: 'calendar', component: CalendarPageComponent},
     ]
   },
   {

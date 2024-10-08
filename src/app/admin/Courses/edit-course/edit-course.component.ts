@@ -201,12 +201,21 @@ export class EditCourseComponent implements OnInit, OnDestroy {
             this.router.navigate(['/admin/course']);
           },
           error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Ошибка при удалении курса'
-            });
+            if (error.status === 409) {
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Ошибка',
+                detail: 'Нельзя удалить данный курс'
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: 'Ошибка при удалении курса'
+              });
+            }
           }
+
         });
       }
     });

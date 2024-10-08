@@ -1,6 +1,7 @@
 <div class="supplier-header" *ngIf="homeWorkDetails">
   <div class="supplier-container"  (click)="goBack()">
-    <h1 class="supplier-title"><i class="pi pi-angle-left"></i> <span style="font-weight: bold">{{homeWorkDetails.topic_index}} тақырып. </span>
+    <h1 class="supplier-title"><img src="assets/images/left-arrow.svg" alt="left" width="14" height="14">
+      <span style="font-weight: bold">{{homeWorkDetails.topic_index}} тақырып. </span>
       {{homeWorkDetails.topic_name}}</h1>
   </div>
 </div>

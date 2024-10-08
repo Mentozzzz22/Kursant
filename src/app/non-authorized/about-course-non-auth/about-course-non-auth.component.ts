@@ -98,4 +98,8 @@ export class AboutCourseNonAuthComponent implements OnInit {
     this.router.navigate(['/course-detail', this.courseId]);
   }
 
+  openDetails(courseId: number) {
+    this.router.navigate(['/about', courseId]);
+  }
+
 }

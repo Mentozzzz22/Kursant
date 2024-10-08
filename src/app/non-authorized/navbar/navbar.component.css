@@ -21,7 +21,7 @@
   position: relative;
 }
 
-.nav-search i.pi-search {
+.nav-search .search {
   position: absolute;
   left: 10px;
   top: 50%;

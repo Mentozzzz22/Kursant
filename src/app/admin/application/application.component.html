@@ -80,7 +80,7 @@
               <span class="item-name">{{ course.name }}</span>
               <span class="price">{{ course.current_price}} тг</span>
               <button class="delete-btn" (click)="removeCourse(i)" *ngIf="status === 'waiting_admin'">
-                <i class="pi pi-trash"></i>
+                <img  src="assets/images/delete_icon.svg" alt="delete" width="14" height="14"/>
               </button>
             </li>
           </ol>
@@ -97,7 +97,7 @@
             <div class="input-container">
               <input type="text" id="fullName" class="form-control" formControlName="learner_fullname">
               <button class="edit-btn">
-                <i class="pi pi-pencil"></i>
+                <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
               </button>
             </div>
           </div>
@@ -107,7 +107,7 @@
             <div class="input-container">
               <input type="text" id="phone" class="form-control" formControlName="learner_phone_number">
               <button class="edit-btn">
-                <i class="pi pi-pencil"></i>
+                <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
               </button>
             </div>
           </div>
@@ -117,7 +117,7 @@
             <div class="input-container">
               <input type="text" id="region" class="form-control" formControlName="learner_region">
               <button class="edit-btn">
-                <i class="pi pi-pencil"></i>
+                <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
               </button>
             </div>
           </div>
