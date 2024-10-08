@@ -286,7 +286,7 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
           detail: `Урок успешно удален!`
         });
         this.lessons.splice(index, 1);
-        this.testForm.markAsDirty(); // Помечаем форму как "грязную" после удаления урока
+        this.testForm.markAsDirty();
       }
     });
   }

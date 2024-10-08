@@ -230,11 +230,19 @@ export class CuratorAddComponent implements OnInit {
           this.loadCurators();
         },
         error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Произошла ошибка при удалении куратора'
-          });
+          if (error.status === 409) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Ошибка',
+              detail: 'Нельзя удалить данного куратора'
+            });
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Произошла ошибка при удалении куратора'
+            });
+          }
         }
       );
     } else {

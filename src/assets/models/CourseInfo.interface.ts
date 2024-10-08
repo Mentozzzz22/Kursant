@@ -2,6 +2,16 @@ export interface AdditionalCourse {
   id: number;
   name: string;
   poster: string;
+  big_poster: string;
+  teacher_fullname: string;
+  price: number;
+  current_price: number;
+  discount_percentage: number;
+  description: string;
+  modules_count: number;
+  lessons_count: number;
+  free_lesson_id: number;
+  flow_date: string;
 }
 
 export interface InfoHomework {
@@ -31,22 +41,22 @@ export interface InfoTopics {
 
 export interface InfoModules {
   module_name: string;
-  topics: string[];  // Обновлено для строковых тем
+  topics: string[];
 }
 
 export interface CourseInfo {
-  course_id: number; // ID курса
+  course_id: number;
   name: string;
   poster: string;
   big_poster: string;
   teacher_fullname: string;
   price: number;
-  current_price: number; // Цена с учетом скидки
-  discount_percentage: number; // Процент скидки
-  description: string; // Описание курса
+  current_price: number;
+  discount_percentage: number;
+  description: string;
   modules_count: number;
   lessons_count: number;
-  free_lesson_id: number; // ID бесплатного урока
-  additional_courses: AdditionalCourse[]; // Дополнительные курсы
+  free_lesson_id: number;
+  additional_courses: AdditionalCourse[];
   modules: InfoModules[];
 }

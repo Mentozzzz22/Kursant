@@ -230,12 +230,21 @@ export class EmployeeComponent implements OnInit {
           this.visibleShow = false;
         },
         error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Произошла ошибка при удалении пользователя'
-          });
+          if (error.status === 409) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Ошибка',
+              detail: 'Нельзя удалить данного пользователя'
+            });
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Произошла ошибка при удалении пользователя'
+            });
+          }
         }
+
       );
     } else {
       this.messageService.add({

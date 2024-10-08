@@ -91,7 +91,7 @@
           <span class="item-name">{{ course.name }}</span>
           <input type="date" class="deadline" [formControlName]="i" />
           <button class="delete-btn" (click)="removeCourse(i)" *ngIf="status !== 'waiting_admin'">
-            <i class="pi pi-trash"></i>
+            <img  src="assets/images/delete_icon.svg" alt="delete" width="14" height="14"/>
           </button>
         </li>
       </ol>
@@ -112,8 +112,12 @@
                 [showClear]="true"
                 formControlName="course"/>
 
-              <button class="add-btn" (click)="addCourseToUpdate(); op.hide();"><i class="pi pi-check"></i></button>
-              <button class="close-btn" (click)="op.hide();"><i class="pi pi-times"></i></button>
+              <button class="add-btn" (click)="addCourseToUpdate(); op.hide();">
+                <img src="assets/images/correct.svg" width="13" height="13" alt="correct">
+              </button>
+              <button class="close-btn" (click)="op.hide();">
+                <img src="assets/images/close_icon.svg" width="13" height="13" alt="delete">
+              </button>
             </div>
           </p-overlayPanel>
         </div>
@@ -130,7 +134,7 @@
         <div class="input-container">
           <input type="text" id="fullName" class="form-control" formControlName="learner_fullname">
           <button class="edit-btn">
-            <i class="pi pi-pencil"></i>
+            <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
           </button>
         </div>
       </div>
@@ -140,7 +144,7 @@
         <div class="input-container">
           <input type="text" id="phone" class="form-control" formControlName="learner_phone_number">
           <button class="edit-btn">
-            <i class="pi pi-pencil"></i>
+            <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
           </button>
         </div>
       </div>
@@ -150,7 +154,7 @@
         <div class="input-container">
           <input type="text" id="region" class="form-control" formControlName="learner_region">
           <button class="edit-btn">
-            <i class="pi pi-pencil"></i>
+            <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
           </button>
         </div>
       </div>
@@ -199,7 +203,7 @@
 <!--            <span class="price">{{ course.current_price}} тг</span>-->
             <input type="date" class="deadline" formControlName="expires_at" (change)="updateCourseExpiration(i)">
             <button class="delete-btn" (click)="removeAddCourse(i)">
-              <i class="pi pi-trash"></i>
+              <img  src="assets/images/delete_icon.svg" alt="delete" width="14" height="14"/>
             </button>
           </li>
         </ol>
@@ -220,8 +224,12 @@
                   [showClear]="true"
                   formControlName="course"/>
 
-                <button class="add-btn" (click)="addCourseToCart(); op.hide();"><i class="pi pi-check"></i></button>
-                <button class="close-btn" (click)="op.hide();"><i class="pi pi-times"></i></button>
+                <button class="add-btn" (click)="addCourseToCart(); op.hide();">
+                  <img src="assets/images/correct.svg" width="13" height="13" alt="correct">
+                </button>
+                <button class="close-btn" (click)="op.hide();">
+                  <img src="assets/images/close_icon.svg" width="14" height="14" alt="delete">
+                </button>
               </div>
             </p-overlayPanel>
           </div>
@@ -229,8 +237,12 @@
           <p-overlayPanel #pop>
             <div class="flex flex-line gap-3 w-20rem">
               <input type="text" id="expires_at" class="form-control" formControlName="expires_at">
-              <button class="add-btn" ><i class="pi pi-check"></i></button>
-              <button class="close-btn"><i class="pi pi-times"></i></button>
+              <button class="add-btn" >
+                <img src="assets/images/correct.svg" width="13" height="13" alt="correct">
+              </button>
+              <button class="close-btn">
+                <img src="assets/images/close_icon.svg" width="14" height="14" alt="delete">
+              </button>
             </div>
           </p-overlayPanel>
 
@@ -245,7 +257,7 @@
           <div class="input-container">
             <input type="text" id="fullNameAdd" class="form-control" formControlName="learner_fullname">
             <button class="edit-btn">
-              <i class="pi pi-pencil"></i>
+              <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
             </button>
           </div>
         </div>
@@ -255,7 +267,7 @@
           <div class="input-container">
             <input type="text" id="phoneAdd" class="form-control" formControlName="learner_phone_number">
             <button class="edit-btn">
-              <i class="pi pi-pencil"></i>
+              <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
             </button>
           </div>
         </div>
@@ -265,7 +277,7 @@
           <div class="input-container">
             <input type="text" id="regionAdd" class="form-control" formControlName="learner_region">
             <button class="edit-btn">
-              <i class="pi pi-pencil"></i>
+              <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
             </button>
           </div>
         </div>

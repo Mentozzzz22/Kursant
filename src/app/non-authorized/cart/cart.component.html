@@ -3,7 +3,7 @@
   <div class="main-right">
     <h2 class="cart-h2">Корзина</h2>
     <div class="kurstar-cards">
-      <div class="kurstar-card" *ngFor="let kurs of courses">
+      <div class="kurstar-card" *ngFor="let kurs of courses" (click)="openDetails(kurs.id!)">
         <img [src]="kurs.poster" alt="subject1" class="kurs-images">
         <div class="kurs-card-content">
           <div class="kurs-info">
@@ -23,7 +23,7 @@
               </div>
               <p>бір реттік төлем</p>
             </div>
-            <button class="remove-button" (click)="confirm($event, kurs.id)" >
+            <button class="remove-button" (click)="confirm($event, kurs.id); $event.stopPropagation()" >
              <img src="assets/images/delete_icon.svg" width="20" height="20">
             </button>
           </div>
@@ -54,11 +54,15 @@
   <ng-template pTemplate="headless" let-message let-test>
     <div class="border-round p-3  w-full" >
       <div class="flex align-items-center">
-        <i class="pi pi-question-circle" style="margin-right: 10px"></i><span>{{ message.message }}</span>
+        <span>{{ message.message }}</span>
       </div>
       <div class="flex align-items-center gap-2 mt-3">
-        <button class="accept-button" (click)="accept()"><i class="pi pi-trash" style="color: white; margin-right:5px"></i>Ия</button>
-        <button class="decline-button" (click)="reject()"><i class="pi pi-times" style="margin-right:5px"></i>Жоқ</button>
+        <button class="accept-button" (click)="accept()">
+          <img src="assets/images/delete_icon.svg" width="13" height="13" alt="correct" style="color: white; margin-right:5px">
+          Ия</button>
+        <button class="decline-button" (click)="reject()">
+          <img src="assets/images/close_icon.svg" width="13" height="13" alt="delete" style="margin-right:5px">
+          Жоқ</button>
       </div>
     </div>
   </ng-template>

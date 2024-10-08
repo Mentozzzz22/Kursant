@@ -6,10 +6,10 @@
         <p>Мұғалім: {{ course.teacherName }}</p>
         <div class="course-info">
           <span class="info-item">
-        <i class="pi pi-book"></i> {{ course.modules_count }} бөлім
+        <img src="assets/images/bolim.svg" alt="bolim" style="margin-right: 10px" width="14" height="14">{{ course.modules_count }} бөлім
           </span>
           <span class="info-item-2">
-        <i class="pi pi-bookmark"></i> {{ course.lessons_count }} сабақ
+        <img src="assets/images/sabak.svg" alt="sabak" style="margin-right: 10px" width="15" height="15"> {{ course.lessons_count }} сабақ
           </span>
         </div>
         <div class="course-description">
@@ -60,22 +60,22 @@
       </div>
 
       <div class="course-list">
-        <div *ngFor="let additionalCourse of additional_courses" class="course-items">
+        <div *ngFor="let additionalCourse of additional_courses" class="course-items" (click)="openDetails(additionalCourse.id!)">
           <img [src]="getCoursePoster(additionalCourse.poster)" alt="{{ additionalCourse.name }}" class="course-image">
           <div class="course-details">
             <div class="course-tags">
-              <span class="course-tag">10 бөлім</span>
-              <span class="course-tag course-tag-secondary">70 сабақ</span>
+              <span class="course-tag">{{ additionalCourse.modules_count }} бөлім</span>
+              <span class="course-tag course-tag-secondary">{{ additionalCourse.lessons_count }} сабақ</span>
             </div>
             <h3 class="course-name">{{ additionalCourse.name }}</h3>
-            <p class="course-date">Ең жақын поток: 22.09.2024</p>
+            <p class="course-date">Ең жақын поток: {{ additionalCourse.flow_date }}</p>
             <hr class="course-divider">
             <div class="course-price-container">
               <div class="price-content">
-                <p class="course-price">70 000 тг</p>
+                <p class="course-price">{{additionalCourse.current_price}} тг</p>
                 <p class="course-payment-type">бір реттік төлем</p>
               </div>
-              <button class="course-cart-button" (click)="addToCart(additionalCourse.id)">Корзинаға</button>
+              <button class="course-cart-button" (click)="addToCart(additionalCourse.id); $event.stopPropagation()">Корзинаға</button>
             </div>
           </div>
         </div>

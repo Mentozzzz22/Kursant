@@ -3,7 +3,7 @@
     <a href="#"><img src="../../../assets/images/navbar-Kursant.svg" alt="Kursant"></a>
   </div>
   <div class="nav-search">
-    <i class="pi pi-search" (click)="onSearchChange()"></i>
+    <img src="assets/images/search_icon.svg" width="16" height="16" (click)="onSearchChange()" alt="search" class="search">
     <input type="text" pInputText placeholder="Курс или поток" [(ngModel)]="searchText" (keydown.enter)="onSearchChange()"/>
   </div>
   <div class="nav-buttons">

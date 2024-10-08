@@ -133,7 +133,12 @@
     align-items: center;
   }
 
+  .left-arrow {
+    text-align:left;
+  }
+
   .login-left img {
+
     display: none;
   }
 
@@ -144,7 +149,10 @@
 
   .login-input {
     display: flex;
-    align-items: center;
+  }
+
+  .login-input p{
+    text-align:left;
   }
 
   .login-input input {
@@ -156,10 +164,13 @@
   }
 
   .login-text h1 {
+    text-align:left;
     font-size: 36px;
   }
 
   .login-text p {
+    align-items: center;
+
     font-size: 18px;
   }
 }

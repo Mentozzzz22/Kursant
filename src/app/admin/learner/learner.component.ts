@@ -86,7 +86,7 @@ export class LearnerComponent implements OnInit {
     const query = this.learnerForm.get('region')?.value?.toLowerCase() || '';
 
     this.filteredRegions = this.regions.filter(region =>
-      region.toLowerCase().includes(query)
+      region.toLowerCase().startsWith(query)
     );
   }
 
@@ -138,6 +138,14 @@ export class LearnerComponent implements OnInit {
       });
     } else {
       const phone = this.learnerForm.value.phone_number || '';
+      if (!/^7\d{9}$/.test(phone)) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Ошибка в номере телефона',
+          detail: 'Номер телефона должен начинаться с 7 и содержать 10 цифр'
+        });
+        return;
+      }
 
       const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
 
@@ -166,14 +174,24 @@ export class LearnerComponent implements OnInit {
               summary: 'Конфликт',
               detail: 'Ученик с таким номером телефона уже существует'
             });
-          } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
+          } else if (error.status === 400) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка в данных',
+              detail: 'Некоторые данные формы неверны. Пожалуйста, проверьте введенные данные и попробуйте снова.'
+            });
+          } else if (error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
             this.messageService.add({
               severity: 'error',
               summary: 'Ошибка',
               detail: `Ошибка на стороне сервера (${error.status})`
             });
           } else {
-            this.messageService.add({severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так'});
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Неизвестная ошибка',
+              detail: 'Что-то пошло не так'
+            });
           }
         }
       );
@@ -189,6 +207,15 @@ export class LearnerComponent implements OnInit {
       });
     } else {
       const phone = this.learnerUpdateForm.value.phone_number || '';
+
+      if (!/^7\d{9}$/.test(phone)) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Ошибка в номере телефона',
+          detail: 'Номер телефона должен начинаться с 7 и содержать 10 цифр'
+        });
+        return;
+      }
 
       const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
 
@@ -217,14 +244,24 @@ export class LearnerComponent implements OnInit {
               summary: 'Конфликт',
               detail: 'Ученик с таким номером телефона уже существует'
             });
-          } else if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
+          } else if (error.status === 400) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка в данных',
+              detail: 'Некоторые данные формы неверны. Пожалуйста, проверьте введенные данные и попробуйте снова.'
+            });
+          } else if (error.status === 401 || error.status === 403 || error.status === 404 || error.status === 500) {
             this.messageService.add({
               severity: 'error',
               summary: 'Ошибка',
               detail: `Ошибка на стороне сервера (${error.status})`
             });
           } else {
-            this.messageService.add({severity: 'error', summary: 'Неизвестная ошибка', detail: 'Что-то пошло не так'});
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Неизвестная ошибка',
+              detail: 'Что-то пошло не так'
+            });
           }
         }
       );
@@ -265,11 +302,19 @@ export class LearnerComponent implements OnInit {
           this.loadLeaner();
         },
         error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Произошла ошибка при удалении ученика'
-          });
+          if (error.status === 409) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Ошибка',
+              detail: 'Нельзя удалить данного ученика'
+            });
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Произошла ошибка при удалении ученика'
+            });
+          }
         }
       );
     } else {

@@ -1,13 +1,46 @@
 <div class="main-page">
   <div class="content-wrapper">
-    <div class="content">
-      <div class="calendar-container">
+    <div class="content" >
+      <div class="calendar-container" (scroll)="onScroll($event)">
+        <ng-template #emptyHeaderTemplate>
+          <div class="custom-header">
+            <div *ngFor="let day of getWeekDays()"
+                 class="custom-header-day"
+                 [ngClass]="{'current-day': isToday(day)}">
+              <div class="day-number">{{ day | date: 'd' }}</div>
+              <div class="day-month">{{ day | date: 'MMMM' : 'kk' }}</div>
+            </div>
+          </div>
+        </ng-template>
+
+        <div class="calendar-week-view">
         <mwl-calendar-week-view
-          [viewDate]="viewDate"
-          [events]="events"
-          (eventClicked)="handleEvent('Clicked', $event)"
-        >
-        </mwl-calendar-week-view>
+            [hourSegmentHeight]="60"
+            [hourSegments]="2"
+            [viewDate]="viewDate"
+            [events]="events"
+            [locale]="'kk'"
+            [weekStartsOn]="1"
+            [dayStartHour]="7"
+            [headerTemplate]="emptyHeaderTemplate"
+            [eventTemplate]="customEventTemplate"
+            (eventClicked)="handleEvent('Clicked', $event)"
+            (beforeViewRender)="handleBeforeViewRender($event)">
+          </mwl-calendar-week-view>
+        </div>
+
+        <ng-template #customEventTemplate let-event="event">
+          <div class="custom-event"
+               [ngStyle]="{'border-color': event?.color?.primary || '#cccccc',
+           'background': 'linear-gradient(to bottom, ' + (event?.color?.primary || '#ffffff') + ', ' + (event?.color?.secondary || '#f0f0f0') + ')'}">
+            <div class="event-title">{{ event?.title }}</div>
+            <div class="event-time">
+             {{ startTime | date: 'HH:mm' }} - {{ endTime | date: 'HH:mm' }}
+            </div>
+            <div class="event-subject">Физика</div>
+            <div class="event-details">"Альхимед заңы"</div>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>
@@ -15,10 +48,10 @@
   <div class="sidebar">
     <div class="sidebar-calendar">
       <div class="month-calendar">
-        <!-- Виджет с календарем месяца -->
-        <mwl-calendar-month-view
+         <mwl-calendar-month-view
           [viewDate]="viewDate"
           [events]="events"
+          [weekStartsOn]="1"
           (dayClicked)="onDayClicked($event.day)"
         >
         </mwl-calendar-month-view>
