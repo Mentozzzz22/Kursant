@@ -1,0 +1,18 @@
+<div class="main-page">
+
+  <div class="content-wrapper">
+    <div class="content">
+      <h1>Хабарламалар</h1>
+      <div class="notification_container" >
+        <div class="notification" *ngFor="let message of messages">
+          <div class="notif_head">
+            <p>{{ message.created_at }}</p>
+            <p *ngIf="!message.is_read" style="color: red">Жаңа хабарлама</p>
+          </div>
+          <div [innerHTML]="message.text"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

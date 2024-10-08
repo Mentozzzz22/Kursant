@@ -36,6 +36,7 @@ import {AboutCourseNonAuthComponent} from "./non-authorized/about-course-non-aut
 import {CourseDetailNonAuthComponent} from "./non-authorized/course-detail-non-auth/course-detail-non-auth.component";
 import {canDeactivateGuard} from "./can-deactivate-guard.guard";
 import {CalendarPageComponent} from "./student/calendar-page/calendar-page.component";
+import {NotificationsComponent} from "./student/notifications/notifications.component";
 
 export const routes: Routes = [
   {
@@ -59,6 +60,7 @@ export const routes: Routes = [
       {path: 'homework-list', component: HomeWorkComponent},
       {path: 'homework/:homeworkId', component: LearnerHomeworkComponent},
       {path: 'results/:testId', component: ViewTestResultComponent},
+      {path: 'notifications', component: NotificationsComponent},
       // {path: 'calendar', component: CalendarPageComponent},
     ]
   },

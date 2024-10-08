@@ -24,7 +24,7 @@ export class StudentSidebarComponent {
     { name: 'Курстар', link: '/student/courses', icon: 'assets/images/cap_icon.svg' },
     { name: 'Үй жұмысы', link: '/student/homework-list', icon: 'assets/images/dz-icon.svg' },
     { name: 'Календарь', link: '/student/calendar', icon: 'assets/images/calendar-icon.svg' },
-    { name: 'Хабарламалар', link: '/notifications', icon: 'assets/images/notification-icon.svg' },
+    { name: 'Хабарламалар', link: '/student/notifications', icon: 'assets/images/notification-icon.svg' },
     { name: 'Бағалар', link: '/grades', icon: 'assets/images/grades-icon.svg' },
   ];
 
