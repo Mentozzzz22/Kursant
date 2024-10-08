@@ -1,0 +1,86 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.main-page {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.sidebar {
+  width: 100px;
+}
+
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.content {
+  width: 100%;
+  max-width: 1200px;
+  background-color: white;
+  padding: 45px 30px;
+  border-radius: 10px;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.content h1 {
+  font-size: 25px;
+  color: #444444;
+}
+
+.courses-selector {
+  display: flex;
+  gap: 20px;
+}
+
+.select-btn {
+  border-radius: 10px;
+  background: none;
+  padding: 9px 26px;
+  border: 1px solid #11143D;
+}
+
+.select-btn.active {
+  background-color: #11143D;
+  color: white;
+}
+
+.grade-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.subject-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.grade-item {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f9f9f9;
+  padding: 27px 35px;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 80px;
+  }
+
+  .content {
+    padding: 20px;
+    margin: 10px;
+  }
+}

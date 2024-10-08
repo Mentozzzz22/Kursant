@@ -1,0 +1,30 @@
+<div class="main-page">
+
+  <div class="content-wrapper">
+    <div class="content">
+      <h1>Бағалар</h1>
+
+      <div class="courses-selector">
+        <button class="select-btn" *ngFor="let course of courseList" (click)="onCourseSelect(course)"
+                [ngClass]="{'active': selectedCourseId === course.learner_course_id}">
+          {{ course.course_name }}
+        </button>
+      </div>
+
+      <div *ngFor="let module of grades" class="grade-container">
+        <h3>Модуль {{ module.module_index }}</h3>
+        <div class="subject-content">
+          <div class="grade-item" *ngFor="let grade of module.marks">
+            <span>{{ grade.type === 'homework' ? 'Үй жүмысы' : 'Тест ' }}</span>
+            <span>{{ grade.topic_name }}</span>
+            <span *ngIf="grade.type === 'test'">
+              {{ grade.taken_marks !== null ? grade.taken_marks : 0 }}/{{ grade.total_marks }}
+            </span>
+            <span *ngIf="grade.type === 'homework'">{{ grade.mark }}/100</span>
+            <span><img src="assets/images/right-arrow.svg" alt="right"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

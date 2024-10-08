@@ -37,6 +37,7 @@ import {CourseDetailNonAuthComponent} from "./non-authorized/course-detail-non-a
 import {canDeactivateGuard} from "./can-deactivate-guard.guard";
 import {CalendarPageComponent} from "./student/calendar-page/calendar-page.component";
 import {NotificationsComponent} from "./student/notifications/notifications.component";
+import {GradesComponent} from "./student/grades/grades.component";
 
 export const routes: Routes = [
   {
@@ -62,6 +63,7 @@ export const routes: Routes = [
       {path: 'results/:testId', component: ViewTestResultComponent},
       {path: 'calendar', component: CalendarPageComponent},
       {path: 'notifications', component: NotificationsComponent},
+      {path: 'grades', component: GradesComponent},
       // {path: 'calendar', component: CalendarPageComponent},
     ]
   },

@@ -25,7 +25,7 @@ export class StudentSidebarComponent {
     { name: 'Үй жұмысы', link: '/student/homework-list', icon: 'assets/images/dz-icon.svg' },
     { name: 'Календарь', link: '/student/calendar', icon: 'assets/images/calendar-icon.svg' },
     { name: 'Хабарламалар', link: '/student/notifications', icon: 'assets/images/notification-icon.svg' },
-    { name: 'Бағалар', link: '/grades', icon: 'assets/images/grades-icon.svg' },
+    { name: 'Бағалар', link: '/student/grades', icon: 'assets/images/grades-icon.svg' },
   ];
 
   toggleExpand(expand: boolean) {
