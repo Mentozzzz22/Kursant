@@ -1,57 +1,101 @@
 <div class="main-page">
   <div class="content-wrapper">
     <div class="content" >
-      <div class="calendar-container" (scroll)="onScroll($event)">
-        <ng-template #emptyHeaderTemplate>
-          <div class="custom-header">
-            <div *ngFor="let day of getWeekDays()"
-                 class="custom-header-day"
-                 [ngClass]="{'current-day': isToday(day)}">
-              <div class="day-number">{{ day | date: 'd' }}</div>
-              <div class="day-month">{{ day | date: 'MMMM' : 'kk' }}</div>
-            </div>
-          </div>
-        </ng-template>
 
-        <div class="calendar-week-view">
-        <mwl-calendar-week-view
-            [hourSegmentHeight]="60"
-            [hourSegments]="2"
-            [viewDate]="viewDate"
-            [events]="events"
-            [locale]="'kk'"
-            [weekStartsOn]="1"
-            [dayStartHour]="7"
-            [headerTemplate]="emptyHeaderTemplate"
-            [eventTemplate]="customEventTemplate"
-            (eventClicked)="handleEvent('Clicked', $event)"
-            (beforeViewRender)="handleBeforeViewRender($event)">
-          </mwl-calendar-week-view>
+      <div class="custom-today-header">
+        <div class="today-header">
+          {{ currentDate | date: 'd' }} {{ currentDate | date: 'MMMM' : 'kk' }}
+        </div>
+      </div>
+
+      <div class="calendar-navigation">
+        <button class="arrow-button left-arrow" (click)="previousWeek()">
+          &#9664;
+        </button>
+
+        <div class="calendar-container">
+          <ng-template #emptyHeaderTemplate>
+            <div class="custom-header">
+              <div *ngFor="let day of getWeekDays()"
+                   class="custom-header-day"
+                   [ngClass]="{'current-day': isToday(day)}">
+                <div class="day-number">{{ day | date: 'd' }}</div>
+                <div class="day-month">{{ day | date: 'MMMM' : 'kk' }}</div>
+              </div>
+            </div>
+          </ng-template>
+
+          <div class="calendar-week-view">
+            <mwl-calendar-week-view
+              [hourSegmentHeight]="60"
+              [hourSegments]="2"
+              [viewDate]="viewDate"
+              [events]="events"
+              [locale]="'kk'"
+              [weekStartsOn]="1"
+              [headerTemplate]="emptyHeaderTemplate"
+              [eventTemplate]="customEventTemplate"
+              (eventClicked)="handleEvent('Clicked', $event)"
+              (beforeViewRender)="handleBeforeViewRender($event)">
+            </mwl-calendar-week-view>
+          </div>
+
+          <ng-template #customEventTemplate let-event="event">
+            <div class="custom-event"
+                 [ngStyle]="{
+                 'border-color': primaryColor || '#6E63E5',
+                 'background': 'linear-gradient(to bottom, ' + (secondaryColor || '#D4D0FF') + ' 0%, ' + (secondaryColor || '#D4D0FF') + ' 41%, #FFFFFF 100%)'
+               }">
+              <div class="event-title">{{ eventTitle }}</div>
+              <div class="event-time">
+                {{ startTime | date: 'HH:mm' }} - {{ endTime | date: 'HH:mm' }}
+              </div>
+              <div class="event-subject">Физика</div>
+              <div class="event-details">"Альхимед заңы"</div>
+            </div>
+          </ng-template>
         </div>
 
-        <ng-template #customEventTemplate let-event="event">
-          <div class="custom-event"
-               [ngStyle]="{'border-color': event?.color?.primary || '#cccccc',
-           'background': 'linear-gradient(to bottom, ' + (event?.color?.primary || '#ffffff') + ', ' + (event?.color?.secondary || '#f0f0f0') + ')'}">
-            <div class="event-title">{{ event?.title }}</div>
-            <div class="event-time">
-             {{ startTime | date: 'HH:mm' }} - {{ endTime | date: 'HH:mm' }}
-            </div>
-            <div class="event-subject">Физика</div>
-            <div class="event-details">"Альхимед заңы"</div>
-          </div>
-        </ng-template>
+        <button class="arrow-button right-arrow" (click)="nextWeek()">
+          &#9654;
+        </button>
       </div>
+
+
     </div>
   </div>
 
   <div class="sidebar">
     <div class="sidebar-calendar">
       <div class="month-calendar">
+
+        <div class="custom-today-month-header">
+          <div class="today-header">
+            {{ currentDate | date: 'd' }} {{ currentDate | date: 'MMMM' : 'kk' }}
+          </div>
+          <div class="arrows">
+            <div class="arrow ">
+              <img src="assets/images/arrow-left.svg" alt="left">
+            </div>
+            <div class="arrow ">
+              <img src="assets/images/arrow-right.svg" alt="right">
+            </div>
+          </div>
+        </div>
+
+        <ng-template #headerTemplate let-day="day">
+          <div class="week-days-container">
+            <div *ngFor="let day of getWeekDays()" class="week-day-header">
+              <div class="day-letter">{{ day | date: 'EEEE' | slice:0:1 | uppercase }}</div>
+            </div>
+          </div>
+        </ng-template>
+
          <mwl-calendar-month-view
           [viewDate]="viewDate"
           [events]="events"
           [weekStartsOn]="1"
+          [headerTemplate]="headerTemplate"
           (dayClicked)="onDayClicked($event.day)"
         >
         </mwl-calendar-month-view>

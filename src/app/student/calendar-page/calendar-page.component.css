@@ -2,54 +2,124 @@
   display: flex;
   width: 100%;
   background-color: white;
-  overflow: hidden;
 }
 
 .content-wrapper {
-  display: flex;
-  justify-content: center;
-  width: 75%;
-  padding: 45px;
+  width: 100%;
+
   background-color: white;
-  overflow: hidden;
 }
 
 .content {
-  width: 100%;
-  padding: 10px;
+  padding: 0 0 0 10px;
   background-color: white;
-  overflow: hidden;
 }
 
 .calendar-container {
   overflow-x: scroll;
   white-space: nowrap;
   width: 100%;
+}
+
+.calendar-navigation {
+  position: relative;
+  width: 100%;
+}
+
+.arrow-button {
+  position: absolute;
+  top: 30%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 18px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.arrow-button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.left-arrow {
+  left: 0;
+}
+
+.right-arrow {
+  right: 0;
+}
+
+.calendar-navigation:hover .arrow-button {
+  opacity: 1;
+}
+
+.custom-today-header {
   display: flex;
-  scroll-behavior: smooth;
-
-  -webkit-overflow-scrolling: touch;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  padding: 10px 0 28px 0;
 }
 
-.calendar-week-view {
-  min-width: 1500px;
-  flex: 0 0 auto;
-  display: inline-block;
+.today-header {
+  font-weight: bold;
+  font-size: 18px;
+  color: #000;
+  text-align: center;
+  width: 100px;
 }
+
+
+.custom-today-month-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0 28px 0;
+}
+
+.arrows{
+  display: flex;
+  gap:10px;
+}
+
+.arrow{
+  padding:2px 8px;
+  border-radius: 3px;
+  background-color: #D8D4FF;
+}
+
+.today-header {
+  font-weight: bold;
+  font-size: 18px;
+  color: #000;
+  text-align: center;
+  width: 100px;
+}
+
+.custom-header-day {
+  text-align: center;
+  padding: 5px;
+}
+
+.day-number {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.day-month {
+  font-size: 12px;
+  color: #666;
+}
+
 
 
 .custom-header {
   display: flex;
   justify-content: space-around;
   background-color: white;
-  padding: 10px 15px;
+  padding: 10px 0;
   border-bottom: 1px solid #ddd;
-  margin-left: 50px;
+  margin-left: 70px;
 }
 
 .custom-header-day {
@@ -73,7 +143,6 @@
   background-color: #6a5acd;
   color: white;
   border-radius: 8px;
-  padding: 8px 5px;
 }
 
 .current-day .day-month{
@@ -86,37 +155,87 @@
   border: 2px solid;
   border-radius: 12px;
   padding: 8px;
-  color: #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-clip: padding-box;
+  color: #333;
 }
 
 .custom-event .event-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
+  color: #6E63E5;
 }
 
 .custom-event .event-time {
   font-size: 14px;
+  font-weight: normal;
+  color: #333;
   margin: 4px 0;
 }
 
 .custom-event .event-subject {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: normal;
+  color: #333;
+  margin-top: 8px;
 }
 
 .custom-event .event-details {
-  font-size: 12px;
-  color: #999;
+  font-size: 14px;
+  color: #666;
+  margin-top: 4px;
 }
 
 
+.week-days-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.week-day-header {
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+  flex: 1;
+}
+
+.day-letter {
+  color: #333;
+}
+
+:host ::ng-deep  .cal-month-view,
+:host ::ng-deep .cal-days {
+  border: none;
+}
+
+:host ::ng-deep .cal-month-view .cal-days .cal-cell-row {
+  border-bottom: none;
+}
+
+:host ::ng-deep .cal-month-view,
+:host ::ng-deep.cal-cell-row{
+  border-bottom: none;
+}
+:host ::ng-deep .cal-month-view,
+:host ::ng-deep .cal-day-cell:not(:last-child){
+  border-right: none;
+}
+
+:host ::ng-deep.cal-month-view .cal-day-badge{
+  display:none;
+}
+
+:host ::ng-deep .cal-week-view .cal-time-events{
+  border:none;
+}
+
 .sidebar {
-  width: 26%;
+  width: 30%;
   background-color: white;
-  padding: 30px;
+  padding: 30px 40px;
   border-radius: 10px;
+  border-left: 1px solid #D1D1D1;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
