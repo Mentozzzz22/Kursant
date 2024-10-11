@@ -1,6 +1,7 @@
 import {Component, inject, LOCALE_ID, OnInit} from '@angular/core';
 import {DatePipe, NgClass, NgForOf, NgIf, NgStyle, registerLocaleData, SlicePipe, UpperCasePipe} from "@angular/common";
 import {
+  CalendarModule,
   CalendarMonthModule,
   CalendarWeekModule,
   CalendarWeekViewBeforeRenderEvent
@@ -26,6 +27,7 @@ import {CalendarService} from "../../service/calendar.service";
     NgStyle,
     SlicePipe,
     UpperCasePipe,
+    CalendarModule,
   ],
   templateUrl: './calendar-page.component.html',
   styleUrl: './calendar-page.component.css',
@@ -64,63 +66,78 @@ export class CalendarPageComponent implements OnInit {
     this.calendarService.getCalendar().subscribe(data => {
       const uniqueEvents = new Map<string, boolean>();
 
-      this.events = data.map((item: { id: number | null; start: string; title: string; subtitle: string | null; type: string }) => {
-        const { start, end } = this.parseDateString(item.start);
+      this.events = data
+        .map((item: { id: number | null; start: string; title: string; subtitle: string | null; type: string }) => {
+          if (!item.start || !item.title) {
+            console.warn('Skipping event due to missing data:', item);
+            return null; // Skip if essential data is missing
+          }
 
-        // Создаем уникальный ключ для события по названию и времени начала
-        const eventKey = item.id ? `event-${item.id}` : `${item.title}-${start.toISOString()}`;
+          const { start, end } = this.parseDateString(item.start);
 
-        if (uniqueEvents.has(eventKey)) {
-          return null; // Пропускаем дубликат
-        }
+          // Create a unique key for the event based on its title and start time
+          const eventKey = item.id ? `event-${item.id}` : `${item.title}-${start.toISOString()}`;
 
-        uniqueEvents.set(eventKey, true);
+          if (uniqueEvents.has(eventKey)) {
+            console.warn('Duplicate event detected, skipping:', eventKey);
+            return null; // Skip duplicate events
+          }
 
-        // Обработка типа `many`: объединяем заголовки в один блок с конкретным форматированием
-        let displayTitle = item.title;
-        let displaySubtitle = item.subtitle;
-        if (item.type === 'many' && item.title.includes('\n')) {
-          const titles = item.title.split('\n');
-          displayTitle = titles.join(' | '); // Объединяем заголовки в одну строку, разделяя их вертикальной чертой
-          displaySubtitle = item.subtitle; // Если есть подзаголовок, сохраняем его
-        }
+          uniqueEvents.set(eventKey, true);
 
-        const color = item.type === 'test' ? { primary: '#1E90FF', secondary: '#D1E8FF' } :
-          item.type === 'homework' ? { primary: '#6E63E5', secondary: '#D4D0FF' } :
-            item.type === 'many' ? { primary: '#FF6347', secondary: '#FFDAB9' } :
-              { primary: '#6E63E5', secondary: '#D4D0FF' };
+          // Handling the 'many' type by combining titles into one block
+          let displayTitle = item.title;
+          let displaySubtitle = item.subtitle;
+          if (item.type === 'many' && item.title.includes('\n')) {
+            const titles = item.title.split('\n');
+            displayTitle = titles.join(' | '); // Combine titles into a single string with separator
+            displaySubtitle = item.subtitle; // Preserve the subtitle if available
+          }
 
-        return {
-          start: start,
-          end: end,
-          title: displayTitle,
-          subtitle: displaySubtitle,
-          color: color,
-          resizable: {
-            beforeStart: true,
-            afterEnd: true,
-          },
-          draggable: false,
-        };
-      }).filter((event: null) => event !== null);
+          const color = item.type === 'test' ? { primary: '#1E90FF', secondary: '#D1E8FF' } :
+            item.type === 'homework' ? { primary: '#6E63E5', secondary: '#D4D0FF' } :
+              item.type === 'many' ? { primary: '#FF6347', secondary: '#FFDAB9' } :
+                { primary: '#6E63E5', secondary: '#D4D0FF' };
+
+          const event = {
+            start: start,
+            end: end,
+            title: displayTitle,
+            subtitle: displaySubtitle,
+            color: color,
+            resizable: {
+              beforeStart: true,
+              afterEnd: true,
+            },
+            draggable: false,
+          };
+
+          console.log('Generated event:', event);
+          return event;
+        })
+        .filter((event: any) => event !== null && event !== undefined); // Ensure only valid events are kept
+
+      console.log('Final events array:', this.events); // Log the final array of events
     });
   }
 
 
 
 
-
-
-
   parseDateString(dateString: string): { start: Date, end: Date } {
     const dateParts = dateString
-      .replace(/[()]/g, '') // Убираем скобки
+      .replace(/[()]/g, '')
       .split(', ')
-      .map(part => parseInt(part, 10)); // Преобразуем компоненты в числа
+      .map(part => parseInt(part, 10));
 
-    const startDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2], dateParts[3], dateParts[4]);
+    let startDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2], dateParts[3], dateParts[4]);
 
-    const endDate = new Date(startDate.getTime() + 90 * 60 * 1000); // Добавляем 1.5 часа
+    if (startDate.getHours() === 23 && startDate.getMinutes() === 59) {
+      startDate.setHours(0, 0, 0, 0);
+      startDate.setDate(startDate.getDate() + 1);
+    }
+
+    const endDate = new Date(startDate.getTime() + 90 * 60 * 1000);
 
     return { start: startDate, end: endDate };
   }
@@ -169,9 +186,11 @@ export class CalendarPageComponent implements OnInit {
     return isToday(date);
   }
 
-  handleEvent(action: string, event: { event: CalendarEvent; sourceEvent: MouseEvent | KeyboardEvent }): void {
-    console.log('Event clicked', event);
+  onEventClicked(event: CalendarEvent): void {
+    console.log('Event clicked:', event);
+    // Here, you can add logic to display event details or trigger other actions
   }
+
 
   onDayClicked(day: { date: Date }): void {
     this.viewDate = day.date;

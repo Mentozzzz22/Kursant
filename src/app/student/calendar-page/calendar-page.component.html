@@ -25,7 +25,7 @@
             </div>
           </ng-template>
 
-          <div class="calendar-week-view">
+          <div class="calendar-week-view" *ngIf="events && events.length > 0">
             <mwl-calendar-week-view
               [hourSegmentHeight]="60"
               [hourSegments]="2"
@@ -35,25 +35,32 @@
               [weekStartsOn]="1"
               [headerTemplate]="emptyHeaderTemplate"
               [eventTemplate]="customEventTemplate"
-              (eventClicked)="handleEvent('Clicked', $event)"
               (beforeViewRender)="handleBeforeViewRender($event)">
             </mwl-calendar-week-view>
           </div>
 
-          <ng-template #customEventTemplate let-event="event">
-            <div class="custom-event"
+
+          <ng-template #customEventTemplate let-weekEvent="weekEvent">
+            <div *ngIf="weekEvent; else noEventTemplate" class="custom-event" (click)="onEventClicked(weekEvent.event)"
                  [ngStyle]="{
-                 'border-color': primaryColor || '#6E63E5',
-                 'background': 'linear-gradient(to bottom, ' + (secondaryColor || '#D4D0FF') + ' 0%, ' + (secondaryColor || '#D4D0FF') + ' 41%, #FFFFFF 100%)'
-               }">
-              <div class="event-title">{{ eventTitle }}</div>
+         'border-color': weekEvent.event.color?.primary || '#6E63E5',
+         'background': 'linear-gradient(to bottom, ' + (weekEvent.event.color?.secondary || '#D4D0FF') + ' 0%, ' + (weekEvent.event.color?.secondary || '#D4D0FF') + ' 41%, #FFFFFF 100%)'
+       }">
+              <div class="event-title">{{ weekEvent.event.title || 'No Title' }}</div>
               <div class="event-time">
-                {{ startTime | date: 'HH:mm' }} - {{ endTime | date: 'HH:mm' }}
+                {{ weekEvent.event.start ? (weekEvent.event.start | date: 'HH:mm') : 'No start time' }} -
+                {{ weekEvent.event.end ? (weekEvent.event.end | date: 'HH:mm') : 'No end time' }}
               </div>
-              <div class="event-subject">Физика</div>
+              <div class="event-subject">{{ weekEvent.event.subtitle || 'No Subtitle' }}</div>
               <div class="event-details">"Альхимед заңы"</div>
             </div>
+            <ng-template #noEventTemplate>
+              <div>No event data available (No event object)</div>
+            </ng-template>
           </ng-template>
+
+
+
         </div>
 
         <button class="arrow-button right-arrow" (click)="nextWeek()">
