@@ -11,7 +11,7 @@ import {
   CalendarView
 } from 'angular-calendar';
 import localeKk from '@angular/common/locales/kk';
-import {addDays, startOfWeek, isToday, subWeeks, addWeeks} from "date-fns";
+import {addDays, startOfWeek, isToday, subWeeks, addWeeks, subMonths, addMonths, isSameDay} from "date-fns";
 import {CalendarService} from "../../service/calendar.service";
 
 @Component({
@@ -40,24 +40,26 @@ export class CalendarPageComponent implements OnInit {
 
   viewDate: Date = new Date();
   currentDate: Date = new Date();
-  todayEvents: CalendarEvent[] = [];
+  todayTasks: CalendarEvent[] = [];
+  selectedDateEvents: CalendarEvent[] = [];
   startTime: Date | null | undefined = null;
   endTime: Date | null | undefined = null;
   primaryColor:string | undefined='';
   secondaryColor:string | undefined='';
   eventTitle: string | undefined='';
   private scrollTimeout: any;
-  private isScrollingRight: boolean | null = null;
+  isEventClicked : boolean | null = null;
   CalendarView = CalendarView;
   weekView: CalendarView = CalendarView.Week;
   monthView: CalendarView = CalendarView.Month;
+  selectedTaskDetails: any;
 
   calendar:any[]=[];
 
   ngOnInit() {
     registerLocaleData(localeKk);
 
-    this.loadTodayEvents();
+
 
     this.loadCalendar()
   }
@@ -72,10 +74,8 @@ export class CalendarPageComponent implements OnInit {
             console.warn('Skipping event due to missing data:', item);
             return null; // Skip if essential data is missing
           }
-
           const { start, end } = this.parseDateString(item.start);
 
-          // Create a unique key for the event based on its title and start time
           const eventKey = item.id ? `event-${item.id}` : `${item.title}-${start.toISOString()}`;
 
           if (uniqueEvents.has(eventKey)) {
@@ -85,13 +85,13 @@ export class CalendarPageComponent implements OnInit {
 
           uniqueEvents.set(eventKey, true);
 
+
           // Handling the 'many' type by combining titles into one block
           let displayTitle = item.title;
           let displaySubtitle = item.subtitle;
           if (item.type === 'many' && item.title.includes('\n')) {
-            const titles = item.title.split('\n');
-            displayTitle = titles.join(' | '); // Combine titles into a single string with separator
-            displaySubtitle = item.subtitle; // Preserve the subtitle if available
+            displayTitle = item.title; // Keep the original title with \n
+            displaySubtitle = item.subtitle
           }
 
           const color = item.type === 'test' ? { primary: '#1E90FF', secondary: '#D1E8FF' } :
@@ -100,6 +100,7 @@ export class CalendarPageComponent implements OnInit {
                 { primary: '#6E63E5', secondary: '#D4D0FF' };
 
           const event = {
+            id:item.id,
             start: start,
             end: end,
             title: displayTitle,
@@ -110,19 +111,19 @@ export class CalendarPageComponent implements OnInit {
               afterEnd: true,
             },
             draggable: false,
+            type: item.type
           };
 
           console.log('Generated event:', event);
           return event;
         })
-        .filter((event: any) => event !== null && event !== undefined); // Ensure only valid events are kept
+        .filter((event: any) => event !== null && event !== undefined);
 
-      console.log('Final events array:', this.events); // Log the final array of events
+      console.log('Final events array:', this.events);
+
+      this.loadTodayTasks();
     });
   }
-
-
-
 
   parseDateString(dateString: string): { start: Date, end: Date } {
     const dateParts = dateString
@@ -142,7 +143,14 @@ export class CalendarPageComponent implements OnInit {
     return { start: startDate, end: endDate };
   }
 
+  moveToPreviousMonth(): void {
+    this.viewDate = subMonths(this.viewDate, 1);
+  }
 
+  // Move to the next month
+  moveToNextMonth(): void {
+    this.viewDate = addMonths(this.viewDate, 1);
+  }
 
 
   events: CalendarEvent[] = [];
@@ -165,17 +173,11 @@ export class CalendarPageComponent implements OnInit {
     });
   }
 
-
-  loadTodayEvents() {
-    const today = new Date();
-    this.todayEvents = this.events.filter(event => {
-      return (
-        event.start.getDate() === today.getDate() &&
-        event.start.getMonth() === today.getMonth() &&
-        event.start.getFullYear() === today.getFullYear()
-      );
-    });
+  goBackToTaskList(): void {
+    this.selectedTaskDetails = null;
+    this.isEventClicked = false; // Reset to show today's tasks again
   }
+
 
   getWeekDays(): Date[] {
     const start = startOfWeek(this.viewDate, { weekStartsOn: 1 });
@@ -188,25 +190,103 @@ export class CalendarPageComponent implements OnInit {
 
   onEventClicked(event: CalendarEvent): void {
     console.log('Event clicked:', event);
-    // Here, you can add logic to display event details or trigger other actions
+
+    if (event.type === 'many' && event.title.includes('\n')) {
+      // Handle 'many' type by splitting the title and displaying in task list
+      this.selectedTaskDetails = false;
+      this.isEventClicked = true;
+      this.selectedDateEvents = event.title.split('\n').map((titlePart) => ({
+        ...event,
+        title: titlePart,
+        start: event.start,
+        end: event.end,
+      }));
+    } else {
+      this.selectedTaskDetails = true;
+      this.isEventClicked = true;
+      this.fetchEventDetails(event.id, event.type,event.start);
+    }
   }
 
+
+  loadTodayTasks(): void {
+    const today = new Date();
+
+    this.todayTasks = this.events.reduce((acc, event) => {
+      const eventDate = new Date(event.start);
+
+      if (eventDate.toDateString() === today.toDateString()) {
+        if (event.title.includes('\n')) {
+          const splitEvents = event.title.split('\n').map((titlePart) => ({
+            ...event,
+            title: titlePart,
+            start: event.start,
+            end: event.end,
+          }));
+          acc.push(...splitEvents);
+        } else {
+          acc.push(event);
+        }
+      }
+
+      return acc;
+    }, [] as CalendarEvent[]);
+
+    console.log('Today\'s tasks:', this.todayTasks);
+
+    this.selectedTaskDetails = null;
+  }
+
+  fetchEventDetails(eventId: string | number | undefined, eventType: string | undefined, time: Date): void {
+    if(eventType == 'many'){
+      this.calendarService.getCalendarTypeMany(time).subscribe((response: any) => {
+        console.log('Event details:', response);
+        this.selectedTaskDetails = response;
+        this.selectedTaskDetails.deadline = this.convertToDate(this.selectedTaskDetails.deadline);
+      }, error => {
+        console.error('Error fetching event details:', error);
+      });
+    }else{
+      this.calendarService.getCalendarItem(eventId, eventType).subscribe((response: any) => {
+        console.log('Event details:', response);
+        this.selectedTaskDetails = response;
+        this.selectedTaskDetails.deadline = this.convertToDate(this.selectedTaskDetails.deadline);
+      }, error => {
+        console.error('Error fetching event details:', error);
+      });
+    }
+  }
+
+  fetchEventDetailsMany(time: Date): void {
+
+  }
 
   onDayClicked(day: { date: Date }): void {
     this.viewDate = day.date;
-    this.loadTodayEvents();
+    this.loadTodayTasks();
   }
 
-  beforeViewRender(event: CalendarWeekViewBeforeRenderEvent): void {
-    event.period.events.forEach(weekEvent => {
-      const startTime = this.formatTime(weekEvent.start);
-      const endTime = this.formatTime(weekEvent.end);
-      weekEvent.title = `${startTime} - ${endTime} ${weekEvent.title}`;
-    });
-  }
+  // beforeViewRender(event: CalendarWeekViewBeforeRenderEvent): void {
+  //   event.period.events.forEach(weekEvent => {
+  //     const startTime = this.formatTime(weekEvent.start);
+  //     const endTime = this.formatTime(weekEvent.end);
+  //     weekEvent.title = `${startTime} - ${endTime} ${weekEvent.title}`;
+  //   });
+  // }
+  //
+  // getEventClass(event: CalendarEvent): string {
+  //   return event.title === 'Тест' ? 'test' : 'testant';
+  // }
 
-  getEventClass(event: CalendarEvent): string {
-    return event.title === 'Тест' ? 'test' : 'testant';
+  convertToDate(tuple: string): Date | null {
+    if (!tuple) return null;
+
+    // Remove the parentheses and split the string into an array
+    const dateParts = tuple.replace(/[()]/g, '').split(',').map(Number);
+
+    // Create a JavaScript Date object: new Date(year, month - 1, day, hour, minute)
+    // Subtract 1 from the month because JavaScript months are 0-based (0 = January)
+    return new Date(dateParts[0], dateParts[1] - 1, dateParts[2], dateParts[3], dateParts[4]);
   }
 
   private formatTime(date: Date | undefined): string {
