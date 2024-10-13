@@ -92,4 +92,27 @@ export class FlowService {
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
     return this.http.post(`${this.apiUrl}/save_course_deadlines/`, data, {headers});
   }
+
+  public getMeetFlows():Observable<any>{
+
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+
+    return this.http.get<any>(`${this.apiUrl}/get_flows_list/`,
+      {headers}
+    );
+  }
+
+  public getMeetCourse(flow_id:number):Observable<any>{
+
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+    const params = new HttpParams().set('flow_id', flow_id.toString());
+
+
+    return this.http.get<any>(`${this.apiUrl}/get_flow_courses_list/`,
+      {headers,params}
+    );
+  }
 }

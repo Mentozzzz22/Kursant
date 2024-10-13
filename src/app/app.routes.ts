@@ -38,6 +38,7 @@ import {canDeactivateGuard} from "./can-deactivate-guard.guard";
 import {CalendarPageComponent} from "./student/calendar-page/calendar-page.component";
 import {NotificationsComponent} from "./student/notifications/notifications.component";
 import {GradesComponent} from "./student/grades/grades.component";
+import {LiveBroadcastComponent} from "./admin/live-broadcast/live-broadcast.component";
 
 export const routes: Routes = [
   {
@@ -85,6 +86,9 @@ export const routes: Routes = [
       },
       {
         path: 'learner-add', component: LearnerComponent, canActivate: [AuthGuard], data: {role: 'employee'}
+      },
+      {
+        path: 'live-broadcast', component: LiveBroadcastComponent, canActivate: [AuthGuard], data: {role: 'employee'}
       },
       {
         path: 'edit-course/:courseId',

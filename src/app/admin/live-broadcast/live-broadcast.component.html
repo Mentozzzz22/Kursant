@@ -1,0 +1,109 @@
+<div class="supplier-header">
+  <div class="supplier-container">
+    <h1 class="supplier-title">Прямые эфиры</h1>
+    <hr style="transform: scaleY(0.3);">
+    <div class="supplier-actions">
+      <div class="search-form">
+        <label for="supplierSearch" class="visually-hidden">Название конференции</label>
+        <input type="text" id="supplierSearch" placeholder="Название конференции" class="search-input" [(ngModel)]="searchText"/>
+        <button type="submit" class="search-button" >Поиск</button>
+      </div>
+      <button class="add-course-btn" (click)="openModal()">
+        Добавить эфир
+      </button>
+    </div>
+  </div>
+</div>
+<div class="main-content">
+
+  <div class="content-buttons" >
+    <button class="content-button" *ngFor="let flow of flows let i = index"
+            (click)="selectFlow(flow.flow_id)"
+            [class.active]="flow.flow_id === flowId">
+      Поток {{flow.flow_index}}
+    </button>
+  </div>
+
+  <div class="content-buttons" >
+    <button class="content-button" *ngFor="let course of courses let i = index"
+            (click)="loadMeetings(course.flow_course_id)"
+            [class.active] = "course.flow_course_id === courseId">
+      {{course.name}}
+    </button>
+  </div>
+
+  <div class="content-table-container">
+
+    <p-table [value]="meets" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Куратор</th>
+          <th>Ссылка</th>
+          <th>Название</th>
+          <th>Время начало</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-progresses >
+        <tr>
+          <td>{{ progresses.curator_name }}</td>
+          <td>{{progresses.link}}</td>
+          <td>{{ progresses.name }}</td>
+          <td>{{ progresses.start_time }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+  </div>
+</div>
+
+
+<p-dialog
+  header="Добавить Эфир"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '40rem' }"
+  draggable="false"
+  (onHide)="closeModal()">
+
+  <div class="modal-content">
+
+        <form [formGroup]="submitForm" (ngSubmit)="onSubmit()" class="form-container">
+        <label for="name">Название</label>
+        <input id="name" type="text" formControlName="name" placeholder="Введите название">
+
+        <label for="date">Дата</label>
+        <input id="date" type="date" (change)="onDateChange($event)" placeholder="Выберите дату">
+
+        <label for="time">Время</label>
+        <input id="time" type="time" (change)="onTimeChange($event)" placeholder="Выберите время">
+
+
+        <label for="flow">Поток</label>
+        <select id="flow" formControlName="flow_course_id" (change)="selectFlowByModal($event)">
+          <option value="" disabled selected>Выберите поток</option>
+          <option *ngFor="let flow of flows" [value]="flow.flow_id">{{flow.flow_index}}</option>
+        </select>
+
+        <label for="course">Курс</label>
+        <select id="course" formControlName="flow_course_id">
+          <option value="" disabled selected>Выберите курс</option>
+          <option *ngFor="let course of coursesByModal" [value]="course.flow_course_id">{{course.name}}</option>
+        </select>
+
+        <label for="curator">Куратор</label>
+        <select id="curator" formControlName="curator_id">
+          <option value="" disabled selected>Выберите куратора</option>
+          <option *ngFor="let curator of curators" [value]="curator.id">{{curator.fullname}}</option>
+        </select>
+
+        <div class="button-container">
+          <button type="button" class="outlined-button" (click)="closeModal()">Отмена</button>
+          <button type="submit" class="filled-button">Подтвердить</button>
+        </div>
+
+        </form>
+
+  </div>
+
+
+</p-dialog>
