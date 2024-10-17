@@ -105,7 +105,8 @@
           <div class="form-group">
             <label for="phone">Телефон</label>
             <div class="input-container">
-              <input type="text" id="phone" class="form-control" formControlName="learner_phone_number">
+              <input type="text" id="phone" class="form-control" formControlName="learner_phone_number"
+                     prefix="+7 " [mask]="'(000) 000 00 00'">
               <button class="edit-btn">
                 <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
               </button>

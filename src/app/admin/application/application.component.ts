@@ -17,6 +17,7 @@ import {OverlayPanelModule} from "primeng/overlaypanel";
 import {PaginatorModule} from "primeng/paginator";
 import {GetFlows} from "../../../assets/models/getFlows.interface";
 import {FlowService} from "../../service/flow.service";
+import {NgxMaskDirective} from "ngx-mask";
 
 @Component({
   selector: 'app-application',
@@ -35,7 +36,8 @@ import {FlowService} from "../../service/flow.service";
     OverlayPanelModule,
     PaginatorModule,
     ReactiveFormsModule,
-    NgStyle
+    NgStyle,
+    NgxMaskDirective
   ],
   templateUrl: './application.component.html',
   styleUrl: './application.component.css'
