@@ -89,10 +89,13 @@ export class CalendarPageComponent implements OnInit {
             displaySubtitle = item.subtitle
           }
 
-          const color = item.type === 'test' ? { primary: '#1E90FF', secondary: '#D1E8FF' } :
-            item.type === 'homework' ? { primary: '#6E63E5', secondary: '#D4D0FF' } :
-              item.type === 'many' ? { primary: '#FF6347', secondary: '#FFDAB9' } :
-                { primary: '#6E63E5', secondary: '#D4D0FF' };
+          const color = item.type === 'test' ? { primary: '#6E63E5', secondary: '#D4D0FF' } :
+            item.type === 'homework' ? { primary: '#FFB37E', secondary: '#FFDAB9' } :
+              item.type === 'testant' ? { primary: '#F93C65', secondary: '#FFD1D1' } :
+                item.type === 'many' ? { primary: '#A0D468', secondary: '#E6F5D0' } :  // зеленый оттенок
+                  item.type === 'meet' ? { primary: '#00B0EA', secondary: '#D1F0FF' } :
+                    { primary: '#6E63E5', secondary: '#D4D0FF' };
+
 
           const event = {
             id:item.id,
