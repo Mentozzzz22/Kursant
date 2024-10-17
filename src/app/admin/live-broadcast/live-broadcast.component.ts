@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {Button} from "primeng/button";
 import {CheckboxModule} from "primeng/checkbox";
 import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
@@ -35,6 +35,8 @@ import {ProgressBarModule} from "primeng/progressbar";
 })
 export class LiveBroadcastComponent implements OnInit{
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
+  @ViewChild('dateInput') dateInput!: ElementRef;
+  @ViewChild('timeInput') timeInput!: ElementRef;
 
 
   private flowService = inject(FlowService);
@@ -219,6 +221,9 @@ export class LiveBroadcastComponent implements OnInit{
       this.selectedMeetId = null;
       this.submitForm.reset();
       this.updateForm.reset();
+      this.curators = []
+      this.dateInput.nativeElement.value = '';
+      this.timeInput.nativeElement.value = '';
     }
   }
 

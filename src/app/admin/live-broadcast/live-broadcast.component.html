@@ -75,10 +75,10 @@
         <input id="name" type="text" formControlName="name" placeholder="Введите название">
 
         <label for="date">Дата</label>
-        <input id="date" type="date" (change)="onDateChange($event)" placeholder="Выберите дату">
+        <input id="date" type="date" #dateInput (change)="onDateChange($event)" placeholder="Выберите дату">
 
         <label for="time">Время</label>
-        <input id="time" type="time" (change)="onTimeChange($event)" placeholder="Выберите время">
+        <input id="time" type="time" #timeInput (change)="onTimeChange($event)" placeholder="Выберите время">
 
 
         <label for="flow">Поток</label>
