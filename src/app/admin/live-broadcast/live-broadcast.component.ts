@@ -50,6 +50,7 @@ export class LiveBroadcastComponent implements OnInit{
 
   searchText: string = '';
   flows:any[]=[];
+  flowsByModal:any[]=[];
   meets:any[]=[];
   curators:any[]=[];
   flowId:number|null=null;
@@ -90,6 +91,17 @@ export class LiveBroadcastComponent implements OnInit{
   loadFlows() {
     this.flowService.getMeetFlows().subscribe(data => {
       this.flows = data
+      if(this.selectedModal=='update'){
+        if (this.flowId) {
+          this.loadCourse(this.flowId);
+        }
+      }
+    })
+  }
+
+  loadFlowsByModal() {
+    this.flowService.getMeetFlows().subscribe(data => {
+      this.flowsByModal = data
       if(this.selectedModal=='update'){
         if (this.flowId) {
           this.loadCourse(this.flowId);
@@ -196,6 +208,7 @@ export class LiveBroadcastComponent implements OnInit{
   openModal(selectedModal: string, meetId?: number | null) {
     this.visible = true;
     this.loadCurators();
+    this.loadFlowsByModal();
     this.selectedModal = selectedModal;
 
     if (selectedModal === 'update' && meetId) {
@@ -222,6 +235,7 @@ export class LiveBroadcastComponent implements OnInit{
       this.submitForm.reset();
       this.updateForm.reset();
       this.curators = []
+      this.flowsByModal = []
       this.dateInput.nativeElement.value = '';
       this.timeInput.nativeElement.value = '';
     }
@@ -266,6 +280,7 @@ export class LiveBroadcastComponent implements OnInit{
           if (response.success) {
             this.visible = false;
             this.submitForm.reset();
+            this.loadMeetings(this.courseId)
             this.messageService.add({ severity: 'success', summary: 'Успех', detail: 'Встреча сохранена' });
           }
         },
@@ -292,6 +307,8 @@ export class LiveBroadcastComponent implements OnInit{
           if (response.success) {
             this.visible = false;
             this.updateForm.reset();
+            this.loadMeetings(this.courseId)
+
             this.messageService.add({ severity: 'success', summary: 'Успех', detail: 'Встреча обновлена' });
           }
         },

@@ -84,7 +84,7 @@
         <label for="flow">Поток</label>
         <select id="flow" formControlName="flow_id" (change)="selectFlowByModal($event)">
           <option value="" disabled selected>Выберите поток</option>
-          <option *ngFor="let flow of flows" [value]="flow.flow_id">{{flow.flow_index}}</option>
+          <option *ngFor="let flow of flowsByModal" [value]="flow.flow_id">{{flow.flow_index}}</option>
         </select>
 
         <label for="course">Курс</label>
@@ -121,7 +121,7 @@
       <label for="update-flow">Поток</label>
       <select id="update-flow" formControlName="flow_id" (change)="selectFlowByModal($event)">
         <option value="" disabled selected>Выберите поток</option>
-        <option *ngFor="let flow of flows" [value]="flow.flow_id">{{flow.flow_index}}</option>
+        <option *ngFor="let flow of flowsByModal" [value]="flow.flow_id">{{flow.flow_index}}</option>
       </select>
 
       <label for="update-course">Курс</label>

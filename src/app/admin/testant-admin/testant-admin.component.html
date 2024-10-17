@@ -83,11 +83,11 @@
       <div class="input-row">
         <div>
           <label for="date">Дата</label>
-          <input id="date" type="date" (change)="onDateChange($event)" placeholder="Выберите дату">
+          <input id="date" type="date" #dateStart (change)="onDateChange($event)" placeholder="Выберите дату">
         </div>
         <div>
           <label for="time">Время</label>
-          <input id="time" type="time" (change)="onTimeChange($event)" placeholder="Выберите время">
+          <input id="time" type="time" #timeStart (change)="onTimeChange($event)" placeholder="Выберите время">
         </div>
       </div>
 
@@ -96,11 +96,11 @@
       <div class="input-row">
         <div>
           <label for="date1">Дата</label>
-          <input id="date1" type="date" (change)="onDeadlineDateChange($event)" placeholder="Выберите дату">
+          <input id="date1" type="date" #dateEnd (change)="onDeadlineDateChange($event)" placeholder="Выберите дату">
         </div>
         <div>
           <label for="time1">Время</label>
-          <input id="time1" type="time" (change)="onDeadlineTimeChange($event)" placeholder="Выберите время">
+          <input id="time1" type="time" #timeEnd (change)="onDeadlineTimeChange($event)" placeholder="Выберите время">
         </div>
       </div>
 

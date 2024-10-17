@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import { TestantService } from '../../service/testant.service';
@@ -33,6 +33,11 @@ export class TestantAdminComponent implements OnInit{
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
   private curatorService = inject(CuratorService);
+
+  @ViewChild('dateStart') dateStart!: ElementRef;
+  @ViewChild('timeStart') timeStart!: ElementRef;
+  @ViewChild('dateEnd') dateEnd!: ElementRef;
+  @ViewChild('timeEnd') timeEnd!: ElementRef;
 
 
   selectedModal:string='';
@@ -138,6 +143,11 @@ export class TestantAdminComponent implements OnInit{
       this.selectedTestId = null;
       this.submitForm.reset();
       this.updateForm.reset();
+      this.dateStart.nativeElement.value = '';
+      this.timeStart.nativeElement.value = '';
+      this.dateEnd.nativeElement.value = '';
+      this.timeEnd.nativeElement.value = '';
+      this.curators = []
     }
   }
 
@@ -209,6 +219,7 @@ export class TestantAdminComponent implements OnInit{
           if (response.success) {
             this.visible = false;
             this.submitForm.reset();
+            this.loadTestants(this.flowId)
             this.messageService.add({ severity: 'success', summary: 'Успех', detail: 'Встреча сохранена' });
           }
         },
@@ -243,6 +254,7 @@ export class TestantAdminComponent implements OnInit{
           if (response.success) {
             this.visible = false;
             this.updateForm.reset();
+            this.loadTestants(this.flowId)
             this.messageService.add({ severity: 'success', summary: 'Успех', detail: 'Встреча обновлена' });
           }
         },
