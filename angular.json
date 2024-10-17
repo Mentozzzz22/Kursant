@@ -44,6 +44,8 @@
           },
           "configurations": {
             "production": {
+              "optimization": true,
+              "aot": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -57,6 +59,8 @@
                 }
               ],
               "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

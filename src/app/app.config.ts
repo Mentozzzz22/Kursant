@@ -1,4 +1,4 @@
-import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
+import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, isDevMode} from '@angular/core';
 import {provideRouter, withComponentInputBinding} from '@angular/router';
 
 import { routes } from './app.routes';
@@ -11,7 +11,8 @@ import {provideNgxMask} from 'ngx-mask';
 import {DialogService} from "primeng/dynamicdialog";
 import {CalendarDateFormatter, CalendarModule, CalendarUtils, DateAdapter} from 'angular-calendar';
 import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
-import {CustomDateFormatter} from "./service/custom-date-adapter"; // Импорт адаптера
+import {CustomDateFormatter} from "./service/custom-date-adapter";
+import { provideServiceWorker } from '@angular/service-worker'; // Импорт адаптера
 
 
 
@@ -33,5 +34,11 @@ export const appConfig: ApplicationConfig = {
     {provide: ConfirmationService, useClass: ConfirmationService},
     {provide:DatePipe, useClass:DatePipe},
     provideNgxMask(),
-    {provide: CalendarUtils, useClass: CalendarUtils}
+    {provide: CalendarUtils, useClass: CalendarUtils}, provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          }), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          })
   ]};
