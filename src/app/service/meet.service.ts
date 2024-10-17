@@ -43,4 +43,43 @@ export class MeetService {
     );
   }
 
+  public deleteMeeting(meetingId: number | null): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    const body = { id: meetingId };
+
+    return this.http.post<any>(`${this.apiUrl}/delete_meeting/`, body, { headers }).pipe(
+      catchError(error => {
+        console.error('Delete meeting failed:', error);
+        return throwError(error);
+      })
+    );
+  }
+
+  public getMeetingsForCurator(search?: string): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    let params = new HttpParams()
+
+    if (search) {
+      params = params.set('search', search);
+    }
+
+    return this.http.get<any>(`${this.apiUrl}/get_curator_meetings/`, { headers, params });
+  }
+
+  public startMeeting(meeting_id: number): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    const body = { meeting_id };
+
+    return this.http.post<any>(`${this.apiUrl}/start_meeting/`, body, { headers });
+  }
+
+
+
+
 }

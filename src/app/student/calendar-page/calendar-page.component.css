@@ -21,6 +21,15 @@
   width: 100%;
 }
 
+.calendar-week-view {
+  height: 980px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+
 .calendar-navigation {
   position: relative;
   width: 100%;
@@ -28,7 +37,7 @@
 
 .arrow-button {
   position: absolute;
-  top: 30%;
+  top: 50%;
   transform: translateY(-50%);
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
@@ -121,6 +130,11 @@
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
   margin-left: 70px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .custom-header-day {
@@ -237,6 +251,20 @@
   border-bottom: none;
 }
 
+:host ::ng-deep .cal-month-view .cal-day-cell{
+  height:57px;
+  min-height:60px;
+}
+
+:host ::ng-deep .cal-month-view .cal-cell-top {
+  height:35px;
+  min-height:35px;
+}
+
+:host ::ng-deep .cal-month-view .cal-day-number{
+  margin-top:0;
+}
+
 :host ::ng-deep .cal-month-view,
 :host ::ng-deep.cal-cell-row{
   border-bottom: none;
@@ -274,12 +302,14 @@
 
 .task-list {
   background-color: #fff;
-  padding-top: 20px;
+  padding-top: 10px;
   border-top: 1px solid #DFDFDF;
   margin-left: -40px;
   margin-right: -40px;
   padding-left: 40px;
   padding-right: 40px;
+  max-height: 370px;
+  overflow-y: auto;
 }
 
 .task-list h3 {
@@ -374,33 +404,60 @@ h2 {
 .details-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .label {
   color: #7D7D7D;
   font-size: 16px;
+  flex-basis: 150px;
+  text-align: left;
 }
 
 .value {
   color: #000000;
   font-size: 16px;
+  flex-grow: 1;
+  text-align: left;
 }
 
+.button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.centered-text {
+  margin: 1px 0 0 10px;
+  display: flex;
+  align-items: center;
+  color:red;
+}
+
+
 .submit-button {
-  margin-top: 20px;
-  padding: 10px 20px;
+  padding: 8px 15px;
   font-size: 16px;
   color: #007BFF;
+  text-decoration:none;
   border: 1px solid #007BFF;
   background-color: #FFFFFF;
   border-radius: 6px;
   cursor: pointer;
 }
 
-.submit-button:hover {
-  background-color: #E5F1FF;
+.submit-button.disabled-link {
+  background-color: transparent;
+  color: #9e9e9e;
+  border: 1px solid #ccc;
+  pointer-events: none; /* Блокирует клики */
+  cursor: not-allowed;
+  text-decoration: none;
 }
 
+.submit-button:not(.disabled-button):hover {
+  background-color: #E5F1FF;
+}
 
 
 @media (max-width: 1024px) {

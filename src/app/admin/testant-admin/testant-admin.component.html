@@ -1,0 +1,205 @@
+<div class="supplier-header">
+  <div class="supplier-container">
+    <h1 class="supplier-title">Тестант</h1>
+    <hr style="transform: scaleY(0.3);">
+    <div class="supplier-actions">
+      <div class="search-form">
+        <label for="supplierSearch" class="visually-hidden">Название теста</label>
+        <input type="text" id="supplierSearch" placeholder="Название теста" class="search-input" />
+        <button type="submit" class="search-button" >Поиск</button>
+      </div>
+      <button class="add-course-btn" (click)="openModal('create')">
+        Добавить
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+
+
+  <div class="content-buttons" >
+    <button class="content-button" *ngFor="let flow of flows let i = index"
+            (click)="selectFlow(flow.flow_id)"
+            [class.active]="flow.flow_id === flowId">
+      Поток {{flow.flow_index}}
+    </button>
+  </div>
+
+
+  <div class="content-table-container">
+
+    <p-table [value]="testants" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr >
+          <th>Время начало</th>
+          <th>Дедлайн</th>
+          <th>Куратор</th>
+          <th>Тест</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-progresses >
+        <tr (click)="openModal('update',progresses.id)">
+          <td>{{ progresses.start_time }}</td>
+          <td>{{ progresses.deadline }}</td>
+          <td>{{ progresses.curator_name }}</td>
+          <td (click)="$event.stopPropagation()">
+            <button
+              class="start-meeting-btn"
+              *ngIf="progresses.link">
+              Тест <i class="pi pi-lock-open"></i>
+            </button>
+
+            <button
+              class="start-meeting-btn disabled-btn"
+              disabled
+              *ngIf="!progresses.link">
+              Тест закрыт <i class="pi pi-lock"></i>
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+  </div>
+  </div>
+
+
+<p-dialog
+  header="Добавить Тестант"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '40rem' }"
+  draggable="false"
+  (onHide)="closeModal()">
+
+  <div class="modal-content">
+
+
+    <form [formGroup]="submitForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="selectedModal == 'create'">
+
+      <div class="hr-text">Время начала</div>
+
+      <div class="input-row">
+        <div>
+          <label for="date">Дата</label>
+          <input id="date" type="date" (change)="onDateChange($event)" placeholder="Выберите дату">
+        </div>
+        <div>
+          <label for="time">Время</label>
+          <input id="time" type="time" (change)="onTimeChange($event)" placeholder="Выберите время">
+        </div>
+      </div>
+
+      <div class="hr-text">Дедлайн</div>
+
+      <div class="input-row">
+        <div>
+          <label for="date1">Дата</label>
+          <input id="date1" type="date" (change)="onDeadlineDateChange($event)" placeholder="Выберите дату">
+        </div>
+        <div>
+          <label for="time1">Время</label>
+          <input id="time1" type="time" (change)="onDeadlineTimeChange($event)" placeholder="Выберите время">
+        </div>
+      </div>
+
+      <div class="hr-text">Курс</div>
+
+
+      <div class="input-row">
+      <div>
+        <label for="flow">Поток</label>
+        <select id="flow" formControlName="flow_id">
+          <option value="" disabled selected>Выберите поток</option>
+          <option *ngFor="let flow of flows" [value]="flow.flow_id">{{flow.flow_index}}</option>
+        </select>
+      </div>
+
+        <div>
+        <label for="curator">Куратор</label>
+        <select id="curator" formControlName="curator_id">
+          <option value="" disabled selected>Выберите куратора</option>
+          <option *ngFor="let curator of curators" [value]="curator.id">{{curator.fullname}}</option>
+        </select>
+      </div>
+      </div>
+
+      <div class="button-container">
+        <button type="button" class="outlined-button" (click)="closeModal()">Отмена</button>
+        <button type="submit" class="filled-button">Подтвердить</button>
+      </div>
+
+    </form>
+
+
+    <form [formGroup]="updateForm" class="form-container" *ngIf="selectedModal === 'update'">
+      <div class="hr-text">Время начала</div>
+
+      <div class="input-row">
+        <div>
+          <label for="date-update">Дата</label>
+          <input id="date-update" type="date" formControlName="date" (change)="onDateChange($event)" placeholder="Выберите дату">
+        </div>
+        <div>
+          <label for="time-update">Время</label>
+          <input id="time-update" type="time" formControlName="time" (change)="onTimeChange($event)" placeholder="Выберите время">
+        </div>
+      </div>
+
+      <div class="hr-text">Дедлайн</div>
+
+      <div class="input-row">
+        <div>
+          <label for="date1-update">Дата</label>
+          <input id="date1-update" type="date" formControlName="deadline_date" (change)="onDeadlineDateChange($event)" placeholder="Выберите дату">
+        </div>
+        <div>
+          <label for="time1-update">Время</label>
+          <input id="time1-update" type="time" formControlName="deadline_time" (change)="onDeadlineTimeChange($event)" placeholder="Выберите время">
+        </div>
+      </div>
+
+      <div class="hr-text">Курс</div>
+
+      <div class="input-row">
+        <div>
+          <label for="flow-update">Поток</label>
+          <select id="flow-update" formControlName="flow_id">
+            <option value="" disabled selected>Выберите поток</option>
+            <option *ngFor="let flow of flows" [value]="flow.flow_id">{{flow.flow_index}}</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="curator-update">Куратор</label>
+          <select id="curator-update" formControlName="curator_id">
+            <option value="" disabled selected>Выберите куратора</option>
+            <option *ngFor="let curator of curators" [value]="curator.id">{{curator.fullname}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <button type="button" class="outlined-button" (click)="closeModal()">Отмена</button>
+        <button type="submit" class="filled-button" (click)="onSubmit()">Подтвердить</button>
+      </div>
+    </form>
+
+
+  </div>
+
+
+</p-dialog>
+
+<p-confirmPopup #confirmPopupRef>
+  <ng-template pTemplate="headless">
+    <div class="border-round p-3">
+      <span>Вы уверены что хотите удалить эфир ?</span>
+      <div class="flex align-items-center gap-2 mt-3">
+        <p-button (click)="deleteMeeting(confirmPopupRef)" label="Удалить" size="small" severity="danger"/>
+        <p-button (click)="reject(confirmPopupRef)" label="Отмена" [outlined]="false" size="small"/>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmPopup>

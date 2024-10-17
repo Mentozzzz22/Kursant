@@ -69,6 +69,7 @@
   font-size: 18px;
   text-decoration:underline;
 }
+
 /**Контент**/
 
 .main-content {
@@ -141,102 +142,32 @@
   padding: 10px;
 }
 
-/**modal**/
-.modal-content {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  align-content: flex-start;
-  height: 100%;
-  width: 100%;
-  gap: 20px;
-}
-
-.form-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-row-gap: 20px;
-  width: 100%;
-  max-width: 600px;
-  background-color: white;
-}
-
-.form-container label {
-  font-size: 14px;
-  color: #333;
-}
-
-.form-container input,
-.form-container select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.form-container input:focus,
-.form-container select:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-.form-container input[type="submit"] {
-  background-color: #007bff;
+.start-meeting-btn {
+  background-color: #1d1d42;
   color: white;
   border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   transition: background-color 0.3s ease;
 }
 
-.form-container input[type="submit"]:hover {
-  background-color: #0056b3;
+.start-meeting-btn:hover {
+  background-color: #00ADEF;
 }
 
-.select-wrapper {
-  position: relative;
-  width: 100%;
+.start-meeting-btn:disabled,
+.start-meeting-btn.disabled-btn {
+  background-color: #b9b9b9;
+  color: #ffffff;
+  cursor: not-allowed;
 }
 
-.form-container select {
-  appearance: none;
-  background-color: white;
-  padding-right: 40px;
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEyIDciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEuNDg0Ljg3NmEuNzk5Ljc5OSAwIDAgMSAxLjA5MyAwTDYgMy43MjFsMy40MjMtMi44NDNhLjc5OS43OTkgMCAwIDEgMS4wOTMgMEExIDEgMCAwIDEgMTEuOTYgMS43N2wwIDNhMSAxIDAgMCAxLTEuMDkzLjg3NmwtNSA0LjhBNi43OTkgNi43OTkgMCAwIDEgNiA3YS42OTguNjk4IDAgMCAxLS41LjA3YTEuMDggMS4wOCAwIDAgMS0uNTEuMTIuNjk4LjY5OCAwIDAgMS0uNS0uMDdBNi43OTkgNi43OTkgMCAwIDEtLjU5NiA1LjUuOTk4Ljk5OCAwIDAgMSAxLjQ4NC44NzZ6IiBmaWxsPSIjMDAwIi8+PC9zdmc+");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 12px 12px;
-}
-
-.select-wrapper select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-:host ::ng-deep .p-dialog-content{
-  padding:0 24px 24px 24px;
-}
-
-
-.button-container {
-  padding-top:15px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.filled-button {
-  background-color: #444444;
-  color: #fff;
-  padding:10px 60px;
-  border-radius: 10px;
-}
-
-.outlined-button {
-  border: 1px solid #333;
-  color: #333;
-  background-color: transparent;
-  padding:10px 60px;
-  border-radius: 10px;
+.start-meeting-btn:disabled:hover,
+.start-meeting-btn.disabled-btn:hover {
+  background-color: #b9b9b9;
 }

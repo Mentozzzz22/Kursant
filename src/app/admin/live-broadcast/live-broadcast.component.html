@@ -6,9 +6,9 @@
       <div class="search-form">
         <label for="supplierSearch" class="visually-hidden">Название конференции</label>
         <input type="text" id="supplierSearch" placeholder="Название конференции" class="search-input" [(ngModel)]="searchText"/>
-        <button type="submit" class="search-button" >Поиск</button>
+        <button type="submit" class="search-button" (click)="searchMeet()" >Поиск</button>
       </div>
-      <button class="add-course-btn" (click)="openModal()">
+      <button class="add-course-btn" (click)="openModal('create')">
         Добавить эфир
       </button>
     </div>
@@ -36,7 +36,7 @@
 
     <p-table [value]="meets" [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template pTemplate="header">
-        <tr>
+        <tr >
           <th>Куратор</th>
           <th>Ссылка</th>
           <th>Название</th>
@@ -44,9 +44,11 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-progresses >
-        <tr>
+        <tr (click)="openModal('update',progresses.id)">
           <td>{{ progresses.curator_name }}</td>
-          <td>{{progresses.link}}</td>
+          <td>
+            <a [href]="progresses.link" target="_blank" (click)="$event.stopPropagation()">{{ progresses.link }}</a>
+          </td>
           <td>{{ progresses.name }}</td>
           <td>{{ progresses.start_time }}</td>
         </tr>
@@ -67,7 +69,8 @@
 
   <div class="modal-content">
 
-        <form [formGroup]="submitForm" (ngSubmit)="onSubmit()" class="form-container">
+
+        <form [formGroup]="submitForm" (ngSubmit)="onSubmit()" class="form-container" *ngIf="selectedModal == 'create'">
         <label for="name">Название</label>
         <input id="name" type="text" formControlName="name" placeholder="Введите название">
 
@@ -79,7 +82,7 @@
 
 
         <label for="flow">Поток</label>
-        <select id="flow" formControlName="flow_course_id" (change)="selectFlowByModal($event)">
+        <select id="flow" formControlName="flow_id" (change)="selectFlowByModal($event)">
           <option value="" disabled selected>Выберите поток</option>
           <option *ngFor="let flow of flows" [value]="flow.flow_id">{{flow.flow_index}}</option>
         </select>
@@ -103,7 +106,60 @@
 
         </form>
 
+
+    <form [formGroup]="updateForm"  class="form-container"  *ngIf="selectedModal === 'update'">
+      <label for="update-name">Название</label>
+      <input id="update-name" type="text" formControlName="name" placeholder="Введите название">
+
+      <label for="update-date">Дата</label>
+      <input id="update-date" type="date" formControlName="date" placeholder="Выберите дату">
+
+      <label for="update-time">Время</label>
+      <input id="update-time" type="time" formControlName="time" placeholder="Выберите время">
+
+
+      <label for="update-flow">Поток</label>
+      <select id="update-flow" formControlName="flow_id" (change)="selectFlowByModal($event)">
+        <option value="" disabled selected>Выберите поток</option>
+        <option *ngFor="let flow of flows" [value]="flow.flow_id">{{flow.flow_index}}</option>
+      </select>
+
+      <label for="update-course">Курс</label>
+      <select id="update-course" formControlName="flow_course_id">
+        <option value="" disabled selected>Выберите курс</option>
+        <option *ngFor="let course of coursesByModal" [value]="course.flow_course_id">{{course.name}}</option>
+      </select>
+
+      <label for="update-curator">Куратор</label>
+      <select id="update-curator" formControlName="curator_id">
+        <option value="" disabled selected>Выберите куратора</option>
+        <option *ngFor="let curator of curators" [value]="curator.id">{{curator.fullname}}</option>
+      </select>
+
+      <div class="button-container">
+        <button type="button" class="outlined-button" (click)="confirm($event)">Удалить</button>
+
+
+        <button type="submit" class="filled-button" (click)="onSubmit()">Обновить</button>
+      </div>
+
+    </form>
+
   </div>
 
 
 </p-dialog>
+
+
+
+<p-confirmPopup #confirmPopupRef>
+  <ng-template pTemplate="headless">
+    <div class="border-round p-3">
+      <span>Вы уверены что хотите удалить эфир ?</span>
+      <div class="flex align-items-center gap-2 mt-3">
+        <p-button (onClick)="deleteMeeting(confirmPopupRef)" label="Удалить" size="small" severity="danger"/>
+        <p-button (onClick)="reject(confirmPopupRef)" label="Отмена" [outlined]="false" size="small"/>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmPopup>

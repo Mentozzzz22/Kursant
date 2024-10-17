@@ -1,17 +1,16 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {Button} from "primeng/button";
 import {CheckboxModule} from "primeng/checkbox";
-import {ConfirmPopupModule} from "primeng/confirmpopup";
+import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
 import {DialogModule} from "primeng/dialog";
 import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
 import {NgxMaskDirective} from "ngx-mask";
-import {MessageService, PrimeTemplate} from "primeng/api";
+import {ConfirmationService, MessageService, PrimeTemplate} from "primeng/api";
 import {TableModule} from "primeng/table";
 import {CuratorService} from "../../service/curator.service";
 import {FlowService} from "../../service/flow.service";
 import {MeetService} from "../../service/meet.service";
-import {core} from "@angular/compiler";
 import {ProgressBarModule} from "primeng/progressbar";
 
 @Component({
@@ -35,10 +34,14 @@ import {ProgressBarModule} from "primeng/progressbar";
   styleUrl: './live-broadcast.component.css'
 })
 export class LiveBroadcastComponent implements OnInit{
+  @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
+
+
   private flowService = inject(FlowService);
   private meetService = inject(MeetService);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
+  private confirmationService = inject(ConfirmationService)
   private curatorService = inject(CuratorService);
 
 
@@ -55,6 +58,8 @@ export class LiveBroadcastComponent implements OnInit{
   visible: boolean = false;
   selectedDate: string = '';
   selectedTime: string = '';
+  selectedMeetId:number|null=null;
+  selectedModal:string='';
 
 
   ngOnInit(): void {
@@ -64,16 +69,30 @@ export class LiveBroadcastComponent implements OnInit{
   public submitForm = this.fb.group({
     name: [''],
     curator_id: [''],
+    flow_id: [''],
     flow_course_id: [''],
     start_time:['']}
   );
 
-
+  public updateForm = this.fb.group({
+    id:[''],
+    name: [''],
+    curator_id: [''],
+    flow_id: [''],
+    flow_course_id: [''],
+    date: [''],
+    time: [''],
+    start_time: ['']
+  });
 
   loadFlows() {
     this.flowService.getMeetFlows().subscribe(data => {
       this.flows = data
-      // this.loadCourse(this.flowId);
+      if(this.selectedModal=='update'){
+        if (this.flowId) {
+          this.loadCourse(this.flowId);
+        }
+      }
     })
   }
 
@@ -111,18 +130,23 @@ export class LiveBroadcastComponent implements OnInit{
       },
       error: (err) => console.error('Error loading curators:', err)
     });
-
   }
 
-  loadMeetings(courseId:number): void {
-    console.log(this.flowId, courseId);
+  searchMeet(){
+    this.loadMeetings(this.courseId);
+  }
+
+  loadMeetings(courseId:number|null): void {
     if (this.flowId !== null && courseId !== null) {
       this.courseId = courseId;
       this.meetService.getMeetings(this.flowId, courseId,this.searchText).subscribe(data => {
-        this.meets = data;
+        this.meets = data.meetings;
       });
-    } else {
+    } else if (this.flowId == null) {
       this.messageService.add({ severity: 'warn', summary: 'Внимание', detail: 'Выберите поток' });
+    }else{
+      this.messageService.add({ severity: 'warn', summary: 'Внимание', detail: 'Выберите курс' });
+
     }
   }
 
@@ -143,11 +167,19 @@ export class LiveBroadcastComponent implements OnInit{
     if (this.selectedDate && this.selectedTime) {
       const startTime = `${this.selectedDate} ${this.selectedTime}`;
       console.log("Start Time:", startTime);
-      this.submitForm.patchValue({
-        start_time: startTime
-      });
+
+      if (this.selectedModal === 'update') {
+        this.updateForm.patchValue({
+          start_time: startTime
+        });
+      } else {
+        this.submitForm.patchValue({
+          start_time: startTime
+        });
+      }
     }
   }
+
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -159,9 +191,57 @@ export class LiveBroadcastComponent implements OnInit{
   }
 
 
-  openModal(){
-    this.visible=true;
-    this.loadCurators()
+  openModal(selectedModal: string, meetId?: number | null) {
+    this.visible = true;
+    this.loadCurators();
+    this.selectedModal = selectedModal;
+
+    if (selectedModal === 'update' && meetId) {
+      this.selectedMeetId = meetId;
+      const selectedMeet = this.meets.find(meet => meet.id === meetId);
+
+      if (selectedMeet) {
+        const [datePart, timePart] = selectedMeet.start_time.split(' ');
+
+        this.updateForm.patchValue({
+          id: selectedMeet.id,
+          name: selectedMeet.name,
+          curator_id: selectedMeet.curator_id,
+          flow_id: selectedMeet.flow_id,
+          flow_course_id: selectedMeet.flow_course_id,
+          date: this.formatDateForInput(datePart),
+          time: timePart
+        });
+
+        this.loadCourseByModal(selectedMeet.flow_id);
+      }
+    } else {
+      this.selectedMeetId = null;
+      this.submitForm.reset();
+      this.updateForm.reset();
+    }
+  }
+
+  formatDateForInput(dateString: string): string {
+    const [day, month, year] = dateString.split('.');
+    return `${year}-${month}-${day}`;
+  }
+
+
+  confirm(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      accept: () => {
+        this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Куратор удален'});
+      },
+      reject: () => {
+        this.messageService.add({severity: 'info', summary: 'Отмена', detail: 'Вы отклонили'});
+      }
+    });
+  }
+
+  reject(confirmPopupRef: any) {
+    confirmPopupRef.hide();
   }
 
   closeModal(): void {
@@ -170,20 +250,48 @@ export class LiveBroadcastComponent implements OnInit{
   }
 
 
+
+
   onSubmit() {
-    if (this.submitForm.valid) {
+    if (this.selectedModal === 'create' && this.submitForm.valid) {
       const requestData = this.submitForm.value;
 
       this.meetService.saveMeeting(requestData).subscribe(
         (response: any) => {
           if (response.success) {
-            this.visible=false;
+            this.visible = false;
             this.submitForm.reset();
             this.messageService.add({ severity: 'success', summary: 'Успех', detail: 'Встреча сохранена' });
           }
         },
         (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Произошла ошибка при сохранении встречи' });
+        }
+      );
+
+    }else if (this.selectedModal === 'update' && this.updateForm.valid) {
+      const requestData = this.updateForm.value;
+
+      if (requestData.date && requestData.time) {
+        requestData.start_time = `${this.formatDate(requestData.date)} ${requestData.time}`;
+      } else {
+        this.messageService.add({ severity: 'warn', summary: 'Ошибка', detail: 'Необходимо заполнить дату и время' });
+        return;
+      }
+
+      delete requestData.date;
+      delete requestData.time;
+
+      this.meetService.saveMeeting(requestData).subscribe(
+        (response: any) => {
+          if (response.success) {
+            this.visible = false;
+            this.updateForm.reset();
+            this.messageService.add({ severity: 'success', summary: 'Успех', detail: 'Встреча обновлена' });
+          }
+        },
+        (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Произошла ошибка при обновлении встречи' });
         }
       );
     } else {
@@ -193,5 +301,23 @@ export class LiveBroadcastComponent implements OnInit{
 
 
 
-
+  deleteMeeting(confirmPopupRef: any) {
+    if (this.selectedMeetId) {
+      this.meetService.deleteMeeting(this.selectedMeetId).subscribe(response => {
+        if (response.success) {
+          this.messageService.add({ severity: 'success', summary: 'Успех', detail: 'Встреча удалена' });
+          if (this.courseId) {
+            this.visible=false;
+            confirmPopupRef.hide();
+          }
+        } else {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Не удалось удалить встречу' });
+        }
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Произошла ошибка при удалении' });
+      });
+    } else {
+      this.messageService.add({ severity: 'warn', summary: 'Внимание', detail: 'Выберите встречу для удаления' });
+    }
+  }
 }

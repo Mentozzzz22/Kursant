@@ -105,6 +105,7 @@ html, body {
   align-items: center;
   margin-bottom: 20px;
   margin-top: auto;
+  cursor:pointer;
 }
 
 .logout img {
