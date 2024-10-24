@@ -137,22 +137,18 @@ export class LearnerComponent implements OnInit {
         detail: `Заполните все поля`
       });
     } else {
-      const phone = this.learnerForm.value.phone_number || '';
-      if (!/^7\d{9}$/.test(phone)) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Ошибка в номере телефона',
-          detail: 'Номер телефона должен начинаться с 7 и содержать 10 цифр'
-        });
-        return;
-      }
+      let phone = this.learnerForm.value.phone_number || '';
 
-      const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
+
+      if (phone) {
+        phone = phone.replace(/\D/g, '');
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      }
 
       const learnerData: Learner = {
         id: this.selectedCurator?.id,
         fullname: this.learnerForm.value.fullname || '',
-        phone_number: formattedPhone || '',
+        phone_number: phone || '',
         region: this.learnerForm.value.region || '',
         is_active: this.learnerForm.value.is_active ?? true
       };
@@ -206,24 +202,29 @@ export class LearnerComponent implements OnInit {
         detail: `Заполните все поля`
       });
     } else {
-      const phone = this.learnerUpdateForm.value.phone_number || '';
+      let phone = this.learnerUpdateForm.value.phone_number || '';
 
-      if (!/^7\d{9}$/.test(phone)) {
+      phone = phone.replace(/\D/g, '');
+
+      if (phone.length === 10) {
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      } else if (phone.length === 11 && phone.startsWith('7')) {
+        phone = `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)} ${phone.slice(7, 9)} ${phone.slice(9, 11)}`;
+      } else {
         this.messageService.add({
           severity: 'warn',
-          summary: 'Ошибка в номере телефона',
-          detail: 'Номер телефона должен начинаться с 7 и содержать 10 цифр'
+          summary: 'Ошибка',
+          detail: 'Неверный формат номера телефона'
         });
         return;
       }
-
-      const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
+      console.log(phone);
 
       const learnerData: Learner = {
         id: this.selectedCurator?.id,
         fullname: this.learnerUpdateForm.value.fullname || '',
-        phone_number: formattedPhone || '',
-        region: this.learnerForm.value.region || '',
+        phone_number: phone || '',
+        region: this.learnerUpdateForm.value.region || '',
         is_active: this.learnerUpdateForm.value.is_active ?? true
       };
 
