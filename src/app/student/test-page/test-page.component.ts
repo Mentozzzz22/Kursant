@@ -209,8 +209,8 @@ export class TestPageComponent implements OnInit {
         if (response.success) {
           this.messageService.add({
             severity: 'success',
-            summary: 'Успешно',
-            detail: 'Тест начат!'
+            summary: 'Сәтті',
+            detail: 'Тест басталды!'
           });
         }
         this.isTestStarted = true;
@@ -222,8 +222,8 @@ export class TestPageComponent implements OnInit {
       error => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Ошибка',
-          detail: 'Не удалось начать тест.'
+          summary: 'Қате',
+          detail: 'Тестті бастау мүмкін болмады!'
         });
       }
     )
@@ -325,15 +325,15 @@ export class TestPageComponent implements OnInit {
           this.loadTest(this.testId)
           this.messageService.add({
             severity: 'success',
-            summary: 'Тест завершен',
-            detail: 'Ваши ответы успешно сохранены.'
+            summary: 'Тест аяқталды',
+            detail: 'Сіздің жауаптарыңыз сәтті сақталды!'
           });
         }
       }, error: (error) => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Ошибка',
-          detail: 'Не удалось завершить тест.'
+          summary: 'Қате',
+          detail: 'Тестті аяқтау мүмкін болмады!'
         });
       }
     });

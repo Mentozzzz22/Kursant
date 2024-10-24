@@ -87,8 +87,8 @@ export class AboutCourseComponent implements OnInit {
     } else {
       this.messageService.add({
         severity: 'error',
-        summary: 'Ошибка',
-        detail: 'Пройдите предыдущие уроки чтобы открыть доступ к тесту!'
+        summary: 'Қате',
+        detail: 'Тестке кіруді ашу үшін алдыңғы сабақтардан өтіңіз!'
       });
     }
 
@@ -99,8 +99,8 @@ export class AboutCourseComponent implements OnInit {
       this.router.navigate(['/student/homework', homeworkId]);    } else {
       this.messageService.add({
         severity: 'error',
-        summary: 'Ошибка',
-        detail: 'Пройдите предыдущие уроки и тест чтобы открыть доступ к домашней работе!'
+        summary: 'Қате',
+        detail: 'Үй тапсырмасына қол жеткізу үшін алдыңғы сабақтар мен сынақтардан өтіңіз!'
       });
     }
 
@@ -112,8 +112,8 @@ export class AboutCourseComponent implements OnInit {
     } else {
       this.messageService.add({
         severity: 'error',
-        summary: 'Ошибка',
-        detail: 'Пройдите предыдущие уроки чтобы открыть доступ к уроку!'
+        summary: 'Қате',
+        detail: 'Сабаққа кіруді ашу үшін алдыңғы сабақтарды аяқтаңыз!'
       });
     }
 

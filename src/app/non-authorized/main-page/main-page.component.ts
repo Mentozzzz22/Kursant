@@ -150,10 +150,10 @@ export class MainPageComponent implements OnInit{
 
       this.orderService.updateCartCount(cart.length);
 
-      this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Курс успешно добавлен в корзину'});
+      this.messageService.add({severity: 'success', summary: 'Сәттілік', detail: 'Курс себетке сәтті қосылды'});
 
     } else {
-      this.messageService.add({severity: 'info', summary: 'Информация', detail: 'Курс уже находится в корзине'});
+      this.messageService.add({severity: 'info', summary: 'Ақпарат', detail: 'Курс қазірдің өзінде себетте'});
     }
   }
 

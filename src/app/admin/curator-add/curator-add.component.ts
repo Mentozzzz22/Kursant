@@ -104,14 +104,21 @@ export class CuratorAddComponent implements OnInit {
         detail: `Заполните все поля`
       });
     } else {
-      const phone = this.curatorForm.value.phone_number || '';
+      let phone = this.curatorForm.value.phone_number || '';
 
-      const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
+
+      if (phone) {
+        phone = phone.replace(/\D/g, '');
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      }
+
+
+
 
       const curatorData: CuratorInterface = {
         id: this.selectedCurator?.id,
         fullname: this.curatorForm.value.fullname || '',
-        phone_number: formattedPhone || '',
+        phone_number: phone || '',
         is_active: this.curatorForm.value.is_active ?? true
       };
 
@@ -155,14 +162,19 @@ export class CuratorAddComponent implements OnInit {
         detail: `Заполните все поля`
       });
     } else {
-      const phone = this.curatorUpdateForm.value.phone_number || '';
+      let phone = this.curatorUpdateForm.value.phone_number || '';
 
-      const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 $1 $2 $3 $4');
+
+
+      if (phone) {
+        phone = phone.replace(/\D/g, '');
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      }
 
       const curatorData: CuratorInterface = {
         id: this.selectedCurator?.id,
         fullname: this.curatorUpdateForm.value.fullname || '',
-        phone_number: formattedPhone || '',
+        phone_number: phone || '',
         is_active: this.curatorUpdateForm.value.is_active ?? true
       };
 

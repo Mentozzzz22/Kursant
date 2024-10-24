@@ -169,15 +169,15 @@ export class LearnerHomeworkComponent implements OnInit {
           this.loadHomework(this.homeworkId)
           this.messageService.add({
             severity: 'success',
-            summary: 'Успешно',
-            detail: 'Домашняя работа отправлена!'
+            summary: 'Сәтті',
+            detail: 'Үй тапсырмасы жіберілді!'
           });
         },
         error: (error) => {
           this.messageService.add({
             severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Не удалось отправить домашнюю работу'
+            summary: 'Қате',
+            detail: 'Үй тапсырмасын жіберу мүмкін болмады'
           });
           console.error('Error submitting homework:', error);
         }

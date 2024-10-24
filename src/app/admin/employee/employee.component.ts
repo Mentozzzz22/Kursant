@@ -108,10 +108,18 @@ export class EmployeeComponent implements OnInit {
         severity: 'warn', summary: 'Ошибка', detail: `Заполните все поля`
       })
     } else {
+
+      let phone = this.employeeForm.value.phone_number || '';
+
+      if (phone) {
+        phone = phone.replace(/\D/g, '');
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      }
+
       const employeeData: Employee = {
         id: this.selectedEmployee?.id,
         fullname: this.employeeForm.value.fullname || '',
-        phone_number: this.employeeForm.value.phone_number || '',
+        phone_number: phone || '',
         job_title: this.employeeForm.value.job_title || '',
         is_active: this.employeeForm.value.is_active ?? true,
         permissions: this.employeeForm.value.permissions || []
@@ -154,10 +162,18 @@ export class EmployeeComponent implements OnInit {
         severity: 'warn', summary: 'Ошибка', detail: `Заполните все поля`
       })
     } else {
+
+      let phone = this.employeeUpdateForm.value.phone_number || '';
+
+      if (phone) {
+        phone = phone.replace(/\D/g, '');
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      }
+
       const employeeData: Employee = {
         id: this.selectedEmployee?.id,
         fullname: this.employeeUpdateForm.value.fullname || '',
-        phone_number: this.employeeUpdateForm.value.phone_number || '',
+        phone_number: phone || '',
         job_title: this.employeeUpdateForm.value.job_title || '',
         is_active: this.employeeUpdateForm.value.is_active ?? true,
         permissions: this.employeeUpdateForm.value.permissions || []

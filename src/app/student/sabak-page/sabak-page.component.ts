@@ -279,8 +279,8 @@ export class SabakPageComponent implements OnInit,OnDestroy {
 
           this.messageService.add({
             severity: 'success',
-            summary: 'Урок доступен',
-            detail: 'Следующий урок теперь доступен!'
+            summary: 'Сабақ қол жетімді',
+            detail: 'Келесі сабақ енді қол жетімді!'
           });
 
           this.clearIntervals();

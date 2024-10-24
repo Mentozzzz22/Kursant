@@ -62,7 +62,7 @@
               </div>
             </div>
             <ng-template #noEventTemplate>
-              <div>No event data available (No event object)</div>
+              <div>Нет доступных ивентов</div>
             </ng-template>
           </ng-template>
 
@@ -117,7 +117,6 @@
     </div>
 
     <div class="task-list">
-      <!-- Today's Tasks Section -->
       <div *ngIf="todayTasks.length > 0 && !selectedTaskDetails && !isEventClicked">
         <h3>Сегодняшние задачи</h3>
         <div *ngFor="let event of todayTasks" class="task-item" [ngStyle]="{
@@ -135,7 +134,24 @@
         </div>
       </div>
 
-      <!-- Selected Date Tasks Section -->
+
+      <div *ngIf="chooseDayTasks.length > 0 && !selectedTaskDetails && !isEventClicked && todayTasks.length == 0">
+        <h3>Задачи на {{ chooseDayTasks[0]?.start | date: 'dd MMMM yyyy' }}</h3>
+        <div *ngFor="let event of chooseDayTasks" class="task-item" [ngStyle]="{
+          'border-color': event.color?.primary || '#6E63E5',
+          'color': event.color?.primary || '#6E63E5',
+          'background': 'linear-gradient(to bottom, '
+                          + (event.color?.secondary || '#D4D0FF')
+                          + ' 0%, '
+                          + (event.color?.secondary || '#D4D0FF')
+                          + ' 41%, #FFFFFF 100%)'
+        }"
+             (click)="fetchEventDetails(event.id, event.type, event.start)">
+          <p>{{ event.title }}</p>
+          <small>{{ event.start | date: 'HH:mm' }} - {{ event.end | date: 'HH:mm' }}</small>
+        </div>
+      </div>
+
       <div *ngIf="selectedDateEvents.length > 0 && !selectedTaskDetails  && isEventClicked">
         <h3>Задачи на {{ selectedDateEvents[0]?.start | date: 'dd MMMM yyyy' }}</h3>
         <div *ngFor="let event of selectedDateEvents" class="task-item" [ngStyle]="{
@@ -147,66 +163,130 @@
                           + (event.color?.secondary || '#D4D0FF')
                           + ' 41%, #FFFFFF 100%)'
         }"
-             (click)="onEventClicked(event)">
+             (click)="fetchEventDetails(event.id, event.type, event.start)">
           <p>{{ event.title }}</p>
           <small>{{ event.start | date: 'HH:mm' }} - {{ event.end | date: 'HH:mm' }}</small>
         </div>
       </div>
 
-      <div *ngIf="selectedDateEvents.length === 0 && !selectedTaskDetails && todayTasks.length===0">
-        <p>Нет задач на выбранный день.</p>
+      <div *ngIf="selectedDateEvents.length === 0 && !selectedTaskDetails && todayTasks.length===0 && chooseDayTasks.length===0">
+        <p>Нет задач</p>
       </div>
     </div>
 
     <div class="task-details" *ngIf="selectedTaskDetails">
-
       <button class="back-button" (click)="goBackToTaskList()">
         <img src="assets/images/arrow-left.svg" alt="left" class="back-icon"/>
-        <h4 class="back-text">{{ selectedTaskDetails.type === 'homework' ? 'Үй жұмысы' : selectedTaskDetails.type === 'test' ? 'Тест' : '' }}</h4>
+        <h4 class="back-text">
+          {{
+            Array.isArray(selectedTaskDetails)
+              ? selectedTaskDetails[0]?.type === 'homework'
+                ? 'Үй жұмысы'
+                : selectedTaskDetails[0]?.type === 'test'
+                  ? 'Тақырыптық тест'
+                  : selectedTaskDetails[0]?.type === 'meet'
+                    ? 'Тікелей эфир'
+                    : selectedTaskDetails[0]?.type === 'testant'
+                      ? 'Тестант'
+                      : ''
+              : selectedTaskDetails.type === 'homework'
+                ? 'Үй жұмысы'
+                : selectedTaskDetails.type === 'test'
+                  ? 'Тақырыптық тест'
+                  : selectedTaskDetails.type === 'meet'
+                    ? 'Тікелей эфир'
+                    : selectedTaskDetails.type === 'testant'
+                      ? 'Тестант'
+                      : ''
+          }}
+        </h4>
       </button>
 
-      <div class="details-content">
-        <div class="details-row">
-          <span class="label">Пән:</span>
-          <span class="value">{{ selectedTaskDetails.course_name }}</span>
-        </div>
+      <ng-container *ngIf="selectedTaskDetails">
+        <div class="details-content">
+          <div class="details-row" *ngIf="selectedTaskDetails.type === 'homework' || selectedTaskDetails.type === 'test'">
+            <span class="label">Пән:</span>
+            <span class="value">{{ selectedTaskDetails.course_name }}</span>
+          </div>
 
-        <div class="details-row">
-          <span class="label">Тақырып:</span>
-          <span class="value">{{ selectedTaskDetails.topic_name }}</span>
-        </div>
+          <div class="details-row" *ngIf="selectedTaskDetails.type === 'homework' || selectedTaskDetails.type === 'test'">
+            <span class="label">Тақырып:</span>
+            <span class="value">{{ selectedTaskDetails.topic_name }}</span>
+          </div>
 
-        <div class="details-row">
-          <span class="label">Дедлайн:</span>
-          <span class="value">{{ selectedTaskDetails.deadline | date: 'dd/MM/yyyy HH:mm' }}</span>
-        </div>
+          <div class="details-row">
+            <span class="label">
+              {{ selectedTaskDetails.type === 'homework' || selectedTaskDetails.type === 'test' ? 'Дедлайн' : selectedTaskDetails.type === 'testant' ? 'Дата' : 'Басталуы' }}:
+            </span>
+            <span class="value" *ngIf="selectedTaskDetails.deadline">
+              {{ selectedTaskDetails.deadline | date: 'dd/MM/yyyy HH:mm' }}
+            </span>
+          </div>
 
-        <div class="details-row" *ngIf="selectedTaskDetails.curator_name">
-          <span class="label">Куратор:</span>
-          <span class="value">{{ selectedTaskDetails.curator_name }}</span>
-        </div>
+          <div *ngIf="selectedTaskDetails.type === 'test'" class="details-row">
+            <span class="label">Сұрақ саны:</span>
+            <span class="value">{{ selectedTaskDetails.questions_count }}</span>
+          </div>
 
-        <div *ngIf="selectedTaskDetails.type === 'test'" class="details-row">
-          <span class="label">Сұрақ саны:</span>
-          <span class="value">{{ selectedTaskDetails.questions_count }}</span>
-        </div>
+          <div *ngIf="selectedTaskDetails.type === 'testant'|| selectedTaskDetails.type === 'meet'" class="details-row">
+            <span class="label">Куратор:</span>
+            <span class="value" *ngIf="selectedTaskDetails.type === 'testant'">{{ selectedTaskDetails.proctor }}</span>
+            <span class="value" *ngIf="selectedTaskDetails.type === 'meet'">{{ selectedTaskDetails.curator }}</span>
+          </div>
 
-        <div *ngIf="selectedTaskDetails.type === 'testant'" class="details-row">
-          <span class="label">Куратор:</span>
-          <span class="value">{{ selectedTaskDetails.proctor }}</span>
-        </div>
+          <div class="details-row">
+            <div class="button-container" *ngIf="selectedTaskDetails.type === 'meet'">
 
-        <div *ngIf="selectedTaskDetails.type === 'meet'" class="details-row">
-          <button class="submit-button">
-            Қослыу
-          </button>
-        </div>
-      </div>
+              <a
+                target="_blank"
+                [href]="selectedTaskDetails.link"
+                [ngClass]="{'disabled-link': !selectedTaskDetails.link}"
+                [attr.disabled]="!selectedTaskDetails.link ? true : null"
+                class="submit-button">
+                Қосылу
+              </a>
+              <p *ngIf="!selectedTaskDetails.link"
+                 class="centered-text">
+                Жабык
+              </p>
+            </div>
 
-      <button class="submit-button" *ngIf="selectedTaskDetails.type === 'homework' || selectedTaskDetails.type === 'test'">
-        Тапсыру
-      </button>
+            <div class="button-container" *ngIf="selectedTaskDetails.type === 'homework' || selectedTaskDetails.type === 'test' ">
+              <a
+                target="_blank"
+                [href]="selectedTaskDetails.link"
+                [ngClass]="{'disabled-link': !selectedTaskDetails.is_available}"
+                [attr.disabled]="!selectedTaskDetails.is_available"
+                class="submit-button">
+                Тапсыру
+              </a>
+              <p *ngIf="!selectedTaskDetails.is_available"
+                 class="centered-text">
+                Жабык
+              </p>
+            </div>
+
+            <div class="button-container" *ngIf="selectedTaskDetails.type === 'testant' ">
+              <a
+                target="_blank"
+                [href]="selectedTaskDetails.link"
+                [ngClass]="{'disabled-link': !selectedTaskDetails.is_available}"
+                [attr.disabled]="!selectedTaskDetails.is_available"
+                class="submit-button">
+                Бастау
+              </a>
+              <p *ngIf="!selectedTaskDetails.link" class="centered-text">Жабык</p>
+            </div>
+
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Если selectedTaskDetails это объект -->
+
     </div>
+
+
 
 
 

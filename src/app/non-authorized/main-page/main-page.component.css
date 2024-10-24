@@ -173,7 +173,6 @@
 .kurstar-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
   background-color: white;
   border-radius: 20px;
   padding: 5px;
@@ -188,15 +187,17 @@
 .kurs-images {
   width:100%;
   height: auto;
+  max-height: 135px;
+  border-radius:20px;
 }
 
 .subject-info h3 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
 }
 
 .subject-info p {
-  font-size: 10px;
+  font-size: 14px;
   color: #A4A4A4;
   margin-bottom: 10px;
 }
@@ -218,9 +219,9 @@
   gap: 8px;
   background-color: #B5E8F9;
   color: #00B0EA;
-  font-size: 10px;
   border-radius: 20px;
-  padding: 5px 12px;
+  padding: 3px 12px;
+  font-size: 14px;
 }
 
 .sabak {
@@ -228,9 +229,9 @@
   gap: 8px;
   background-color: #CCC7FF;
   color: #6E63E5;
-  font-size: 10px;
   border-radius: 20px;
-  padding: 5px 12px;
+  padding: 3px 12px;
+  font-size: 14px;
 }
 
 .kurs-footer {
@@ -247,7 +248,7 @@
   color: #2A6DB3;
   border-radius: 5px;
   padding: 8px 12px 8px 12px;
-  font-size: 12px;
+  font-size: 14px;
   align-items: center;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -258,12 +259,12 @@
 }
 
 .kurs-price h3 {
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 700;
 }
 
 .kurs-price p {
-  font-size: 10px;
+  font-size: 13px;
   color: #A4A4A4;
 }
 
@@ -322,7 +323,8 @@
   background-color: #B5E8F9;
   border-radius: 10px;
   color: #00B0EA;
-  font-size: 10px;
+  font-size: 14px;
+  padding:14px;
   height: 22px;
 }
 

@@ -59,10 +59,10 @@ export class LoginComponent implements OnInit {
         (response) => {
           console.log('SMS отправлено успешно', response);
           this.loginSuccess = true;
-          this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Смс отправлено'});
+          this.messageService.add({severity: 'success', summary: 'Сәттілік', detail: 'SMS жіберілді'});
         },
         (error) => {
-          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Пользователь не найден'});
+          this.messageService.add({severity: 'error', summary: 'Қате', detail: 'Пайдаланушы табылмады'});
         }
       );
     } else {
@@ -98,7 +98,7 @@ export class LoginComponent implements OnInit {
         (response) => {
           console.log('Код успешно проверен', response);
           this.isCodeValid = true;
-          this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Успешно авторизован'});
+          this.messageService.add({severity: 'success', summary: 'Сәттілік', detail: 'Сәтті авторизацияланған'});
           const userRole = response.role;
           console.log(userRole);
           switch (userRole) {
@@ -125,14 +125,14 @@ export class LoginComponent implements OnInit {
           if (error.status === 401) {
             if (error.error.detail === "Code not found") {
               console.error('Код не найден');
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Код не найден'});
+              this.messageService.add({severity: 'error', summary: 'Қате', detail: 'Код табылмады'});
             } else if (error.error.detail === "User not found") {
               console.error('Пользователь не найден');
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Пользователь не найден'});
+              this.messageService.add({severity: 'error', summary: 'Қате', detail: 'Пайдаланушы табылмады'});
             }
           } else if (error.status === 403 && error.error.detail === "User has no role") {
             console.error('У пользователя нет роли');
-            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'У пользователя нет роли'});
+            this.messageService.add({severity: 'error', summary: 'Қате', detail: 'Пайдаланушының рөлі жоқ'});
           } else {
             console.error('Неизвестная ошибка', error);
           }

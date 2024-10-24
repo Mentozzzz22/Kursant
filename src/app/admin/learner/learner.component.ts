@@ -138,17 +138,24 @@ export class LearnerComponent implements OnInit {
       });
     } else {
       let phone = this.learnerForm.value.phone_number || '';
+      // if (!/^7\d{9}$/.test(phone)) {
+      //   this.messageService.add({
+      //     severity: 'warn',
+      //     summary: 'Ошибка в номере телефона',
+      //     detail: 'Номер телефона должен начинаться с 7 и содержать 10 цифр'
+      //   });
+      //   return;
+      // }
 
 
       if (phone) {
         phone = phone.replace(/\D/g, '');
         phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
       }
-
       const learnerData: Learner = {
         id: this.selectedCurator?.id,
         fullname: this.learnerForm.value.fullname || '',
-        phone_number: phone || '',
+        phone_number: formattedPhone || '',
         region: this.learnerForm.value.region || '',
         is_active: this.learnerForm.value.is_active ?? true
       };
@@ -223,8 +230,8 @@ export class LearnerComponent implements OnInit {
       const learnerData: Learner = {
         id: this.selectedCurator?.id,
         fullname: this.learnerUpdateForm.value.fullname || '',
-        phone_number: phone || '',
-        region: this.learnerUpdateForm.value.region || '',
+        phone_number: formattedPhone || '',
+        region: this.learnerForm.value.region || '',
         is_active: this.learnerUpdateForm.value.is_active ?? true
       };
 

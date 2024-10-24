@@ -20,12 +20,12 @@
               <div class="price-line">
                 <h3 class="current-price">{{ kurs.current_price }} тг</h3>
                 <h3 class="old-price">{{ kurs.price }} тг</h3>
+                <button class="remove-button" (click)="confirm($event, kurs.id); $event.stopPropagation()">
+                  <img src="assets/images/delete_icon.svg" width="20" height="20">
+                </button>
               </div>
               <p>бір реттік төлем</p>
             </div>
-            <button class="remove-button" (click)="confirm($event, kurs.id); $event.stopPropagation()" >
-             <img src="assets/images/delete_icon.svg" width="20" height="20">
-            </button>
           </div>
 
         </div>

@@ -39,6 +39,9 @@ import {CalendarPageComponent} from "./student/calendar-page/calendar-page.compo
 import {NotificationsComponent} from "./student/notifications/notifications.component";
 import {GradesComponent} from "./student/grades/grades.component";
 import {LiveBroadcastComponent} from "./admin/live-broadcast/live-broadcast.component";
+import {LiveLinksComponent} from "./curator/live-links/live-links.component";
+import {TestantAdminComponent} from "./admin/testant-admin/testant-admin.component";
+import {TestantCuratorComponent} from "./curator/testant-curator/testant-curator.component";
 
 export const routes: Routes = [
   {
@@ -91,6 +94,9 @@ export const routes: Routes = [
         path: 'live-broadcast', component: LiveBroadcastComponent, canActivate: [AuthGuard], data: {role: 'employee'}
       },
       {
+        path: 'testant-admin', component: TestantAdminComponent, canActivate: [AuthGuard], data: {role: 'employee'}
+      },
+      {
         path: 'edit-course/:courseId',
         component: EditCourseComponent,
         canActivate: [AuthGuard],
@@ -135,6 +141,12 @@ export const routes: Routes = [
       },
       {
         path: 'course', component: CourseComponent
+      },
+      {
+        path: 'live-links', component: LiveLinksComponent
+      },
+      {
+        path: 'testant-curator', component: TestantCuratorComponent
       }
     ]
   },
