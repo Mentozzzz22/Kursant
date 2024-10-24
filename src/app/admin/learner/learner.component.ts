@@ -155,7 +155,7 @@ export class LearnerComponent implements OnInit {
       const learnerData: Learner = {
         id: this.selectedCurator?.id,
         fullname: this.learnerForm.value.fullname || '',
-        phone_number: formattedPhone || '',
+        phone_number: phone || '',
         region: this.learnerForm.value.region || '',
         is_active: this.learnerForm.value.is_active ?? true
       };
@@ -225,13 +225,11 @@ export class LearnerComponent implements OnInit {
         });
         return;
       }
-      console.log(phone);
-
       const learnerData: Learner = {
         id: this.selectedCurator?.id,
         fullname: this.learnerUpdateForm.value.fullname || '',
-        phone_number: formattedPhone || '',
-        region: this.learnerForm.value.region || '',
+        phone_number: phone || '',
+        region: this.learnerUpdateForm.value.region || '',
         is_active: this.learnerUpdateForm.value.is_active ?? true
       };
 
