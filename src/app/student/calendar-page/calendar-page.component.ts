@@ -11,6 +11,7 @@ import {
 import localeKk from '@angular/common/locales/kk';
 import {addDays, startOfWeek, isToday, subWeeks, addWeeks, subMonths, addMonths} from "date-fns";
 import {CalendarService} from "../../service/calendar.service";
+import {UserService} from "../../service/user.service";
 
 @Component({
   selector: 'app-calendar-page',
@@ -36,6 +37,7 @@ import {CalendarService} from "../../service/calendar.service";
 export class CalendarPageComponent implements OnInit {
   calendarService = inject(CalendarService);
   datePipe = inject(DatePipe);
+  private userService = inject(UserService);
 
   viewDate: Date = new Date();
   currentDate: Date = new Date();
@@ -53,13 +55,15 @@ export class CalendarPageComponent implements OnInit {
   // weekView: CalendarView = CalendarView.Week;
   // monthView: CalendarView = CalendarView.Month;
   selectedTaskDetails: any[] | any = null;
+  token : string | null = '';
 
   calendar:any[]=[];
 
   ngOnInit() {
     registerLocaleData(localeKk);
 
-    this.loadCalendar()
+    this.loadCalendar();
+    this.token = this.userService.token;
   }
 
   loadCalendar() {
