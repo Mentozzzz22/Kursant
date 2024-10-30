@@ -170,8 +170,12 @@ export class ApplicationSalesComponent implements OnInit{
         this.coursesList = data.courses.map((courseData) => {
           const matchedCourse = this.courses.find(course => course.id === courseData.course_id);
           if (matchedCourse) {
-            const dateParts = courseData.expires_at.split('.');
-            const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+            if (courseData.expires_at) {
+              const dateParts = courseData.expires_at.split('.');
+              var formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+            } else {
+              var formattedDate = `---`;
+            }
 
             this.coursesFormArray.push(this.fb.control(formattedDate, Validators.required));
 
