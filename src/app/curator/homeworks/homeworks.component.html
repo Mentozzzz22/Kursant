@@ -14,13 +14,16 @@
   </div>
 </div>
 <div class="main-content">
-  <div class="content-buttons" *ngFor="let flows of flow let i = index">
+  <div class="content-buttons">
     <button class="content-button"
+            *ngFor="let flows of flow; let i = index"
             (click)="searchApplications()"
             [class.active]="flows.id === activeFlowId">
       Поток {{flows.index}}
     </button>
   </div>
+
+
   <div class="content-buttons">
     <button class="content-button" (click)="setActiveTab('homeWorks')" [class.active]="activeTab === 'homeWorks'">
       Домашняя задания
@@ -29,6 +32,7 @@
       Тесты
     </button>
   </div>
+
 
   <div class="content-table-container">
 
