@@ -58,7 +58,7 @@
               </div>
               <div>
                 <ng-container *ngFor="let line of (weekEvent.event.subtitle || '').split('\n')">
-                <div class="event-subject">{{ line }}</div>
+                <div class="C">{{ line }}</div>
                 </ng-container>
               </div>
             </div>
@@ -217,12 +217,25 @@
 
           <div class="details-row">
             <span class="label">
-              {{ selectedTaskDetails.type === 'homework' || selectedTaskDetails.type === 'test' ? 'Дедлайн' : selectedTaskDetails.type === 'testant' ? 'Дата' : 'Басталуы' }}:
+              {{ selectedTaskDetails.type === 'homework' || selectedTaskDetails.type === 'test' ? 'Дедлайн' : selectedTaskDetails.type === 'testant' ? 'Дата' : selectedTaskDetails.type === 'meet' ? 'Басталуы' : '' }}:
             </span>
-            <span class="value" *ngIf="selectedTaskDetails.deadline">
+                      <span class="value" *ngIf="selectedTaskDetails.type === 'meet' && selectedTaskDetails.start  || selectedTaskDetails.type === 'testant'">
+              {{ selectedTaskDetails.start | date: 'dd/MM/yyyy HH:mm' }}
+            </span>
+                      <span class="value" *ngIf="(selectedTaskDetails.type === 'homework' || selectedTaskDetails.type === 'test' ) && selectedTaskDetails.deadline">
               {{ selectedTaskDetails.deadline | date: 'dd/MM/yyyy HH:mm' }}
             </span>
           </div>
+
+          <div class="details-row">
+            <span class="label" *ngIf="selectedTaskDetails.type == 'testant'">
+              Дедлайн:
+            </span>
+            <span class="value" *ngIf="selectedTaskDetails.type == 'testant'">
+              {{ selectedTaskDetails.deadline | date: 'dd/MM/yyyy HH:mm' }}
+            </span>
+          </div>
+
 
           <div *ngIf="selectedTaskDetails.type === 'test'" class="details-row">
             <span class="label">Сұрақ саны:</span>
@@ -276,7 +289,7 @@
                 class="submit-button">
                 Бастау
               </a>
-              <p *ngIf="!selectedTaskDetails.link" class="centered-text">Жабык</p>
+              <p *ngIf="!selectedTaskDetails.is_available" class="centered-text">Жабык</p>
             </div>
 
           </div>

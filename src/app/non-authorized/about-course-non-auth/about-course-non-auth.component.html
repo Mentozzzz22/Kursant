@@ -15,13 +15,13 @@
         <div class="course-description">
           <div [innerHTML]="course.description"></div>
         </div>
-        <div class="course-item">
-          <div class="price-info">
-            <p class="price">{{ course.price }} тг</p>
-            <p class="payment-type">бір реттік төлем</p>
-          </div>
-<!--          <button class="cart-button" (click)="addToCart(course.course_id)">Корзинаға</button>-->
-        </div>
+<!--        <div class="course-item">-->
+<!--          <div class="price-info">-->
+<!--            <p class="price">{{ course.price }} тг</p>-->
+<!--            <p class="payment-type">бір реттік төлем</p>-->
+<!--          </div>-->
+<!--&lt;!&ndash;          <button class="cart-button" (click)="addToCart(course.course_id)">Корзинаға</button>&ndash;&gt;-->
+<!--        </div>-->
 
       </div>
       <img *ngIf="poster" [src]="poster" alt="subject-carousel" class="carousel-image">

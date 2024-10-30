@@ -178,8 +178,6 @@
   color: #333;
 }
 
-
-
 .red {
   color: #FF4F54;
 }
@@ -216,6 +214,7 @@
   font-weight: normal;
   color: #333;
   margin-top: 8px;
+
 }
 
 .custom-event .event-details {
@@ -355,7 +354,7 @@
   background-color: #FFFFFF;
   padding: 20px 0;
   border-radius: 8px;
-  max-width: 300px;
+  max-width: 425px;
 }
 
 .back-button {

@@ -247,6 +247,7 @@ export class CalendarPageComponent implements OnInit, OnDestroy  {
         console.log('Event details:', response);
         this.selectedTaskDetails = response;
         this.selectedTaskDetails.deadline = this.convertToDate(this.selectedTaskDetails.deadline);
+        this.selectedTaskDetails.start = this.convertToDate(this.selectedTaskDetails.start);
       }, error => {
         console.error('Error fetching event details:', error);
       });
