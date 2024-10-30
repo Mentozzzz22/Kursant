@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {DatePipe, NgClass, NgIf} from "@angular/common";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {LearnerTestService} from "../../../service/learner-test.service";
 import {LearnerTest} from "../../../../assets/models/curatorLearnerTest.interface";
 import {PrimeTemplate} from "primeng/api";
@@ -14,7 +14,8 @@ import {TableModule} from "primeng/table";
     NgClass,
     DatePipe,
     PrimeTemplate,
-    TableModule
+    TableModule,
+    RouterLink
   ],
   templateUrl: './test-detail.component.html',
   styleUrl: './test-detail.component.css'
@@ -23,11 +24,11 @@ export class TestDetailComponent implements OnInit{
   private route = inject(ActivatedRoute);
   private learnerTestService = inject(LearnerTestService);
 
-
   testId: number | null = null;
   test:any| null = null;
   testWorks:LearnerTest[]=[];
   activeStatus: string = '';
+
   ngOnInit(): void {
     this.loadTestTopics()
 

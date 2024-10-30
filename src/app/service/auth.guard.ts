@@ -14,13 +14,14 @@ export class AuthGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     const expectedRole = route.data['role'];
 
-
-
     if (this.userService.isLoggedIn()) {
       return this.userService.verify().pipe(
         map(response => {
           const userRole = this.userService.getRole();
-          if (response.verified && userRole && userRole === expectedRole) {
+
+          // Проверка, если `expectedRole` - массив ролей
+          if (response.verified && userRole &&
+            (Array.isArray(expectedRole) ? expectedRole.includes(userRole) : userRole === expectedRole)) {
             return true;
           } else {
             this.router.navigate(['/access-denied']);
@@ -36,7 +37,8 @@ export class AuthGuard implements CanActivate {
             this.router.navigate(['/access-denied']);
             return of(false);
           }
-        }))
+        })
+      );
     } else {
       this.router.navigate(['/login']);
       return false;

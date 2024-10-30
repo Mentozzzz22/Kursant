@@ -20,6 +20,7 @@ import {LearnerLessons} from "../../../assets/models/learner_course.interface";
 import {MessageService} from "primeng/api";
 import {GetLearnerQuestions, LearnerQuestions} from "../../../assets/models/getLearnerQuestions.interface";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {UserService} from "../../service/user.service";
 
 @Component({
   selector: 'app-test-page',
@@ -49,6 +50,7 @@ export class TestPageComponent implements OnInit {
   private messageService = inject(MessageService);
   private sanitizer = inject(DomSanitizer);
   private datePipe = inject(DatePipe)
+  private userService = inject(UserService);
   public courseName!: string;
   public topicName!: string;
   public teacherName!: string;
@@ -382,7 +384,13 @@ export class TestPageComponent implements OnInit {
   }
 
   public viewResults(testId: number) {
-    this.router.navigate([`/student/results/${testId}`]);
+    const userRole = this.userService.getRole();
+    if (userRole === 'curator') {
+      this.router.navigate([`/curator/results/${testId}`]);
+    } else {
+      this.router.navigate([`/student/results/${testId}`]);
+
+    }
   }
 
 

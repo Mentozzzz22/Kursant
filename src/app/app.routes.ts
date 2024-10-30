@@ -128,6 +128,12 @@ export const routes: Routes = [
     component: CuratorComponent, canActivate: [AuthGuard], data: {role: 'curator'},
     children: [
       {
+        path: 'test/:testId', component: TestPageComponent
+      },
+      {
+        path: 'results/:testId', component: ViewTestResultComponent
+      },
+      {
         path: 'curator-homework', component: HomeworksComponent
       },
       {
