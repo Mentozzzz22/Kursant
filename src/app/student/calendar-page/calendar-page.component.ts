@@ -1,4 +1,4 @@
-import {Component, inject, LOCALE_ID, OnInit} from '@angular/core';
+import {Component, inject, LOCALE_ID, OnDestroy, OnInit} from '@angular/core';
 import {DatePipe, NgClass, NgForOf, NgIf, NgStyle, registerLocaleData, SlicePipe, UpperCasePipe} from "@angular/common";
 import {
   CalendarModule,
@@ -12,6 +12,8 @@ import localeKk from '@angular/common/locales/kk';
 import {addDays, startOfWeek, isToday, subWeeks, addWeeks, subMonths, addMonths} from "date-fns";
 import {CalendarService} from "../../service/calendar.service";
 import {UserService} from "../../service/user.service";
+import {interval, startWith, Subject, Subscription} from "rxjs";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-calendar-page',
@@ -34,7 +36,7 @@ import {UserService} from "../../service/user.service";
     { provide: LOCALE_ID, useValue: 'kk-KZ' }
   ]
 })
-export class CalendarPageComponent implements OnInit {
+export class CalendarPageComponent implements OnInit, OnDestroy  {
   calendarService = inject(CalendarService);
   datePipe = inject(DatePipe);
   private userService = inject(UserService);
@@ -56,6 +58,9 @@ export class CalendarPageComponent implements OnInit {
   // monthView: CalendarView = CalendarView.Month;
   selectedTaskDetails: any[] | any = null;
   token : string | null = '';
+  private currentTimeRefresh$: Subscription | null = null;
+  refresh$: Subject<any> = new Subject();
+
 
   calendar:any[]=[];
 
@@ -64,6 +69,23 @@ export class CalendarPageComponent implements OnInit {
 
     this.loadCalendar();
     this.token = this.userService.token;
+    this.currentTimeRefresh$ = interval(60000)
+      .pipe(
+        startWith(0),
+        map(() => new Date())
+      )
+      .subscribe((currentDate: Date) => {
+        this.currentDate = currentDate;
+        this.refresh$.next({});
+
+        console.log(`Current time updated: ${this.currentDate}`);
+      });
+  }
+
+  ngOnDestroy() {
+    if (this.currentTimeRefresh$) {
+      this.currentTimeRefresh$.unsubscribe();
+    }
   }
 
   loadCalendar() {
