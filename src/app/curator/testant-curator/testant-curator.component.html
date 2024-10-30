@@ -12,27 +12,27 @@
         <tr >
           <th>Время начало</th>
           <th>Дедлайн</th>
-          <th>Тест</th>
+<!--          <th>Тест</th>-->
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-progresses >
         <tr >
           <td>{{ progresses.start_time }}</td>
           <td>{{ progresses.deadline }}</td>
-          <td (click)="$event.stopPropagation()">
-            <button
-              class="start-meeting-btn"
-              *ngIf="progresses.link">
-              Тест <i class="pi pi-lock-open"></i>
-            </button>
+<!--          <td (click)="$event.stopPropagation()">-->
+<!--            <button-->
+<!--              class="start-meeting-btn"-->
+<!--              *ngIf="progresses.link">-->
+<!--              Тест <i class="pi pi-lock-open"></i>-->
+<!--            </button>-->
 
-            <button
-              class="start-meeting-btn disabled-btn"
-              disabled
-              *ngIf="!progresses.link">
-              Тест закрыт <i class="pi pi-lock"></i>
-            </button>
-          </td>
+<!--            <button-->
+<!--              class="start-meeting-btn disabled-btn"-->
+<!--              disabled-->
+<!--              *ngIf="!progresses.link">-->
+<!--              Тест закрыт <i class="pi pi-lock"></i>-->
+<!--            </button>-->
+<!--          </td>-->
         </tr>
       </ng-template>
     </p-table>

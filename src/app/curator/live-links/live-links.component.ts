@@ -57,5 +57,10 @@ export class LiveLinksComponent implements OnInit{
     );
   }
 
+  joinMeeting(link: string) {
+    window.open(link, '_blank');
+  }
+
+
 
 }

@@ -33,19 +33,20 @@
             <button
               class="start-meeting-btn"
               [ngClass]="{'disabled-btn': progresses.link}"
-              [disabled]="progresses.link != null"
+              [disabled]="!progresses.link"
               (click)="startMeeting(progresses.id)"
               *ngIf="!progresses.link">
               Начать встречу <i class="pi pi-google"></i>
             </button>
 
             <button
-              class="start-meeting-btn disabled-btn"
-              disabled
-              *ngIf="progresses.link">
-              Встреча начата <i class="pi pi-google"></i>
+              class="start-meeting-btn"
+              *ngIf="progresses.link"
+              (click)="joinMeeting(progresses.link)">
+              Зайти на встречу <i class="pi pi-google"></i>
             </button>
           </td>
+
         </tr>
       </ng-template>
     </p-table>
