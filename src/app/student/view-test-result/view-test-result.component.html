@@ -1,9 +1,12 @@
 <div class="test-container">
 
-  <div class="breadcrumb-container" (click)="back()">
-    <img src="assets/images/back-arrow.svg" alt="back">
-    <span class="breadcrumb-label-text">{{ courseName }} / {{ topicName }}</span>
-  </div>
+  @if (userRole !== 'curator') {
+    <div class="breadcrumb-container" (click)="back()">
+      <img src="assets/images/back-arrow.svg" alt="back">
+      <span class="breadcrumb-label-text">{{ courseName }} / {{ topicName }}</span>
+    </div>
+  }
+
 
   <div class="test-header">
     <h2>Тақырыптық тест</h2>
@@ -47,7 +50,9 @@
         <h1>{{ correctAnswersCount }}</h1>
         <p>дұрыс жауап саны</p>
       </div>
-      <button (click)="navigateToHomework()">Үй жұмысына өту</button>
+      @if (userRole !== 'curator') {
+        <button (click)="navigateToHomework()">Үй жұмысына өту</button>
+      }
     </div>
   </div>
 </div>

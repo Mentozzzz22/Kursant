@@ -63,14 +63,14 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="!visibleAdd && selectedApplicationType?.showAccess">
+    <ng-container *ngIf="!visibleAdd && selectedApplicationType?.showAccess ">
       <div class="inline-flex align-items-center justify-content-center gap-2">
         <h3>Выберите поток</h3>
       </div>
     </ng-container>
   </ng-template>
 
-  <ng-container *ngIf="!visibleAdd && !selectedApplicationType?.showAccess">
+  <ng-container *ngIf="!visibleAdd && !selectedApplicationType?.showAccess && !selectedApplicationType?.showCancelReason">
     <form  [formGroup]="applicationsForm">
       <div class="modal-content">
 
@@ -132,7 +132,7 @@
         </div>
 
         <div class="block-four">
-          <label for="fileInput1">Чек</label>
+          <label>Чек</label>
           <div class="show-photo-cont">
             <button class="show-photo" (click)="openModal(imageUrl!, selectedFileName!)">ЧЕК</button>
           </div>
@@ -149,7 +149,7 @@
     </form>
   </ng-container>
 
-  <ng-container *ngIf="selectedApplicationType?.showAccess">
+  <ng-container *ngIf="selectedApplicationType?.showAccess && !selectedApplicationType?.showCancelReason">
     <div class="block-three">
       <div class="form-group">
         <label for="flow">Выберите поток</label>
@@ -165,8 +165,15 @@
     </div>
   </ng-container>
 
+  <ng-container *ngIf="selectedApplicationType?.showCancelReason">
+    <div class="block-three">
+      <label for="commentReason">Комментарий к админу</label>
+      <textarea id="commentReason" rows="4" [(ngModel)]="rejection_reason"></textarea>
+    </div>
+  </ng-container>
+
   <ng-template pTemplate="footer">
-    <ng-container  *ngIf="!selectedApplicationType?.showAccess">
+    <ng-container  *ngIf="!selectedApplicationType?.showAccess && !selectedApplicationType?.showCancelReason">
       <div class="button-group">
 
         <div class="button-container" >
@@ -184,6 +191,15 @@
 
         <div class="button-container" >
           <button class="filled-button" (click)="saveDialog()" >Открыть доступ</button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container  *ngIf="selectedApplicationType?.showCancelReason">
+      <div class="button-group">
+
+        <div class="button-container" >
+          <button class="filled-button" (click)="saveCancelDialog()" >Отклонить заявку</button>
         </div>
       </div>
     </ng-container>

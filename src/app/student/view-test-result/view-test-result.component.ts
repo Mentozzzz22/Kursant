@@ -7,6 +7,7 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {ReactiveFormsModule} from "@angular/forms";
 import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {UserService} from "../../service/user.service";
 
 @Component({
   selector: 'app-view-test-result',
@@ -27,6 +28,7 @@ export class ViewTestResultComponent implements OnInit {
   private route = inject(ActivatedRoute)
   private messageService = inject(MessageService);
   private sanitizer = inject(DomSanitizer);
+  private userService = inject(UserService);
   public currentQuestionIndex: number = 0;
   public testId!: number;
   public courseId!: number;
@@ -36,6 +38,7 @@ export class ViewTestResultComponent implements OnInit {
   public teacherName!: string;
   public correctAnswersCount!: number;
   public questions: LearnerQuestions[] = [];
+  public userRole!: string | null;
 
 
   ngOnInit() {
@@ -43,6 +46,8 @@ export class ViewTestResultComponent implements OnInit {
       this.testId = +params.get('testId')!;
       this.getQuestions(this.testId)
     });
+
+    this.userRole = this.userService.getRole()
   }
 
   public getQuestions(testId: number) {

@@ -66,6 +66,7 @@ export class ApplicationComponent implements OnInit{
   selectedFile: File | null = null;
   selectedFileName: string | null = null;
   selectedApplicationType: any;
+  rejection_reason!:string;
   public selectedFlow: number | null = null;
   modalImageUrl: string | undefined = undefined;
   modalImageCaption: string | undefined = undefined;
@@ -126,7 +127,7 @@ export class ApplicationComponent implements OnInit{
 
     this.orderService.getApplicationById(application.order_id).subscribe(data => {
       this.selectedApplication = data;
-      this.selectedApplicationType = { ...application, showAccess: false };
+      this.selectedApplicationType = { ...application, showAccess: false, showCancelReason: false };
 
       this.status = data.status;
       this.selectedNum = data.order_id;
@@ -236,6 +237,38 @@ export class ApplicationComponent implements OnInit{
 
 
   saveCancelDialog() {
+    if (this.selectedApplication) {
+      const formData = this.applicationsForm.value;
+
+      const payload = {
+        order_id: this.selectedApplication.order_id.toString(),
+        learner_fullname: formData.learner_fullname || '',
+        learner_phone_number: formData.learner_phone_number || '',
+        learner_region: formData.learner_region || '',
+        rejection_reason: this.rejection_reason || ''
+      };
+
+      this.orderService.cancelSalesManagerOrder(payload).subscribe(
+        response => {
+          this.visible = false;
+          this.getApplications();
+          this.applicationsForm.reset()
+          this.rejection_reason = '';
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Заявка отклонена',
+            detail: 'Заявка успешно отклонена',
+          });
+        },
+        error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Произошла ошибка при отклонении заявки',
+          });
+        }
+      );
+    }
   }
 
 
@@ -260,14 +293,16 @@ export class ApplicationComponent implements OnInit{
     this.visibleAdd = false;
     if (this.selectedApplication) {
       this.selectedApplicationType.showAccess = false;
+      this.selectedApplicationType.showCancelReason = false;
     }
     this.messageService.add({severity:'info', summary:'Отмена', detail:'Никаких изменений'});
   }
 
   cancelDialog() {
     if (this.selectedApplication) {
-      this.selectedApplicationType.showAccess = true;
+      this.selectedApplicationType.showCancelReason = true;
       this.visibleAdd = false;
+      console.log("showCancelReason:", this.selectedApplicationType.showCancelReason); // Отладочный вывод
     }
   }
 }

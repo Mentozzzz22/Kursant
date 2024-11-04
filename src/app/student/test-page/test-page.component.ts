@@ -74,6 +74,7 @@ export class TestPageComponent implements OnInit {
   private timerInterval: any;
   public displayedTime: string = '';
   public displayAlertMessage: boolean = false;
+  public userRole!: string | null;
 
   public lessonsAndTests: any[] = [];
   progressSegments: { filled: boolean }[] = [];
@@ -89,6 +90,8 @@ export class TestPageComponent implements OnInit {
       this.testId = +params.get('testId')!;
       this.loadTest(this.testId);
     });
+
+    this.userRole = this.userService.getRole()
 
     if (this.isTestStarted) {
       this.getQuestions(this.testId);
@@ -384,8 +387,7 @@ export class TestPageComponent implements OnInit {
   }
 
   public viewResults(testId: number) {
-    const userRole = this.userService.getRole();
-    if (userRole === 'curator') {
+    if (this.userRole === 'curator') {
       this.router.navigate([`/curator/results/${testId}`]);
     } else {
       this.router.navigate([`/student/results/${testId}`]);
@@ -418,7 +420,7 @@ export class TestPageComponent implements OnInit {
   }
 
   public getRouterLink(item: any) {
-    if (item.status === 'passed' || item.status === 'opened') {
+    if ((item.status === 'passed' || item.status === 'opened') && this.userRole !== 'curator') {
       if (item.type === 'test') {
         return ['/student/test', item.id];
       } else if (item.type === 'homework') {

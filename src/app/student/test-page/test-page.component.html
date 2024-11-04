@@ -1,9 +1,11 @@
 <div class="test-container">
 
-  <div class="breadcrumb-container" (click)="back()">
-    <img src="assets/images/back-arrow.svg" alt="back">
-    <span class="breadcrumb-label-text">{{ courseName }} / {{ topicName }}</span>
-  </div>
+  @if(userRole !== 'curator') {
+    <div class="breadcrumb-container" (click)="back()">
+      <img src="assets/images/back-arrow.svg" alt="back">
+      <span class="breadcrumb-label-text">{{ courseName }} / {{ topicName }}</span>
+    </div>
+  }
 
   @if (!isTestStarted) {
 
