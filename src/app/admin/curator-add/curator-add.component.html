@@ -46,7 +46,9 @@
   header="Header"
   [(visible)]="isVisible"
   [modal]="true"
+  [closeOnEscape]="false" [dismissableMask]="false"
   [style]="{ width: '45rem' }"
+  (onHide)="closeDialog()"
   draggable="false">
   <ng-template pTemplate="header">
     <div class="inline-flex align-items-center justify-content-center gap-2">

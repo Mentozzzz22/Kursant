@@ -4,6 +4,7 @@ import {ButtonDirective} from "primeng/button";
 import {Ripple} from "primeng/ripple";
 import {UserService} from "../service/user.service";
 import {MessageService} from "primeng/api";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-admin',
@@ -13,7 +14,8 @@ import {MessageService} from "primeng/api";
     ButtonDirective,
     RouterLink,
     RouterLinkActive,
-    Ripple
+    Ripple,
+    NgIf
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -49,6 +51,11 @@ export class AdminComponent implements OnInit{
         });
       }
     });
+  }
+
+  hasPermission(permission: string): boolean {
+    const userData = this.userService.userDataSubject.value;
+    return userData && userData.permissions && userData.permissions.includes(permission);
   }
 
 }

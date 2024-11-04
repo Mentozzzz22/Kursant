@@ -11,6 +11,8 @@ export class UserService implements OnInit {
 
   private http = inject(HttpClient);
   private userUrl = environment.apiUrl + '/api/user/';
+  userDataSubject = new BehaviorSubject<any | null>(null);
+  userData$ = this.userDataSubject.asObservable();
   private role: string | null = null;
   token: string | null = null;
   phone:string|null = null;
@@ -49,7 +51,10 @@ export class UserService implements OnInit {
     this.role = localStorage.getItem('role');
     this.phone = localStorage.getItem('phone');
     const userData = localStorage.getItem('user_data');
-    console.log('Loaded role:', this.role);
+    if (userData) {
+      this.userDataSubject.next(JSON.parse(userData));
+      console.log('Loaded permissions:', JSON.parse(userData).permissions);
+    }
   }
 
   isLoggedIn(): boolean {

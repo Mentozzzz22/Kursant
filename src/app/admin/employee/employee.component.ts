@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {EmployeeService} from "../../service/employee.service";
 import {Employee} from "../../../assets/models/employee.interface";
 import {DialogModule} from "primeng/dialog";
@@ -6,12 +6,14 @@ import {DropdownModule} from "primeng/dropdown";
 import {NgForOf, NgIf} from "@angular/common";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {PaginatorModule} from "primeng/paginator";
-import {MessageService, PrimeTemplate} from "primeng/api";
+import {ConfirmationService, MessageService, PrimeTemplate} from "primeng/api";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {TableModule} from "primeng/table";
 import {CheckboxModule} from "primeng/checkbox";
 import {MultiSelectModule} from "primeng/multiselect";
 import {NgxMaskDirective} from "ngx-mask";
+import {Button} from "primeng/button";
+import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
 
 @Component({
   selector: 'app-employee',
@@ -28,7 +30,9 @@ import {NgxMaskDirective} from "ngx-mask";
     TableModule,
     CheckboxModule,
     MultiSelectModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    Button,
+    ConfirmPopupModule
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.css'
@@ -37,6 +41,9 @@ export class EmployeeComponent implements OnInit {
   private employeeService = inject(EmployeeService);
   private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService)
+  @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
+
 
   public permissions: boolean[] = [];
   employees: Employee[] = [];
@@ -111,13 +118,21 @@ export class EmployeeComponent implements OnInit {
 
       let phone = this.employeeForm.value.phone_number || '';
 
-      if (phone) {
-        phone = phone.replace(/\D/g, '');
-        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
-      }
+      phone = phone.replace(/\D/g, '');
 
+      if (phone.length === 10) {
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      } else if (phone.length === 11 && phone.startsWith('7')) {
+        phone = `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)} ${phone.slice(7, 9)} ${phone.slice(9, 11)}`;
+      } else {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Ошибка',
+          detail: 'Неверный формат номера телефона'
+        });
+        return;
+      }
       const employeeData: Employee = {
-        id: this.selectedEmployee?.id,
         fullname: this.employeeForm.value.fullname || '',
         phone_number: phone || '',
         job_title: this.employeeForm.value.job_title || '',
@@ -165,9 +180,19 @@ export class EmployeeComponent implements OnInit {
 
       let phone = this.employeeUpdateForm.value.phone_number || '';
 
-      if (phone) {
-        phone = phone.replace(/\D/g, '');
+      phone = phone.replace(/\D/g, '');
+
+      if (phone.length === 10) {
         phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      } else if (phone.length === 11 && phone.startsWith('7')) {
+        phone = `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)} ${phone.slice(7, 9)} ${phone.slice(9, 11)}`;
+      } else {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Ошибка',
+          detail: 'Неверный формат номера телефона'
+        });
+        return;
       }
 
       const employeeData: Employee = {
@@ -272,8 +297,29 @@ export class EmployeeComponent implements OnInit {
   }
 
 
+  confirm(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      accept: () => {
+        this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Куратор удален'});
+      },
+      reject: () => {
+        this.messageService.add({severity: 'info', summary: 'Отмена', detail: 'Вы отклонили'});
+      }
+    });
+  }
+
+
   closeDialog() {
     this.visible = false;
+    this.employeeForm.reset();
+    this.employeeUpdateForm.reset();
+    console.log('sbros');
+
+  }
+
+  reject() {
+    this.confirmPopup.reject();
   }
 
 
