@@ -46,6 +46,8 @@
   [(visible)]="isVisible"
   [modal]="true"
   [style]="{ width: '45rem' }"
+  [closeOnEscape]="false" [dismissableMask]="false"
+  (onHide)="closeDialog()"
   draggable="false">
   <ng-template pTemplate="header">
     <ng-container *ngIf="!visibleShow">

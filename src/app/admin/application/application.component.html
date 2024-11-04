@@ -53,6 +53,7 @@
   [modal]="true"
   [style]="{ width: selectedApplicationType?.showAccess ? '40rem' : '70rem' }"
   draggable="false"
+  [closeOnEscape]="false" [dismissableMask]="false"
   (onHide)="onDialogHide()">
   <ng-template pTemplate="header">
     <ng-container *ngIf="!visibleAdd && !selectedApplicationType?.showAccess">

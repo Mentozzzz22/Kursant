@@ -8,31 +8,31 @@
       <hr class="divider">
     </div>
     <ul class="sidebar-menu">
-      <li ><a class="sidebar-menu-links" routerLink="applications"
+      <li *ngIf="hasPermission('admin_order')"><a class="sidebar-menu-links" routerLink="applications"
                                                routerLinkActive="active"
                                                [routerLinkActiveOptions]="{ exact: false }"><img
         src="assets/images/truck_icon.svg" alt="truck" width="14" height="14"/> Заявки</a></li>
-      <li ><a class="sidebar-menu-links" routerLink="course"
+      <li *ngIf="hasPermission('course')"><a class="sidebar-menu-links" routerLink="course"
                                               routerLinkActive="active"
                                               [routerLinkActiveOptions]="{ exact: false }"><img
         src="assets/images/boxs_icon.svg" alt="box" width="14" height="14"/> Курсы</a></li>
-      <li ><a class="sidebar-menu-links" routerLink="employees"
+      <li *ngIf="hasPermission('employee')"><a class="sidebar-menu-links" routerLink="employees"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: false }"><img
         src="assets/images/partner_icon.svg" alt="partner" width="14" height="14"/> Сотрудники</a></li>
-      <li ><a class="sidebar-menu-links" routerLink="curator-add"
+      <li *ngIf="hasPermission('curator')"><a class="sidebar-menu-links" routerLink="curator-add"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: false }"><img
         src="assets/images/partner_icon.svg" alt="partner" width="14" height="14"/> Куратор</a></li>
-      <li ><a class="sidebar-menu-links" routerLink="learner-add"
+      <li *ngIf="hasPermission('learner')"><a class="sidebar-menu-links" routerLink="learner-add"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: false }"><img
         src="assets/images/partner_icon.svg" alt="partner" width="14" height="14"/> Ученик</a></li>
-      <li ><a class="sidebar-menu-links" routerLink="live-broadcast"
+      <li *ngIf="hasPermission('meet')"><a class="sidebar-menu-links" routerLink="live-broadcast"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: false }"><img
         src="assets/images/partner_icon.svg" alt="partner" width="14" height="14"/> Прямой Эфир</a></li>
-      <li ><a class="sidebar-menu-links" routerLink="testant-admin"
+      <li *ngIf="hasPermission('testant')"><a class="sidebar-menu-links" routerLink="testant-admin"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: false }"><img
         src="assets/images/partner_icon.svg" alt="partner" width="14" height="14"/> Тестант</a></li>

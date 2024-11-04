@@ -153,7 +153,6 @@ export class LearnerComponent implements OnInit {
         phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
       }
       const learnerData: Learner = {
-        id: this.selectedCurator?.id,
         fullname: this.learnerForm.value.fullname || '',
         phone_number: phone || '',
         region: this.learnerForm.value.region || '',
@@ -351,6 +350,8 @@ export class LearnerComponent implements OnInit {
 
   closeDialog() {
     this.visible = false;
+    this.learnerForm.reset();
+    this.learnerUpdateForm.reset();
   }
 
 

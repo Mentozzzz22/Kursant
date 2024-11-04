@@ -48,8 +48,10 @@
   header="Header"
   [(visible)]="isVisible"
   [modal]="true"
+  [closeOnEscape]="false" [dismissableMask]="false"
   [style]="{ width: '55rem' }"
   [contentStyle]="{height: '655px'}"
+  (onHide)="closeDialog()"
   draggable="false">
   <ng-template pTemplate="header">
     <ng-container *ngIf="!visibleShow">
@@ -215,8 +217,20 @@
       <div class="button-group">
         <button class="filled-button" (click)="onUpdate()">Обновить сотрудника</button>
 
-        <button class="text-button" (click)="deleteEmployee()">Удалить сотрудника</button>
+        <button class="text-button" (click)="confirm($event)">Удалить сотрудника</button>
       </div>
     </ng-container>
+
+    <p-confirmPopup #confirmPopupRef>
+      <ng-template pTemplate="headless">
+        <div class="border-round p-3">
+          <span>Вы уверены что хотите удалить сотрудника ?</span>
+          <div class="flex align-items-center gap-2 mt-3">
+            <p-button (onClick)="deleteEmployee()" label="Удалить" size="small" severity="danger"/>
+            <p-button (onClick)="reject()" label="Отмена" [outlined]="false" size="small"/>
+          </div>
+        </div>
+      </ng-template>
+    </p-confirmPopup>
   </ng-template>
 </p-dialog>
