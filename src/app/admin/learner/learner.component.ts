@@ -54,8 +54,7 @@ export class LearnerComponent implements OnInit {
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
 
   ngOnInit(): void {
-    this.loadLeaner()
-    this.loadRegions();
+    this.loadLeaner();
 
     this.learnerForm.get('region')?.valueChanges.subscribe(value => {
       this.onInput();
@@ -112,6 +111,8 @@ export class LearnerComponent implements OnInit {
 
   showDialog() {
     this.visible = true;
+
+    this.loadRegions();
   }
 
 
