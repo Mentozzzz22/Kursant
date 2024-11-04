@@ -24,11 +24,24 @@ export class AdminComponent implements OnInit{
   private userService = inject(UserService);
   private messageService = inject(MessageService);
   private router = inject(Router);
-
+  permissions: string[] = [];
   fullname: string | null = '';
 
   ngOnInit(): void {
     this.fullname = this.userService.getFullName();
+
+    this.userService.verify().subscribe({
+      next: (response) => {
+        const userData = response.user_data;
+        if (userData && userData.permissions) {
+          this.permissions = userData.permissions;
+        }
+      },
+      error: (error) => {
+        console.error('Verification failed:', error);
+        this.router.navigate(['/access-denied']);
+      }
+    });
   }
 
 
@@ -54,8 +67,7 @@ export class AdminComponent implements OnInit{
   }
 
   hasPermission(permission: string): boolean {
-    const userData = this.userService.userDataSubject.value;
-    return userData && userData.permissions && userData.permissions.includes(permission);
+    return this.permissions.includes(permission);
   }
 
 }

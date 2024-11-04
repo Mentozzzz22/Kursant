@@ -57,6 +57,7 @@
   [modal]="true"
   [style]="{ width: selectedApplicationType?.showCancelReason ? '40rem' : '70rem' }"
   draggable="false"
+  [closeOnEscape]="false" [dismissableMask]="false"
   (onHide)="onDialogHide()">
   <ng-template pTemplate="header">
     <ng-container *ngIf="visibleAdd && !selectedApplicationType?.showCancelReason">
@@ -89,10 +90,13 @@
       <ol class="cart-list" formArrayName="courses">
         <li *ngFor="let course of coursesList; let i = index">
           <span class="item-name">{{ course.name }}</span>
-          <input type="date" class="deadline" [formControlName]="i" />
-          <button class="delete-btn" (click)="removeCourse(i)" *ngIf="status !== 'waiting_admin'">
-            <img  src="assets/images/delete_icon.svg" alt="delete" width="14" height="14"/>
-          </button>
+          <div class="actions">
+            <input type="date" class="deadline" [formControlName]="i" />
+            <button class="delete-btn" (click)="removeCourse(i)" *ngIf="status !== 'waiting_admin'">
+              <img  src="assets/images/delete_icon.svg" alt="delete" width="14" height="14"/>
+            </button>
+          </div>
+
         </li>
       </ol>
       <div class="total">
@@ -142,7 +146,7 @@
       <div class="form-group">
         <label for="phone">Телефон</label>
         <div class="input-container">
-          <input type="text" id="phone" class="form-control" formControlName="learner_phone_number">
+          <input type="text" id="phone" class="form-control" formControlName="learner_phone_number" placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'" prefix="+7 ">
           <button class="edit-btn">
             <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
           </button>
@@ -151,8 +155,18 @@
 
       <div class="form-group">
         <label for="region">Регион</label>
-        <div class="input-container">
-          <input type="text" id="region" class="form-control" formControlName="learner_region">
+        <div class="input-container-auto">
+          <input
+            type="text"
+            id="region"
+            class="form-control"
+            (input)="onInputUpdate()"
+            formControlName="learner_region"
+            autocomplete="on"
+            list="regions_datalist2">
+          <datalist id="regions_datalist2">
+            <option *ngFor="let region of filteredRegions; trackBy: trackByRegion" [value]="region">{{ region }}</option>
+          </datalist>
           <button class="edit-btn">
             <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
           </button>
@@ -201,10 +215,12 @@
           <li *ngFor="let course of coursesAddList let i = index">
             <span class="item-name">{{ course.name }}</span>
 <!--            <span class="price">{{ course.current_price}} тг</span>-->
-            <input type="date" class="deadline" formControlName="expires_at" (change)="updateCourseExpiration(i)">
-            <button class="delete-btn" (click)="removeAddCourse(i)">
-              <img  src="assets/images/delete_icon.svg" alt="delete" width="14" height="14"/>
-            </button>
+            <div class="actions">
+              <input type="date" class="deadline" formControlName="expires_at" (change)="updateCourseExpiration(i)">
+              <button class="delete-btn" (click)="removeAddCourse(i)">
+                <img  src="assets/images/delete_icon.svg" alt="delete" width="14" height="14"/>
+              </button>
+            </div>
           </li>
         </ol>
         <div class="total">
@@ -265,7 +281,7 @@
         <div class="form-group">
           <label for="phoneAdd">Телефон</label>
           <div class="input-container">
-            <input type="text" id="phoneAdd" class="form-control" formControlName="learner_phone_number">
+            <input type="text" id="phoneAdd" class="form-control" formControlName="learner_phone_number" placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'" prefix="+7 ">
             <button class="edit-btn">
               <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
             </button>
@@ -275,7 +291,16 @@
         <div class="form-group">
           <label for="regionAdd">Регион</label>
           <div class="input-container">
-            <input type="text" id="regionAdd" class="form-control" formControlName="learner_region">
+            <input
+              type="text"
+              id="regionAdd"
+              class="form-control"
+              (input)="onInput()"
+              formControlName="learner_region"
+              list="regions_datalist1">
+            <datalist id="regions_datalist1">
+              <option *ngFor="let region of filteredRegions" [value]="region">{{ region }}</option>
+            </datalist>
             <button class="edit-btn">
               <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
             </button>
@@ -293,7 +318,7 @@
         <div class="block-four">
           <label for="fileInput1">Чек</label>
 
-          <div *ngIf="!imageUrl" class="custom-file-upload">
+          <div  class="custom-file-upload" style="margin-bottom: 10px;">
             <input type="file" id="fileInput2" class="file-input" (change)="onFileSelected($event)" hidden />
             <span class="file-upload-button" (click)="triggerFileInputSecond()">Выберите файл</span>
             <span class="file-upload-filename">{{ selectedFileName || 'Файл не выбран' }}</span>
@@ -329,7 +354,7 @@
 
         <div class="button-container" >
           <button class="filled-button" (click)="saveDialog()"  *ngIf="status === 'new'">Передать админу</button>
-          <button class="outlined-button" (click)="cancelDialog()"  *ngIf="status === 'new'">Отклонить</button>
+          <button class="outlined-button" (click)="cancelDialog()"  *ngIf="status !== 'new'">Отклонить</button>
         </div>
 
 

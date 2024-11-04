@@ -12,6 +12,7 @@ import {CourseService} from "../../service/course.service";
 import {UserService} from "../../service/user.service";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {DropdownModule} from "primeng/dropdown";
+import {NgxMaskDirective} from "ngx-mask";
 
 @Component({
   selector: 'app-application-sales',
@@ -29,7 +30,8 @@ import {DropdownModule} from "primeng/dropdown";
     FormsModule,
     OverlayPanelModule,
     DropdownModule,
-    NgStyle
+    NgStyle,
+    NgxMaskDirective
   ],
   templateUrl: './application-sales.component.html',
   styleUrl: './application-sales.component.css'
@@ -64,18 +66,35 @@ export class ApplicationSalesComponent implements OnInit{
   modalImageUrl: string | undefined = undefined;
   modalImageCaption: string | undefined = undefined;
   imageUrl: string | undefined = undefined;
+  public filteredRegions: string[] = [];
+  public regions: any[] = [];
   ngOnInit(): void {
     this.getApplications();
     this.loadCourses();
-  }
+
+    this.applicationAddForm.get('learner_region')?.valueChanges.subscribe(value => {
+      this.onInput();
+    });
+
+    this.applicationsForm.get('learner_region')?.valueChanges.subscribe(value => {
+      this.onInputUpdate();
+    });  }
 
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    const day = ('0' + date.getDate()).slice(-2);
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const year = date.getFullYear();
+    let year, month, day;
+
+    if (dateString.includes('-')) {
+      [year, month, day] = dateString.split('-');
+    } else if (dateString.includes('.')) {
+      [day, month, year] = dateString.split('.');
+    } else {
+      console.error("Invalid date format:", dateString);
+      return dateString;
+    }
+
     return `${day}.${month}.${year}`;
   }
+
 
 
   public applicationsForm = this.fb.group({
@@ -113,6 +132,7 @@ export class ApplicationSalesComponent implements OnInit{
     this.selectedFileName = '';
     this.visibleAdd  = true;
     this.loadCourses();
+    this.loadRegions()
   }
 
   private loadCourses() {
@@ -124,6 +144,14 @@ export class ApplicationSalesComponent implements OnInit{
     })
   }
 
+  loadRegions(): void {
+    this.orderService.getRegions().subscribe(data => {
+      this.regions = data;
+      console.log('Regions loaded:', this.regions);
+    });
+  }
+
+
   get coursesFormArray(): FormArray {
     return this.applicationsForm.get('courses') as FormArray;
   }
@@ -132,7 +160,7 @@ export class ApplicationSalesComponent implements OnInit{
     this.visible  = true;
     this.loadCourses();
     this.coursesList = [];
-
+    this.loadRegions();
     this.applicationsForm.reset();
     this.coursesFormArray.clear();
 
@@ -314,10 +342,25 @@ export class ApplicationSalesComponent implements OnInit{
     if (this.visible && this.selectedApplication) {
       const formData = this.applicationsForm.value;
 
+      let phone = this.applicationsForm.value.learner_phone_number || '';
+
+      if (phone.length === 10) {
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      } else if (phone.length === 11 && phone.startsWith('7')) {
+        phone = `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)} ${phone.slice(7, 9)} ${phone.slice(9, 11)}`;
+      } else {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Ошибка',
+          detail: 'Неверный формат номера телефона'
+        });
+        return;
+      }
+
       const form = new FormData();
       form.append('order_id', this.selectedApplication.order_id.toString());
       form.append('learner_fullname', formData.learner_fullname || '');
-      form.append('learner_phone_number', formData.learner_phone_number || '');
+      form.append('learner_phone_number', phone || '');
 
       if (formData.learner_region) {
         form.append('learner_region', formData.learner_region);
@@ -374,9 +417,24 @@ export class ApplicationSalesComponent implements OnInit{
     if (this.visibleAdd) {
       const addFormData = this.applicationAddForm.value;
 
+      let phone = this.applicationAddForm.value.learner_phone_number || '';
+
+      if (phone.length === 10) {
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      } else if (phone.length === 11 && phone.startsWith('7')) {
+        phone = `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)} ${phone.slice(7, 9)} ${phone.slice(9, 11)}`;
+      } else {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Ошибка',
+          detail: 'Неверный формат номера телефона'
+        });
+        return;
+      }
+
       const form = new FormData();
       form.append('learner_fullname', addFormData.learner_fullname || '');
-      form.append('learner_phone_number', addFormData.learner_phone_number || '');
+      form.append('learner_phone_number', phone || '');
 
       if (addFormData.learner_region) {
         form.append('learner_region', addFormData.learner_region);
@@ -396,8 +454,9 @@ export class ApplicationSalesComponent implements OnInit{
       if (this.coursesAddList && this.coursesAddList.length > 0) {
         const courseData = this.coursesAddList.map(course => ({
           course_id: course.id,
-          expires_at: this.formatDate(course.expires_at)
+          expires_at: this.formatDate(course.expires_at)  // Используем форматирование
         }));
+        console.log('Prepared course data:', JSON.stringify(courseData));  // Проверка формата даты
         form.append('courses', JSON.stringify(courseData));
       }
 
@@ -465,6 +524,30 @@ export class ApplicationSalesComponent implements OnInit{
   onDialogHide() {
     this.applicationsForm.reset();
     this.applicationAddForm.reset();
+    this.coursesList = []
+    this.coursesAddList = []
+  }
+
+  onInput(): void {
+    const query = this.applicationAddForm.get('learner_region')?.value?.toLowerCase() || '';
+    this.filteredRegions = this.regions.filter(region =>
+      String(region).toLowerCase().startsWith(query)
+    );
+    console.log('Filtered Regions:', this.filteredRegions); // Проверка вывода
+  }
+
+
+  onInputUpdate(): void {
+    const query = this.applicationsForm.get('learner_region')?.value?.toLowerCase() || '';
+    this.filteredRegions = this.regions.filter(region =>
+      String(region).toLowerCase().startsWith(query)
+    );
+
+    console.log('Filtered Regions:', this.filteredRegions);
+  }
+
+  trackByRegion(index: number, region: string): string {
+    return region;
   }
 
 
@@ -493,6 +576,10 @@ export class ApplicationSalesComponent implements OnInit{
       this.selectedApplicationType.showCancelReason = false;
     }
     this.messageService.add({severity:'info', summary:'Отмена', detail:'Никаких изменений'});
+    this.applicationsForm.reset();
+    this.applicationAddForm.reset();
+    this.coursesAddList = []
+    this.coursesList = []
   }
 
   cancelDialog() {
