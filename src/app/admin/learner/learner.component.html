@@ -99,16 +99,20 @@
                 (input)="onInput()"
                 class="form-control"
                 placeholder="Выберите регион"
+                list="regions_datalist1"
               />
+              <datalist id="regions_datalist1">
+                <option *ngFor="let region of filteredRegions" [value]="region">{{ region }}</option>
+              </datalist>
               <button class="edit-btn">
                 <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
               </button>
 
-              <ul *ngIf="filteredRegions.length > 0" class="suggestions">
-                <li *ngFor="let region of filteredRegions" (click)="selectRegion(region)">
-                  {{ region }}
-                </li>
-              </ul>
+<!--              <ul *ngIf="filteredRegions.length > 0" class="suggestions">-->
+<!--                <li *ngFor="let region of filteredRegions" (click)="selectRegion(region)">-->
+<!--                  {{ region }}-->
+<!--                </li>-->
+<!--              </ul>-->
             </div>
           </div>
 
@@ -158,16 +162,20 @@
                 (input)="onInput()"
                 class="form-control"
                 placeholder="Выберите регион"
+                list="regions_datalist2"
               />
+              <datalist id="regions_datalist2">
+                <option *ngFor="let region of filteredRegions" [value]="region">{{ region }}</option>
+              </datalist>
               <button class="edit-btn">
                 <img src="assets/images/pencil.svg" width="15" height="15" alt="pencil">
               </button>
 
-              <ul *ngIf="filteredRegions.length > 0" class="suggestions">
-                <li *ngFor="let region of filteredRegions" (click)="selectRegion(region)">
-                  {{ region }}
-                </li>
-              </ul>
+<!--              <ul *ngIf="filteredRegions.length > 0" class="suggestions">-->
+<!--                <li *ngFor="let region of filteredRegions" (click)="selectRegion(region)">-->
+<!--                  {{ region }}-->
+<!--                </li>-->
+<!--              </ul>-->
             </div>
           </div>
 
