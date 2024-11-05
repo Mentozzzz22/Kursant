@@ -143,8 +143,8 @@
         <div class="block-four">
           <label>Чек</label>
           <div class="show-photo-cont">
-            <button class="show-photo" (click)="openModal(imageUrl!, selectedFileName!)">ЧЕК</button>
-            <!--            <a [href]="imageUrl" [attr.download]="selectedFileName" target="_blank" class="show-photo">ЧЕК</a>-->
+<!--            <button class="show-photo" (click)="openModal(imageUrl!, selectedFileName!)">ЧЕК</button>-->
+            <a [href]="imageUrl" [attr.download]="selectedFileName" target="_blank" class="show-photo">ЧЕК</a>
           </div>
 
           <div id="myModal" class="modal" [ngStyle]="{'display': isModalVisible ? 'flex' : 'none'}">
