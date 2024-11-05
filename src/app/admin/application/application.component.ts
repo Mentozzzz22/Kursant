@@ -305,5 +305,6 @@ export class ApplicationComponent implements OnInit{
       console.log("showCancelReason:", this.selectedApplicationType.showCancelReason); // Отладочный вывод
     }
   }
+
 }
 

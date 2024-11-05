@@ -1,7 +1,7 @@
 <div *ngIf="!isModuleOpened">
   <div class="edit-course-header">
     <div class="header-text" (click)="navigateToCourses()">
-      <img src="../../../../assets/images/back-arrow.svg" alt="back" >
+      <img src="../../../../assets/images/back-arrow.svg" alt="back">
       <h3>{{ courseName }}</h3>
     </div>
     <div class="course-actions">
@@ -71,7 +71,8 @@
             <input type="file" id="file" class="file-input" (change)="onPosterSelected($event)"/>
             <span class="file-upload-button" (click)="triggerFileInput('file')">Выберите файл</span>
             <span class="file-upload-filename">
-              <a *ngIf="selectedPosterName" [href]="selectedPosterName" target="_blank">{{ selectedPosterName }}</a>
+              <a *ngIf="selectedPosterName" [href]="'http://127.0.0.1:8000/media/course_posters/' + selectedPosterName"
+                 target="_blank">{{ selectedPosterName }}</a>
                 <span *ngIf="!selectedPosterName">Файл не выбран</span>
             </span>
           </div>
@@ -82,7 +83,8 @@
             <input type="file" id="file1" class="file-input" (change)="onBigPosterSelected($event)"/>
             <span class="file-upload-button" (click)="triggerFileInput('file1')">Выберите файл</span>
             <span class="file-upload-filename">
-              <a *ngIf="selectedBigPosterName" [href]="selectedBigPosterName"
+              <a *ngIf="selectedBigPosterName"
+                 [href]="'http://127.0.0.1:8000/media/course_posters/' + selectedBigPosterName"
                  target="_blank">{{ selectedBigPosterName }}</a>
                 <span *ngIf="!selectedBigPosterName">Файл не выбран</span>
             </span>
@@ -104,7 +106,8 @@
         <input type="text" id="percentage" class="form-input" formControlName="discount_percentage" placeholder="%">
         <div
           *ngIf="editCourseForm.get('discount_percentage')?.invalid && editCourseForm.get('discount_percentage')?.touched">
-          <small class="error" *ngIf="editCourseForm.get('discount_percentage')?.errors?.['required']">*Скидка обязательна</small>
+          <small class="error" *ngIf="editCourseForm.get('discount_percentage')?.errors?.['required']">*Скидка
+            обязательна</small>
           <small class="error" *ngIf="editCourseForm.get('discount_percentage')?.errors?.['min']">*Минимум 0%</small>
           <small class="error" *ngIf="editCourseForm.get('discount_percentage')?.errors?.['max']">*Максимум 99%</small>
           <small class="error" *ngIf="editCourseForm.get('discount_percentage')?.errors?.['pattern']">*Только цифры

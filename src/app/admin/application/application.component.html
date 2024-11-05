@@ -5,7 +5,7 @@
     <div class="supplier-actions">
       <div class="search-form">
         <label for="supplierSearch" class="visually-hidden">ID, ФИО</label>
-        <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input" [(ngModel)]="searchText" />
+        <input type="text" id="supplierSearch" placeholder="ID, ФИО" class="search-input" [(ngModel)]="searchText"/>
         <button type="submit" class="search-button" (click)="searchApplications()">Поиск</button>
       </div>
     </div>
@@ -13,10 +13,18 @@
 </div>
 <div class="main-content">
   <div class="content-buttons">
-    <button class="content-button" [ngClass]="{'active': activeStatus === ''}" (click)="filterApplications('')">Все заявки</button>
-    <button class="content-button" [ngClass]="{'active': activeStatus === 'waiting_admin'}" (click)="filterApplications('waiting_admin')">Новые заявки</button>
-    <button class="content-button" [ngClass]="{'active': activeStatus === 'accepted'}" (click)="filterApplications('accepted')">Получили доступ</button>
-    <button class="content-button" [ngClass]="{'active': activeStatus === 'rejected'}" (click)="filterApplications('rejected')">Отклонённые</button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === ''}" (click)="filterApplications('')">Все
+      заявки
+    </button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'waiting_admin'}"
+            (click)="filterApplications('waiting_admin')">Новые заявки
+    </button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'accepted'}"
+            (click)="filterApplications('accepted')">Получили доступ
+    </button>
+    <button class="content-button" [ngClass]="{'active': activeStatus === 'rejected'}"
+            (click)="filterApplications('rejected')">Отклонённые
+    </button>
   </div>
 
 
@@ -32,7 +40,7 @@
           <th></th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-application >
+      <ng-template pTemplate="body" let-application>
         <tr *ngIf="application && application.order_id" (click)="showDialog(application)">
           <td>{{ application.order_id }}</td>
           <td>{{ application.learner_fullname }}</td>
@@ -70,8 +78,9 @@
     </ng-container>
   </ng-template>
 
-  <ng-container *ngIf="!visibleAdd && !selectedApplicationType?.showAccess && !selectedApplicationType?.showCancelReason">
-    <form  [formGroup]="applicationsForm">
+  <ng-container
+    *ngIf="!visibleAdd && !selectedApplicationType?.showAccess && !selectedApplicationType?.showCancelReason">
+    <form [formGroup]="applicationsForm">
       <div class="modal-content">
 
         <div class="block-one">
@@ -79,14 +88,14 @@
           <ol class="cart-list">
             <li *ngFor="let course of coursesList let i = index">
               <span class="item-name">{{ course.name }}</span>
-              <span class="price">{{ course.current_price}} тг</span>
+              <span class="price">{{ course.expires_at }}</span>
               <button class="delete-btn" (click)="removeCourse(i)" *ngIf="status === 'waiting_admin'">
-                <img  src="assets/images/delete_icon.svg" alt="delete" width="14" height="14"/>
+                <img src="assets/images/delete_icon.svg" alt="delete" width="14" height="14"/>
               </button>
             </li>
           </ol>
           <div class="total">
-            <strong>К оплате:</strong> <span class="total-price">{{ calculateTotalPrice() }}</span>
+            <strong>К оплате:</strong> <span class="total-price">{{ calculateTotalPrice() }} тг</span>
           </div>
         </div>
 
@@ -135,6 +144,7 @@
           <label>Чек</label>
           <div class="show-photo-cont">
             <button class="show-photo" (click)="openModal(imageUrl!, selectedFileName!)">ЧЕК</button>
+            <!--            <a [href]="imageUrl" [attr.download]="selectedFileName" target="_blank" class="show-photo">ЧЕК</a>-->
           </div>
 
           <div id="myModal" class="modal" [ngStyle]="{'display': isModalVisible ? 'flex' : 'none'}">
@@ -173,11 +183,13 @@
   </ng-container>
 
   <ng-template pTemplate="footer">
-    <ng-container  *ngIf="!selectedApplicationType?.showAccess && !selectedApplicationType?.showCancelReason">
+    <ng-container *ngIf="!selectedApplicationType?.showAccess && !selectedApplicationType?.showCancelReason">
       <div class="button-group">
 
-        <div class="button-container" >
-          <button class="filled-button" (click)="this.selectedApplicationType.showAccess = true;" *ngIf="status === 'waiting_admin'">Открыть доступ</button>
+        <div class="button-container">
+          <button class="filled-button" (click)="this.selectedApplicationType.showAccess = true;"
+                  *ngIf="status === 'waiting_admin'">Открыть доступ
+          </button>
           <button class="outlined-button" (click)="cancelDialog()" *ngIf="status === 'waiting_admin'">Отклонить</button>
         </div>
 
@@ -186,20 +198,20 @@
       </div>
     </ng-container>
 
-    <ng-container  *ngIf="selectedApplicationType?.showAccess">
+    <ng-container *ngIf="selectedApplicationType?.showAccess">
       <div class="button-group">
 
-        <div class="button-container" >
-          <button class="filled-button" (click)="saveDialog()" >Открыть доступ</button>
+        <div class="button-container">
+          <button class="filled-button" (click)="saveDialog()">Открыть доступ</button>
         </div>
       </div>
     </ng-container>
 
-    <ng-container  *ngIf="selectedApplicationType?.showCancelReason">
+    <ng-container *ngIf="selectedApplicationType?.showCancelReason">
       <div class="button-group">
 
-        <div class="button-container" >
-          <button class="filled-button" (click)="saveCancelDialog()" >Отклонить заявку</button>
+        <div class="button-container">
+          <button class="filled-button" (click)="saveCancelDialog()">Отклонить заявку</button>
         </div>
       </div>
     </ng-container>

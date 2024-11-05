@@ -132,6 +132,7 @@ export class CourseComponent implements OnInit {
       this.courseService.saveCourse(formData).subscribe({
         next: (response) => {
           this.visibleAddCourseModal = false;
+          this.courseAddForm.reset()
           this.messageService.add({
             severity: 'success',
             summary: 'Успешно',
@@ -153,6 +154,8 @@ export class CourseComponent implements OnInit {
   }
 
   public onCancel(): void {
+    this.courseAddForm.reset();
+    this.flowAddForm.reset();
     this.visibleAddCourseModal = false;
   }
 
@@ -231,8 +234,9 @@ export class CourseComponent implements OnInit {
 
     this.flowService.saveFlow(flowData).subscribe({
       next: (response) => {
-        this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Поток успешно добавлен'});
+        this.flowAddForm.reset()
         this.visibleAddFlowModal = false;
+        this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Поток успешно добавлен'});
         this.loadFlows();
       },
       error: (error) => {

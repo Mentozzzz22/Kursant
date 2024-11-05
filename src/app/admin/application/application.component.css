@@ -482,6 +482,8 @@ textarea:focus {
   border:1px solid black;
   border-radius: 10px;
   background-color: transparent;
+  text-decoration: none;
+  color: black;
 }
 
 .modal {
