@@ -57,6 +57,9 @@ export class MainPageComponent implements OnInit{
   public searchText: string = '';
   visible: boolean = false;
   showAll: boolean = false;
+  courses_count:number|null|undefined;
+  flows_count:number|null|undefined;
+  teachers_count:number|null|undefined;
 
   @HostListener('window:resize', [])
   onResize() {
@@ -71,10 +74,19 @@ export class MainPageComponent implements OnInit{
       this.loadFlows();
     });
     this.checkWindowSize();
+    this.loadInfo();
   }
 
   toggleShowAll() {
     this.showAll = !this.showAll;
+  }
+
+  loadInfo(){
+    this.courseService.getCourseInfo().subscribe(data=>{
+      this.courses_count = data.courses_count;
+      this.flows_count = data.flows_count;
+      this.teachers_count = data.teachers_count;
+    })
   }
 
   loadCourses(): void {

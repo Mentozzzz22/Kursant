@@ -40,6 +40,10 @@ export class CourseService {
     return this.http.get<Course[]>(`${this.apiUrl}get_courses/`, {params});
   }
 
+  public getCourseInfo(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}get_main_page_info/`);
+  }
+
   public getCourseNonAuth(learnerCourseId: number): Observable<CourseInfo> {
 
     const params = {course_id: learnerCourseId};
