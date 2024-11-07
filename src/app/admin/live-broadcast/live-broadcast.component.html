@@ -60,12 +60,28 @@
 
 
 <p-dialog
-  header="Добавить Эфир"
+  header="Header"
   [(visible)]="visible"
   [modal]="true"
   [style]="{ width: '40rem' }"
+  [closeOnEscape]="false" [dismissableMask]="false"
   draggable="false"
   (onHide)="closeModal()">
+
+  <ng-template pTemplate="header">
+    <ng-container *ngIf="selectedModal == 'create'">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Добавить эфир</h3>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="selectedModal == 'update'">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Редактировать эфир</h3>
+      </div>
+    </ng-container>
+
+  </ng-template>
 
   <div class="modal-content">
 

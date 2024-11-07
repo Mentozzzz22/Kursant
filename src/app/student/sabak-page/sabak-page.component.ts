@@ -303,7 +303,7 @@ export class SabakPageComponent implements OnInit,OnDestroy {
 
 
   loadLessonVideo(lessonId: number) {
-    this.videoUrl = this.videoService.getLessonVideoUrl(lessonId, 720); // Default to 720p
+    this.videoUrl = this.videoService.getLessonVideoUrl(lessonId, 720);
     const video480Url = this.videoService.getLessonVideoUrl(lessonId, 480);
     const video720Url = this.videoService.getLessonVideoUrl(lessonId, 720);
     const video1080Url = this.videoService.getLessonVideoUrl(lessonId, 1080);

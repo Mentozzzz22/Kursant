@@ -78,7 +78,7 @@ export class LiveBroadcastComponent implements OnInit{
   );
 
   public updateForm = this.fb.group({
-    id:[''],
+    meeting_id:[''],
     name: [''],
     curator_id: [''],
     flow_id: [''],
@@ -219,7 +219,7 @@ export class LiveBroadcastComponent implements OnInit{
         const [datePart, timePart] = selectedMeet.start_time.split(' ');
 
         this.updateForm.patchValue({
-          id: selectedMeet.id,
+          meeting_id: selectedMeet.id,
           name: selectedMeet.name,
           curator_id: selectedMeet.curator_id,
           flow_id: selectedMeet.flow_id,
@@ -266,6 +266,7 @@ export class LiveBroadcastComponent implements OnInit{
   closeModal(): void {
     this.visible = false;
     this.submitForm.reset();
+    this.updateForm.reset();
   }
 
 
@@ -330,6 +331,7 @@ export class LiveBroadcastComponent implements OnInit{
           this.messageService.add({ severity: 'success', summary: 'Успех', detail: 'Встреча удалена' });
           if (this.courseId) {
             this.visible=false;
+            this.loadMeetings(this.courseId);
             confirmPopupRef.hide();
           }
         } else {

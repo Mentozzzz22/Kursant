@@ -3,7 +3,7 @@ import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import { TestantService } from '../../service/testant.service';
 import {FlowService} from "../../service/flow.service";
-import {MessageService, PrimeTemplate} from "primeng/api";
+import {ConfirmationService, MessageService, PrimeTemplate} from "primeng/api";
 import {TableModule} from "primeng/table";
 import {Button} from "primeng/button";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
@@ -33,6 +33,7 @@ export class TestantAdminComponent implements OnInit{
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
   private curatorService = inject(CuratorService);
+  private confirmationService = inject(ConfirmationService)
 
   @ViewChild('dateStart') dateStart!: ElementRef;
   @ViewChild('timeStart') timeStart!: ElementRef;
@@ -46,6 +47,7 @@ export class TestantAdminComponent implements OnInit{
   flows:any[]=[];
   testants:any[]=[];
   curators:any[]=[];
+  links:any[]=[];
   visible: boolean = false;
   selectedDate: string = '';
   selectedTime: string = '';
@@ -88,6 +90,12 @@ export class TestantAdminComponent implements OnInit{
     }
   }
 
+  loadLinks(id:number){
+    this.testantService.getLinksById(id).subscribe(data => {
+      this.links = data
+    })
+  }
+
   private loadCurators(): void {
     this.curatorService.getCurators().subscribe({
       next: (data) => {
@@ -105,7 +113,7 @@ export class TestantAdminComponent implements OnInit{
   );
 
   public updateForm = this.fb.group({
-    id: [''],
+    testant_id: [''],
     start_time: [''],
     deadline: [''],
     curator_id: [''],
@@ -130,7 +138,7 @@ export class TestantAdminComponent implements OnInit{
         const [deadlineDatePart, deadlineTimePart] = selectedMeet.deadline ? selectedMeet.deadline.split(' ') : [null, null];
 
         this.updateForm.patchValue({
-          id: selectedMeet.id,
+          testant_id: selectedMeet.id,
           curator_id: selectedMeet.curator_id,
           flow_id: String(this.flowId),  // Используем сохраненный flowId
           date: this.formatDateForInput(startDatePart),
@@ -267,6 +275,18 @@ export class TestantAdminComponent implements OnInit{
     }
   }
 
+  confirm(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      accept: () => {
+        this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Куратор удален'});
+      },
+      reject: () => {
+        this.messageService.add({severity: 'info', summary: 'Отмена', detail: 'Вы отклонили'});
+      }
+    });
+  }
+
 
   deleteMeeting(confirmPopupRef: any) {
     if (this.selectedTestId) {
@@ -274,6 +294,7 @@ export class TestantAdminComponent implements OnInit{
         if (response.success) {
           this.messageService.add({ severity: 'success', summary: 'Успех', detail: 'Тест удален' });
             this.visible=false;
+            this.loadTestants(this.flowId);
             confirmPopupRef.hide();
         } else {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Не удалось удалить тест' });
@@ -293,7 +314,8 @@ export class TestantAdminComponent implements OnInit{
 
   closeModal(): void {
     this.visible = false;
-    // this.submitForm.reset();
+    this.submitForm.reset();
+    this.updateForm.reset();
   }
 
 }

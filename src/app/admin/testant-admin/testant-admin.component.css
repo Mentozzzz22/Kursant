@@ -13,6 +13,8 @@
 }
 
 .supplier-container {
+  display: flex;
+  justify-content: space-between;
   background-color: #fff;
   padding: 28px 32px 15px;
 }

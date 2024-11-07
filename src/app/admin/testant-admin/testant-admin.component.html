@@ -1,17 +1,10 @@
 <div class="supplier-header">
   <div class="supplier-container">
     <h1 class="supplier-title">Тестант</h1>
-    <hr style="transform: scaleY(0.3);">
-    <div class="supplier-actions">
-      <div class="search-form">
-        <label for="supplierSearch" class="visually-hidden">Название теста</label>
-        <input type="text" id="supplierSearch" placeholder="Название теста" class="search-input" />
-        <button type="submit" class="search-button" >Поиск</button>
-      </div>
-      <button class="add-course-btn" (click)="openModal('create')">
-        Добавить
-      </button>
-    </div>
+
+    <button class="add-course-btn" (click)="openModal('create')">
+      Добавить
+    </button>
   </div>
 </div>
 
@@ -34,6 +27,7 @@
         <tr >
           <th>Время начало</th>
           <th>Дедлайн</th>
+          <th>Cсылка</th>
           <th>Куратор</th>
 <!--          <th>Тест</th>-->
         </tr>
@@ -42,6 +36,7 @@
         <tr (click)="openModal('update',progresses.id)">
           <td>{{ progresses.start_time }}</td>
           <td>{{ progresses.deadline }}</td>
+          <td (click)="loadLinks(progresses.id); $event.stopPropagation()">Открыть</td>
           <td>{{ progresses.curator_name }}</td>
 <!--          <td (click)="$event.stopPropagation()">-->
 <!--            <button-->
@@ -66,12 +61,28 @@
 
 
 <p-dialog
-  header="Добавить Тестант"
+  header="Header"
   [(visible)]="visible"
   [modal]="true"
   [style]="{ width: '40rem' }"
+  [closeOnEscape]="false" [dismissableMask]="false"
   draggable="false"
   (onHide)="closeModal()">
+
+  <ng-template pTemplate="header">
+    <ng-container *ngIf="selectedModal == 'create'">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Добавить тестант</h3>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="selectedModal == 'update'">
+      <div class="inline-flex align-items-center justify-content-center gap-2">
+        <h3>Редактировать тестант</h3>
+      </div>
+    </ng-container>
+
+  </ng-template>
 
   <div class="modal-content">
 
@@ -181,7 +192,7 @@
       </div>
 
       <div class="button-container">
-        <button type="button" class="outlined-button" (click)="closeModal()">Отмена</button>
+        <button type="button" class="outlined-button" (click)="confirm($event)">Удалить</button>
         <button type="submit" class="filled-button" (click)="onSubmit()">Подтвердить</button>
       </div>
     </form>

@@ -4,6 +4,7 @@ import {UserService} from "./user.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {catchError} from "rxjs/operators";
+import {Learner} from "../../assets/models/learner.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -62,5 +63,14 @@ export class TestantService {
         return throwError(error);
       })
     );
+  }
+
+  public getLinksById(testant_id: number): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    const params = new HttpParams().set('testant_id', testant_id.toString());
+
+    return this.http.get<any>(`${this.apiUrl}/get_results/`, { headers, params });
   }
 }
