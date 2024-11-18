@@ -198,7 +198,7 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
         });
         this.questions().removeAt(index);
         this.testForm.markAsDirty(); // Помечаем форму как "грязную" после удаления вопроса
-      }
+      },
     });
   }
 
@@ -309,8 +309,20 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
               detail: `Тема успешно удалена!`
             });
           },
-          error: (err) => {
-            console.error('Ошибка при удалении модуля:', err);
+          error: (error) => {
+            if (error.status === 409) {
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Ошибка',
+                detail: 'Нельзя удалить данную тему'
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: 'Ошибка при удалении темы'
+              });
+            }
           }
         });
       }
@@ -379,7 +391,13 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
           detail: `Успешно сохранено!`
         });
       },
-      error: error => console.error('Failed to save content:', error)
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка поиска',
+          detail: 'Произошла ошибка при сохранении'
+        });
+      }
     });
   }
 

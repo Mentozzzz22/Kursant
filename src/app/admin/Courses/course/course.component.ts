@@ -270,11 +270,19 @@ export class CourseComponent implements OnInit {
             });
           },
           error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Ошибка при удалении потока'
-            });
+            if (error.status === 409) {
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Ошибка',
+                detail: 'Нельзя удалить данный поток'
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: 'Ошибка при удалении потока'
+              });
+            }
           }
         });
       }
