@@ -23,6 +23,7 @@ export class TestantCuratorComponent implements OnInit{
   private testantService = inject(TestantService);
 
   testants:any[]=[];
+  links:any[]=[];
 
 
 
@@ -35,6 +36,12 @@ export class TestantCuratorComponent implements OnInit{
       this.testantService.getTestantForCurator().subscribe(data => {
         this.testants = data;
       });
+  }
+
+  loadLinks(id:number){
+    this.testantService.getLinksById(id).subscribe(data => {
+      this.links = data
+    })
   }
 
 }
