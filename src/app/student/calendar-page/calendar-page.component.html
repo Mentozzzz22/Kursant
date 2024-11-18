@@ -13,7 +13,7 @@
           &#9664;
         </button>
 
-        <div class="calendar-container">
+        <div class="calendar-container" >
           <ng-template #emptyHeaderTemplate>
             <div class="custom-header">
               <div *ngFor="let day of getWeekDays()"
@@ -25,7 +25,7 @@
             </div>
           </ng-template>
 
-          <div class="calendar-week-view" *ngIf="events && events.length > 0">
+          <div class="calendar-week-view" >
             <mwl-calendar-week-view
               [hourSegmentHeight]="60"
               [hourSegments]="2"

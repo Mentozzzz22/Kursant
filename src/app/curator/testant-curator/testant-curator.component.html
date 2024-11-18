@@ -12,6 +12,7 @@
         <tr >
           <th>Время начало</th>
           <th>Дедлайн</th>
+          <th>Cсылка</th>
 <!--          <th>Тест</th>-->
         </tr>
       </ng-template>
@@ -19,6 +20,7 @@
         <tr >
           <td>{{ progresses.start_time }}</td>
           <td>{{ progresses.deadline }}</td>
+          <td (click)="loadLinks(progresses.id); $event.stopPropagation()" style="cursor: pointer">Открыть</td>
 <!--          <td (click)="$event.stopPropagation()">-->
 <!--            <button-->
 <!--              class="start-meeting-btn"-->
