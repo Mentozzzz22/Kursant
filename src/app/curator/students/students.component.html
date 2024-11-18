@@ -5,8 +5,8 @@
     <div class="supplier-actions">
       <div class="search-form">
         <label for="supplierSearch" class="visually-hidden">ФИО</label>
-        <input type="text" id="supplierSearch" placeholder="ФИО" class="search-input"/>
-        <button type="submit" class="search-button">Поиск</button>
+        <input type="text" id="supplierSearch" placeholder="ФИО" class="search-input" [(ngModel)]="searchText"/>
+        <button type="submit" class="search-button" (click)="searchApplications()">Поиск</button>
       </div>
     </div>
   </div>
@@ -14,7 +14,7 @@
 <div class="main-content">
   <div class="content-buttons">
     <button class="content-button" *ngFor="let curatorFlow of curatorFlows"
-            (click)="getLearnersLessonProgress(curatorFlow.id)"
+            (click)="getLearnersLessonProgress(curatorFlow.id,searchText)"
             [class.active]="curatorFlow.id === activeFlowId">
       Поток {{ curatorFlow.index }}
     </button>

@@ -7,6 +7,7 @@ import {TableModule} from "primeng/table";
 import {CuratorService} from "../../service/curator.service";
 import {CuratorFlowsInterface} from "../../../assets/models/curatorFlows.interface";
 import {LearnersLessonProgress} from "../../../assets/models/LearnersLessonProgress.interface";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-students',
@@ -17,7 +18,8 @@ import {LearnersLessonProgress} from "../../../assets/models/LearnersLessonProgr
     PrimeTemplate,
     RouterLinkActive,
     TableModule,
-    NgForOf
+    NgForOf,
+    FormsModule
   ],
   templateUrl: './students.component.html',
   styleUrl: './students.component.css'
@@ -32,6 +34,7 @@ export class StudentsComponent implements OnInit {
   public accepted_at!: string;
   public lessons_passed!: number;
   public total_lesson!: number;
+  searchText: string = '';
 
   ngOnInit(): void {
     this.getCuratorFlows()
@@ -43,14 +46,14 @@ export class StudentsComponent implements OnInit {
       if (this.curatorFlows.length > 0) {
         // Выбираем первый поток по умолчанию
         const firstFlowId = this.curatorFlows[0].id;
-        this.getLearnersLessonProgress(firstFlowId);
+        this.getLearnersLessonProgress(firstFlowId,this.searchText);
       }
     })
   }
 
-  public getLearnersLessonProgress(flow_id: number) {
+  public getLearnersLessonProgress(flow_id: number,search:string) {
     this.activeFlowId = flow_id;
-    this.curatorService.getLearnersLessonProgress(flow_id).subscribe(data => {
+    this.curatorService.getLearnersLessonProgress(flow_id,search).subscribe(data => {
       this.learnerLessonProgress = data
       data.map((data) => {
         this.fullname = data.fullname;
@@ -60,6 +63,12 @@ export class StudentsComponent implements OnInit {
       })
 
     })
+  }
+
+  searchApplications() {
+    if(this.activeFlowId != null){
+      this.getLearnersLessonProgress(this.activeFlowId, this.searchText);
+    }
   }
 
 }

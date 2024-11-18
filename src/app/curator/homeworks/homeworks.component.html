@@ -24,7 +24,7 @@
   </div>
 
 
-  <div class="content-buttons">
+  <div class="content-buttons" *ngIf="flow.length > 0">
     <button class="content-button" (click)="setActiveTab('homeWorks')" [class.active]="activeTab === 'homeWorks'">
       Домашняя задания
     </button>

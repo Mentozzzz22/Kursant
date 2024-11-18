@@ -344,18 +344,6 @@ export class ApplicationSalesComponent implements OnInit{
 
       let phone = this.applicationsForm.value.learner_phone_number || '';
 
-      if (phone.length === 10) {
-        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
-      } else if (phone.length === 11 && phone.startsWith('7')) {
-        phone = `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)} ${phone.slice(7, 9)} ${phone.slice(9, 11)}`;
-      } else {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Ошибка',
-          detail: 'Неверный формат номера телефона'
-        });
-        return;
-      }
 
       const form = new FormData();
       form.append('order_id', this.selectedApplication.order_id.toString());
@@ -419,18 +407,6 @@ export class ApplicationSalesComponent implements OnInit{
 
       let phone = this.applicationAddForm.value.learner_phone_number || '';
 
-      if (phone.length === 10) {
-        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
-      } else if (phone.length === 11 && phone.startsWith('7')) {
-        phone = `+7 (${phone.slice(1, 4)}) ${phone.slice(4, 7)} ${phone.slice(7, 9)} ${phone.slice(9, 11)}`;
-      } else {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Ошибка',
-          detail: 'Неверный формат номера телефона'
-        });
-        return;
-      }
 
       const form = new FormData();
       form.append('learner_fullname', addFormData.learner_fullname || '');
@@ -454,9 +430,9 @@ export class ApplicationSalesComponent implements OnInit{
       if (this.coursesAddList && this.coursesAddList.length > 0) {
         const courseData = this.coursesAddList.map(course => ({
           course_id: course.id,
-          expires_at: this.formatDate(course.expires_at)  // Используем форматирование
+          expires_at: this.formatDate(course.expires_at)
         }));
-        console.log('Prepared course data:', JSON.stringify(courseData));  // Проверка формата даты
+        console.log('Prepared course data:', JSON.stringify(courseData));  
         form.append('courses', JSON.stringify(courseData));
       }
 

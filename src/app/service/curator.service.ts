@@ -93,11 +93,14 @@ export class CuratorService {
     return this.http.get<any>(`${this.apiUrl}/get_my_flows/`, {headers });
   }
 
-  getLearnersLessonProgress(flowId: number): Observable<LearnersLessonProgress[]> {
+  getLearnersLessonProgress(flowId: number,search: string = ''): Observable<LearnersLessonProgress[]> {
     const token = this.userService.token;
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-    const params = new HttpParams().set('flow_id', flowId.toString());
+    let params = new HttpParams().set('flow_id', flowId.toString());
+    if (search) {
+      params = params.set('search', search);
+    }
 
     return this.http.get<LearnersLessonProgress[]>(`${this.learnerApiUrl}/get_learners_lessons_progress/`, { headers, params });
   }

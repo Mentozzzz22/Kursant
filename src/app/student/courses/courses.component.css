@@ -154,7 +154,7 @@
 .kurs-images {
   width: 289px;
   height: 138px;
-  padding:10px;
+  object-fit: cover;
 }
 
 .subject-info h3 {
