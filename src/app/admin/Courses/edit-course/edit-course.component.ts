@@ -238,7 +238,13 @@ export class EditCourseComponent implements OnInit, OnDestroy {
   }
 
   public navigateToCourses() {
-    this.router.navigate(['/admin/course']);
+    const flowId = this.route.snapshot.queryParamMap.get('flowId');
+    console.log(flowId);
+    if (flowId) {
+      this.router.navigate([`/admin/flow-details/${flowId}/`]);
+    } else {
+      this.router.navigate(['/admin/course']);
+    }
   }
 
   public navigateToEditModule(moduleId: number) {
