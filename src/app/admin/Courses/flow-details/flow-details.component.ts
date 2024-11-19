@@ -166,8 +166,8 @@ export class FlowDetailsComponent implements OnInit {
     this.isDeadlinesOpened = true;
   }
 
-  public navigateToCourse() {
-    this.router.navigate([`/admin/edit-course/${this.editCourseId}`]);
+  public navigateToCourse(courseId: number) {
+    this.router.navigate([`/admin/edit-course/${courseId}/`]);
     this.isDeadlinesOpened = true;
   }
 
