@@ -68,7 +68,7 @@
 .main-card {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 20px;
   width: 100%;
   background-color: white;
   padding: 25px;
