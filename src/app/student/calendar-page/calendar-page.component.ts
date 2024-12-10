@@ -14,6 +14,7 @@ import {CalendarService} from "../../service/calendar.service";
 import {UserService} from "../../service/user.service";
 import {interval, startWith, Subject, Subscription} from "rxjs";
 import {map} from "rxjs/operators";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-calendar-page',
@@ -40,7 +41,7 @@ export class CalendarPageComponent implements OnInit, OnDestroy  {
   calendarService = inject(CalendarService);
   datePipe = inject(DatePipe);
   private userService = inject(UserService);
-
+  public userUrl = environment.apiUrl
   viewDate: Date = new Date();
   currentDate: Date = new Date();
   todayTasks: CalendarEvent[] = [];

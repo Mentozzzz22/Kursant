@@ -71,7 +71,7 @@
             <input type="file" id="file" class="file-input" (change)="onPosterSelected($event)"/>
             <span class="file-upload-button" (click)="triggerFileInput('file')">Выберите файл</span>
             <span class="file-upload-filename">
-              <a *ngIf="selectedPosterName" [href]="'http://127.0.0.1:8000/media/course_posters/' + selectedPosterName"
+              <a *ngIf="selectedPosterName" [href]="userUrl + '/media/course_posters/' + selectedPosterName"
                  target="_blank">{{ selectedPosterName }}</a>
                 <span *ngIf="!selectedPosterName">Файл не выбран</span>
             </span>
@@ -84,7 +84,7 @@
             <span class="file-upload-button" (click)="triggerFileInput('file1')">Выберите файл</span>
             <span class="file-upload-filename">
               <a *ngIf="selectedBigPosterName"
-                 [href]="'http://127.0.0.1:8000/media/course_posters/' + selectedBigPosterName"
+                 [href]="userUrl + '/media/course_posters/' + selectedBigPosterName"
                  target="_blank">{{ selectedBigPosterName }}</a>
                 <span *ngIf="!selectedBigPosterName">Файл не выбран</span>
             </span>

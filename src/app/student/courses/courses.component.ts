@@ -11,6 +11,7 @@ import {InputTextModule} from "primeng/inputtext";
 import {NgxMaskDirective} from "ngx-mask";
 import {OrderService} from "../../service/order.service";
 import {MessageService} from "primeng/api";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-courses',
@@ -38,7 +39,7 @@ export class CoursesComponent implements OnInit {
   onResize() {
     this.checkWindowSize();
   }
-
+  public userUrl = environment.apiUrl
   private learnerCourseService = inject(LearnerCourseService)
   private router = inject(Router);
 
@@ -56,12 +57,12 @@ export class CoursesComponent implements OnInit {
       (data: { learner_courses: LearnerCourses[]; other_courses: OtherCourses[] }) => {
         this.learnerCourses = data.learner_courses.map(course => ({
           ...course,
-          poster: `http://127.0.0.1:8000/media/${course.poster}`
+          poster: `${this.userUrl}/media/${course.poster}`
         }));
 
         this.otherCourses = data.other_courses.map(course => ({
           ...course,
-          poster: `http://127.0.0.1:8000/media/${course.poster}`
+          poster: `${this.userUrl}/media/${course.poster}`
         }));
 
         console.log('Learner Courses:', this.learnerCourses);

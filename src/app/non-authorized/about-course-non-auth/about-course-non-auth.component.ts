@@ -8,6 +8,7 @@ import {ProgressBarModule} from "primeng/progressbar";
 import {AdditionalCourse, CourseInfo, InfoModules} from "../../../assets/models/CourseInfo.interface";
 import {OrderService} from "../../service/order.service";
 import {MessageService} from "primeng/api";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-about-course-non-auth',
@@ -35,7 +36,7 @@ export class AboutCourseNonAuthComponent implements OnInit {
   public isOpen: boolean[] = [];
   public isOpenTopic: boolean[][] = [];
   public course: any = {};
-
+  public userUrl = environment.apiUrl
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.courseId = +params.get('course_id')!;
@@ -57,7 +58,7 @@ export class AboutCourseNonAuthComponent implements OnInit {
 
       this.modules = data.modules
       this.additional_courses = data.additional_courses
-      this.poster = `http://127.0.0.1:8000${data.big_poster}`
+      this.poster = `${this.userUrl}${data.big_poster}`
       console.log('Poster URL:', this.modules);
 
       console.log('Data received:', data);
@@ -91,7 +92,7 @@ export class AboutCourseNonAuthComponent implements OnInit {
   }
 
   getCoursePoster(posterPath: string): string {
-    return `http://127.0.0.1:8000${posterPath}`;
+    return `${this.userUrl}${posterPath}`;
   }
 
   navigateToCourseDetail(): void {

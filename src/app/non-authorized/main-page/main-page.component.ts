@@ -13,6 +13,7 @@ import {GetFlows} from "../../../assets/models/getFlows.interface";
 import {FlowService} from "../../service/flow.service";
 import {DialogModule} from "primeng/dialog";
 import {Router} from "@angular/router";
+import {environment} from "../../../environments/environment";
 
 export interface kurs {
   id: number,
@@ -60,7 +61,7 @@ export class MainPageComponent implements OnInit{
   courses_count:number|null|undefined;
   flows_count:number|null|undefined;
   teachers_count:number|null|undefined;
-
+  public userUrl = environment.apiUrl
   @HostListener('window:resize', [])
   onResize() {
     this.checkWindowSize();
@@ -94,7 +95,7 @@ export class MainPageComponent implements OnInit{
       (data: Course[]) => {
         this.courses = data.map(course => ({
           ...course,
-          poster: `http://127.0.0.1:8000${course.poster}`
+          poster: `${this.userUrl}${course.poster}`
         }));
         if (this.searchText && this.searchText.trim() !== '') {
           const courseSection = document.querySelector('.kurstar');

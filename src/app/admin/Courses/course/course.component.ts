@@ -11,6 +11,7 @@ import {FlowService} from "../../../service/flow.service";
 import {GetFlows} from "../../../../assets/models/getFlows.interface";
 import {ConfirmPopupModule} from "primeng/confirmpopup";
 import {AutoExpandDirective} from "../../../auto-expand.directive";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-course',
@@ -49,7 +50,7 @@ export class CourseComponent implements OnInit {
   public flows: GetFlows[] = [];
   public courseAddForm!: FormGroup;
   public flowAddForm!: FormGroup;
-
+  public userUrl = environment.apiUrl
   ngOnInit() {
     this.loadFlows()
     this.loadCourses()
@@ -79,7 +80,7 @@ export class CourseComponent implements OnInit {
     this.courseService.getCourses().subscribe(data => {
       this.courses = data.map((course: Course) => ({
         ...course,
-        poster: `http://127.0.0.1:8000${course.poster}`
+        poster: `${this.userUrl}${course.poster}`
       }));
     })
   }

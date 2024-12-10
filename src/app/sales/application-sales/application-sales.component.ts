@@ -13,6 +13,7 @@ import {UserService} from "../../service/user.service";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {DropdownModule} from "primeng/dropdown";
 import {NgxMaskDirective} from "ngx-mask";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-application-sales',
@@ -43,7 +44,7 @@ export class ApplicationSalesComponent implements OnInit{
   private messageService = inject(MessageService);
   private userService = inject(UserService);
   private fb = inject(FormBuilder);
-
+  public userUrl = environment.apiUrl
   status: string | null = null;
   courseId : number | null= null;
   learnerFullName:string|null=null;
@@ -139,7 +140,7 @@ export class ApplicationSalesComponent implements OnInit{
     this.superAdminService.getCourses().subscribe(data => {
       this.courses = data.map((course: Course) => ({
         ...course,
-        poster: `http://127.0.0.1:8000${course.poster}`
+        poster: `${this.userUrl}${course.poster}`
       }));
     })
   }
@@ -185,7 +186,7 @@ export class ApplicationSalesComponent implements OnInit{
         if (typeof data.paid_check === 'string') {
           const urlParts = data.paid_check.split('/');
           this.selectedFileName = urlParts[urlParts.length - 1];
-          this.imageUrl = `http://127.0.0.1:8000${data.paid_check}`;
+          this.imageUrl = `${this.userUrl}${data.paid_check}`;
         } else if (data.paid_check instanceof File) {
           this.selectedFileName = data.paid_check.name;
         }
@@ -432,7 +433,7 @@ export class ApplicationSalesComponent implements OnInit{
           course_id: course.id,
           expires_at: this.formatDate(course.expires_at)
         }));
-        console.log('Prepared course data:', JSON.stringify(courseData));  
+        console.log('Prepared course data:', JSON.stringify(courseData));
         form.append('courses', JSON.stringify(courseData));
       }
 

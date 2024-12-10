@@ -283,7 +283,7 @@
             <div class="button-container" *ngIf="selectedTaskDetails.type === 'testant' ">
               <a
                 target="_blank"
-                [href]="'http://127.0.0.1:8000/api/testant/test/' + token + '/' + selectedTaskDetails.id + '/'"
+                [href]="userUrl + '/api/testant/test/' + token + '/' + selectedTaskDetails.id + '/'"
                 [ngClass]="{'disabled-link': !selectedTaskDetails.is_available}"
                 [attr.disabled]="!selectedTaskDetails.is_available"
                 class="submit-button">

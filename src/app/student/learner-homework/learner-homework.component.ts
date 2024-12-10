@@ -7,6 +7,7 @@ import {LearnerLessons} from "../../../assets/models/learner_course.interface";
 import {ProgressBarModule} from "primeng/progressbar";
 import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-learner-homework',
@@ -43,7 +44,7 @@ export class LearnerHomeworkComponent implements OnInit {
   public lessonsAndTests: any[] = [];
   progressSegments: { filled: boolean }[] = [];
   public fullUrl!: string
-
+  public userUrl = environment.apiUrl
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.homeworkId = +params.get('homeworkId')!;
@@ -66,7 +67,7 @@ export class LearnerHomeworkComponent implements OnInit {
         this.homeworkFileName = data.homework.file
         this.lessonsAndTests = [...this.lessons];
         const encodedFilePath = encodeURI(this.homework.file);
-        this.fullUrl = `http://127.0.0.1:8000${encodedFilePath}`;
+        this.fullUrl = `${this.userUrl}${encodedFilePath}`;
         console.log(this.fullUrl)
 
         if (data.test) {

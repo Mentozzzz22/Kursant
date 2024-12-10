@@ -11,6 +11,7 @@ import {NgxMaskDirective} from "ngx-mask";
 import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
 import {Button} from "primeng/button";
 import {Router} from "@angular/router";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-cart',
@@ -34,7 +35,7 @@ import {Router} from "@angular/router";
 export class CartComponent implements OnInit{
 
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
-
+  public userUrl = environment.apiUrl
   courses: Course[] = [];
   private courseService = inject(CourseService);
   private orderService = inject(OrderService);
@@ -63,7 +64,7 @@ export class CartComponent implements OnInit{
         (data: Course[]) => {
           this.courses = data.map(course => ({
             ...course,
-            poster: `http://127.0.0.1:8000${course.poster}`
+            poster: `${this.userUrl}${course.poster}`
           }));
 
           this.calculateTotalPrices();

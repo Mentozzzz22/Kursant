@@ -12,6 +12,7 @@ import {ConfirmPopupModule} from "primeng/confirmpopup";
 import {Course} from "../../../../assets/models/course.interface";
 import {AutoExpandDirective} from "../../../auto-expand.directive";
 import {EditorModule} from "primeng/editor";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-edit-course',
@@ -56,7 +57,7 @@ export class EditCourseComponent implements OnInit, OnDestroy {
   public selectedPosterFile: File | null = null;
   public selectedBigPosterFile: File | null = null;
   private navigationSubscription: Subscription;
-
+  public userUrl = environment.apiUrl
   constructor() {
     this.navigationSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)

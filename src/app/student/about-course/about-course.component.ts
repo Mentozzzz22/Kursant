@@ -5,6 +5,7 @@ import {LearnerCourseService} from "../../service/learner-course.service";
 import {LearnerModules} from "../../../assets/models/learner_course.interface";
 import {ProgressBarModule} from "primeng/progressbar";
 import {MessageService} from "primeng/api";
+import {environment} from "../../../environments/environment";
 
 
 @Component({
@@ -20,7 +21,7 @@ import {MessageService} from "primeng/api";
   styleUrl: './about-course.component.css'
 })
 export class AboutCourseComponent implements OnInit {
-
+  public userUrl = environment.apiUrl
   private learnerCourseService = inject(LearnerCourseService)
   private messageService = inject(MessageService);
   private router = inject(Router)
@@ -50,7 +51,7 @@ export class AboutCourseComponent implements OnInit {
       };
 
       this.modules = data.modules
-      this.poster = `http://127.0.0.1:8000${data.poster}`
+      this.poster = `${this.userUrl}${data.poster}`
       console.log('Data received:', data);
       this.isOpen = new Array(this.modules.length).fill(false);
       this.isOpenTopic = this.modules.map(module => new Array(module.topics.length).fill(false));

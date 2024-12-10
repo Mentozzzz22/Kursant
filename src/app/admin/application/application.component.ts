@@ -18,6 +18,7 @@ import {PaginatorModule} from "primeng/paginator";
 import {GetFlows} from "../../../assets/models/getFlows.interface";
 import {FlowService} from "../../service/flow.service";
 import {NgxMaskDirective} from "ngx-mask";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-application',
@@ -50,7 +51,7 @@ export class ApplicationComponent implements OnInit{
   private userService = inject(UserService);
   private fb = inject(FormBuilder);
   private flowService = inject(FlowService);
-
+  public userUrl = environment.apiUrl
   status: string | null = null;
   applications: SalesApplication[] = [];
   public coursesList: Course[] = [];
@@ -109,7 +110,7 @@ export class ApplicationComponent implements OnInit{
     this.superAdminService.getCourses().subscribe(data => {
       this.courses = data.map((course: Course) => ({
         ...course,
-        poster: `http://127.0.0.1:8000${course.poster}`
+        poster: `${this.userUrl}${course.poster}`
       }));
     })
   }
@@ -150,7 +151,7 @@ export class ApplicationComponent implements OnInit{
         if (typeof data.paid_check === 'string') {
           const urlParts = data.paid_check.split('/');
           this.selectedFileName = urlParts[urlParts.length - 1];
-          this.imageUrl = `http://127.0.0.1:8000${data.paid_check}`;
+          this.imageUrl = `${this.userUrl}${data.paid_check}`;
         } else if (data.paid_check instanceof File) {
           this.selectedFileName = data.paid_check.name;
         }

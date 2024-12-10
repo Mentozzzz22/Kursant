@@ -17,7 +17,7 @@
           <div [innerHTML]="sanitizeHtmlContent(description)"></div>
         </strong></p>
         <p>Дедлайн: {{ deadline }}</p>
-        <a class="download-hw" [href]="'http://127.0.0.1:8000' + homework?.file" download target="_blank">
+        <a class="download-hw" [href]="userUrl + homework?.file" download target="_blank">
           <img src="../../../assets/images/download-homework.svg" alt="download">
           Үй жұмысының берілгені
         </a>
