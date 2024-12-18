@@ -84,6 +84,7 @@
   gap: 15px;
   align-items: center;
   margin-right:10px;
+  white-space: nowrap;
 }
 
 .flow-page-container p {
@@ -108,11 +109,12 @@
 }
 
 .curator {
-  width: 200px; /* Полная ширина контейнера */
+  min-width: 200px; /* Полная ширина контейнера */
   padding: 8px 12px; /* Подушечка для текста */
   border: 1px solid #E3E3E3; /* Граница */
   border-radius: 10px; /* Скругление углов */
   background-color: #F9FAFC; /* Фоновый цвет */
+  white-space: nowrap;
 }
 
 .delete-curator {

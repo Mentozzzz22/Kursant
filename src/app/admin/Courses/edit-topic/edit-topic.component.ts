@@ -84,6 +84,9 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
   public homework!: Homework;
   public AddLessonVisible: boolean = false;
   public addLessonForm!: FormGroup;
+  public isLoading: boolean = false;
+  public isSaving: boolean = false;
+
 
   public testForm: FormGroup = this.fb.group({
     duration: [15, Validators.required],
@@ -108,18 +111,27 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
   }
 
   canDeactivate(): boolean {
+    if (this.isSaving) {
+      return true; // Перезагрузка разрешена при сохранении
+    }
     if (this.hasUnsavedChanges()) {
       return window.confirm('У вас есть несохранённые изменения. Вы действительно хотите уйти?');
     }
     return true;
   }
 
+
   @HostListener('window:beforeunload', ['$event'])
-  unloadNotification($event: any): void {
-    if (this.hasUnsavedChanges()) {
-      $event.returnValue = true; // Стандартное сообщение браузера
+  unloadNotification($event: BeforeUnloadEvent): void {
+    if (this.isSaving) {
+      // Allow the page to unload without confirmation
+      delete $event.returnValue;
+    } else if (this.hasUnsavedChanges()) {
+      $event.returnValue = true; // Standard message prompting
     }
   }
+
+
 
   private hasUnsavedChanges(): boolean {
     return (
@@ -259,6 +271,7 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
   }
 
   public addLesson(): void {
+
     if (this.addLessonForm.invalid) {
       return;
     }
@@ -268,7 +281,7 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
     this.lessons.push(newLesson);
     this.AddLessonVisible = false;
     this.addLessonForm.reset();
-    this.testForm.markAsDirty(); // Помечаем форму как "грязную" после добавления урока
+    this.testForm.markAsDirty();
   }
 
   public deleteLesson(event: Event, index: number): void {
@@ -339,17 +352,12 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
       return;
     }
 
-    if (!this.validateLessons()) {
+    if (!this.validateLessons() || !this.validateHomework() || !this.validateQuestions()) {
       return;
     }
 
-    if (!this.validateHomework()) {
-      return;
-    }
-
-    if (!this.validateQuestions()) {
-      return;
-    }
+    this.isSaving = true;
+    this.isLoading = true;
 
     const formData = new FormData();
     formData.append('topic_id', String(this.topicId));
@@ -383,23 +391,30 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
     formData.append('test', JSON.stringify(this.testForm.value));
 
     this.topicService.saveTopicContent(formData).subscribe({
-      next: response => {
-        this.testForm.markAsPristine(); // Сброс состояния формы после успешного сохранения
+      next: () => {
+        this.isLoading = false;
+        this.testForm.markAsPristine();
         this.messageService.add({
           severity: 'success',
           summary: 'Успешно',
           detail: `Успешно сохранено!`
         });
+        setTimeout(() => {
+          location.reload();
+        }, 100);
       },
       error: () => {
+        this.isLoading = false;
+        this.isSaving = false;
         this.messageService.add({
           severity: 'error',
-          summary: 'Ошибка поиска',
+          summary: 'Ошибка',
           detail: 'Произошла ошибка при сохранении'
         });
       }
     });
   }
+
 
 
   public removeLessonFile(event: Event, index: number): void {
@@ -426,7 +441,16 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
   }
 
   public showAddDialog() {
-    this.AddLessonVisible = true;
+    if (!this.canAddLesson) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Ограничение',
+        detail: 'Вы достигли лимита файлов, нажмите Сохранить чтобы продолжить'
+      });
+      return;
+    } else {
+      this.AddLessonVisible = true;
+    }
   }
 
   public back(): void {
@@ -445,6 +469,7 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
     if (input.files?.length) {
       const file = input.files[0];
 
+      // Проверяем тип файла
       const fileType = file.type;
       if (fileType !== 'video/mp4') {
         this.messageService.add({
@@ -455,12 +480,24 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
         return;
       }
 
+      // Проверяем общее количество загруженных файлов
+      if (this.totalFilesUploaded >= 5) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Ограничение',
+          detail: 'Вы можете загрузить максимум 5 файлов. Удалите лишние файлы, чтобы добавить новый.'
+        });
+        return;
+      }
+
+      // Устанавливаем файл в урок
       this.lessons[index].file = file;
       this.lessons[index].fileName = file.name;
       this.testForm.markAsDirty(); // Помечаем форму как "грязную" после выбора файла
       console.log(`Файл для урока ${index + 1}: ${file.name}`);
     }
   }
+
 
   public onHomeworkFileSelected(event: Event): void {
     const element = event.target as HTMLInputElement;
@@ -524,4 +561,14 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
     }
     return true;
   }
+
+  get canAddLesson(): boolean {
+    const lessonsWithNewFiles = this.lessons.filter(lesson => lesson.file instanceof File);
+    return lessonsWithNewFiles.length < 5;
+  }
+
+  get totalFilesUploaded(): number {
+    return this.lessons.filter(lesson => lesson.file instanceof File).length;
+  }
+
 }
