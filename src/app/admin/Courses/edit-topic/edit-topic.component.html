@@ -92,8 +92,12 @@
         </div>
       </div>
       <div class="edit-course-footer">
-        <button class="btn start-btn" (click)="saveContent()">Сохранить</button>
-        <button class="btn back-btn" (click)="back()">Отмена</button>
+        <button class="btn start-btn" [disabled]="isLoading" (click)="saveContent()">
+          <ng-container *ngIf="!isLoading">Сохранить</ng-container>
+          <ng-container *ngIf="isLoading">
+            <i class="pi pi-spin pi-spinner"></i> Сохранение...
+          </ng-container>
+        </button>        <button class="btn back-btn" (click)="back()">Отмена</button>
       </div>
     </div>
   </div>
