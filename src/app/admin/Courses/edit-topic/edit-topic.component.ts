@@ -120,18 +120,15 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
     return true;
   }
 
-
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: BeforeUnloadEvent): void {
-    if (this.isSaving) {
+    if (this.isSaving && !this.isLoading) {
       // Allow the page to unload without confirmation
       delete $event.returnValue;
     } else if (this.hasUnsavedChanges()) {
       $event.returnValue = true; // Standard message prompting
     }
   }
-
-
 
   private hasUnsavedChanges(): boolean {
     return (
@@ -358,6 +355,11 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
 
     this.isSaving = true;
     this.isLoading = true;
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Сохранение',
+      detail: `Тема ${this.topicName} сохраняется...`,
+    })
 
     const formData = new FormData();
     formData.append('topic_id', String(this.topicId));
@@ -414,7 +416,6 @@ export class EditTopicComponent implements OnInit, CanComponentDeactivate {
       }
     });
   }
-
 
 
   public removeLessonFile(event: Event, index: number): void {

@@ -1,6 +1,6 @@
 <div class="edit-course-header">
   <div class="header-text" (click)="back()">
-    <img src="../../../../assets/images/back-arrow.svg" alt="back" >
+    <img src="../../../../assets/images/back-arrow.svg" alt="back">
     <h3>Тақырып {{ topicIndex }}. {{ topicName }}</h3>
   </div>
   <div class="course-actions">
@@ -93,11 +93,9 @@
       </div>
       <div class="edit-course-footer">
         <button class="btn start-btn" [disabled]="isLoading" (click)="saveContent()">
-          <ng-container *ngIf="!isLoading">Сохранить</ng-container>
-          <ng-container *ngIf="isLoading">
-            <i class="pi pi-spin pi-spinner"></i> Сохранение...
-          </ng-container>
-        </button>        <button class="btn back-btn" (click)="back()">Отмена</button>
+          Сохранить
+        </button>
+        <button class="btn back-btn" (click)="back()">Отмена</button>
       </div>
     </div>
   </div>
