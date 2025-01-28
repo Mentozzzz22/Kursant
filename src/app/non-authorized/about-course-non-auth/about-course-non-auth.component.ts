@@ -9,6 +9,7 @@ import {AdditionalCourse, CourseInfo, InfoModules} from "../../../assets/models/
 import {OrderService} from "../../service/order.service";
 import {MessageService} from "primeng/api";
 import {environment} from "../../../environments/environment";
+import {FooterComponent} from "../footer/footer.component";
 
 @Component({
   selector: 'app-about-course-non-auth',
@@ -17,7 +18,8 @@ import {environment} from "../../../environments/environment";
     NgForOf,
     NgIf,
     NgClass,
-    ProgressBarModule
+    ProgressBarModule,
+    FooterComponent
   ],
   templateUrl: './about-course-non-auth.component.html',
   styleUrl: './about-course-non-auth.component.css'

@@ -14,6 +14,7 @@ import {FlowService} from "../../service/flow.service";
 import {DialogModule} from "primeng/dialog";
 import {Router} from "@angular/router";
 import {environment} from "../../../environments/environment";
+import {FooterComponent} from "../footer/footer.component";
 
 export interface kurs {
   id: number,
@@ -40,6 +41,7 @@ export interface kurs {
     NgIf,
     DialogModule,
     FormsModule,
+    FooterComponent,
 
   ],
   templateUrl: './main-page.component.html',

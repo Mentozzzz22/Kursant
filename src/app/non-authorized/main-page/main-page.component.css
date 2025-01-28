@@ -13,7 +13,8 @@
   display: flex;
   justify-content: center;
   gap: 30px;
-  margin-top: 30px;
+  margin-top: 100px;
+  padding-bottom: 30px;
 }
 
 .main-right {
@@ -178,6 +179,7 @@
   padding: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
+  height: 100%
 }
 
 .kurstar-card:hover {
@@ -194,6 +196,9 @@
 
 
 .subject-info h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 22px;
   font-weight: 600;
 }
@@ -209,6 +214,7 @@
   flex-direction: column;
   padding: 13px;
   gap: 15px;
+  flex-grow: 1
 }
 
 .kurs-info {
@@ -239,6 +245,8 @@
 }
 
 .kurs-footer {
+  border-top:0.1px solid #d9d9d9;
+  margin-top:auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -263,6 +271,7 @@
 }
 
 .kurs-price h3 {
+  margin-top: 10px;
   font-size: 19px;
   font-weight: 700;
 }
@@ -355,6 +364,7 @@
   display: flex;
   align-items: center;
   height: 30px;
+  border:none;
   background-color: #444444;
   color: #ffff;
   font-size: 10px;

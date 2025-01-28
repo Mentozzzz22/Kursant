@@ -1,127 +1,126 @@
 <div class="main-container">
-<div class="main-page">
-  <div class="main-right">
-    <div class="main-carousel">
-      <img src="../../../assets/images/mainpage-carousel.svg" alt="carousel" *ngIf="!isMobileView">
-      <img src="../../../assets/images/Carousel2.svg" alt="carousel" *ngIf="isMobileView">
-    </div>
-    <div class="nav-search">
-      <img src="assets/images/search_icon.svg" width="16" height="16"  alt="search" class="search">
-      <input type="text" pInputText [(ngModel)]="searchText" placeholder="Курс или поток" (keydown.enter)="executeSearch()" />
-    </div>
-    <div class="lil-cards">
-      <div class="lil-card">
-        <img src="../../../assets/images/lil-card-img.svg" alt="lil-card">
-        <div>
-          <p>{{flows_count}} поток</p>
-          <h3>Потоктар</h3>
+  <div class="main-page">
+    <div class="main-right">
+      <div class="main-carousel">
+        <img src="../../../assets/images/mainpage-carousel.svg" alt="carousel" *ngIf="!isMobileView">
+        <img src="../../../assets/images/Carousel2.svg" alt="carousel" *ngIf="isMobileView">
+      </div>
+      <div class="nav-search">
+        <img src="assets/images/search_icon.svg" width="16" height="16"  alt="search" class="search">
+        <input type="text" pInputText [(ngModel)]="searchText" placeholder="Курс или поток" (keydown.enter)="executeSearch()" />
+      </div>
+      <div class="lil-cards">
+        <div class="lil-card">
+          <img src="../../../assets/images/lil-card-img.svg" alt="lil-card">
+          <div>
+            <p>{{flows_count}} поток</p>
+            <h3>Потоктар</h3>
+          </div>
+        </div>
+        <div class="lil-card">
+          <img src="../../../assets/images/lil-card-img.svg" alt="lil-card">
+          <div>
+            <p>{{courses_count}} курс</p>
+            <h3>Курстар</h3>
+          </div>
+        </div>
+        <div class="lil-card">
+          <img src="../../../assets/images/lil-card-img.svg" alt="lil-card">
+          <div>
+            <p>{{teachers_count}} мұғалім</p>
+            <h3>Мұғалімдер</h3>
+          </div>
         </div>
       </div>
-      <div class="lil-card">
-        <img src="../../../assets/images/lil-card-img.svg" alt="lil-card">
-        <div>
-          <p>{{courses_count}} курс</p>
-          <h3>Курстар</h3>
+      <div class="kurstar">
+        <div class="kurstar-text">
+          <h2>Курстар</h2>
+          <p (click)="toggleShowAll()">{{ showAll ? 'Жабу' : 'Барлық пәндер тізімі' }}</p>
         </div>
-      </div>
-      <div class="lil-card">
-        <img src="../../../assets/images/lil-card-img.svg" alt="lil-card">
-        <div>
-          <p>{{teachers_count}} мұғалім</p>
-          <h3>Мұғалімдер</h3>
-        </div>
-      </div>
-    </div>
-    <div class="kurstar">
-      <div class="kurstar-text">
-        <h2>Курстар</h2>
-        <p (click)="toggleShowAll()">{{ showAll ? 'Жабу' : 'Барлық пәндер тізімі' }}</p>
-      </div>
-      <div class="kurstar-cards" >
-        <div class="kurstar-card" *ngFor="let kurs of (showAll ? courses : courses.slice(0, 3))"  (click)="openDetails(kurs.id!)">
-          <img [src]="kurs.poster" alt="subject1" class="kurs-images">
-          <div class="kurs-card-content" >
-            <div class="kurs-info" >
-              <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ kurs.modules_count }} бөлім</p>
-              <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ kurs.lessons_count }} сабақ</p>
-            </div>
-            <div class="subject-info" >
-              <h3>{{ kurs.name }}</h3>
-              <p>Ең жақын поток: {{ kurs.flow_date }}</p>
-              <hr>
-            </div>
-            <div class="kurs-footer">
-              <div class="kurs-price">
-                <h3>{{ kurs.current_price }} тг</h3>
-                <p>бір реттік төлем</p>
+        <div class="kurstar-cards" >
+          <div class="kurstar-card" *ngFor="let kurs of (showAll ? courses : courses.slice(0, 3))"  (click)="openDetails(kurs.id!)">
+            <img [src]="kurs.poster" alt="subject1" class="kurs-images">
+            <div class="kurs-card-content" >
+              <div class="kurs-info" >
+                <p class="bolim"><img src="../../../assets/images/bolim.svg" alt="bolim"> {{ kurs.modules_count }} бөлім</p>
+                <p class="sabak"><img src="../../../assets/images/sabak.svg" alt="sabak"> {{ kurs.lessons_count }} сабақ</p>
               </div>
-              <button (click)="addToCart(kurs.id!); $event.stopPropagation()" class="course-cart-button">Корзинаға</button>
+              <div class="subject-info" >
+                <h3>{{ kurs.name }}</h3>
+                <p>Ең жақын поток: {{ kurs.flow_date }}</p>
+              </div>
+              <div class="kurs-footer">
+                <div class="kurs-price">
+                  <h3>{{ kurs.current_price }} тг</h3>
+                  <p>бір реттік төлем</p>
+                </div>
+                <button (click)="addToCart(kurs.id!); $event.stopPropagation()" class="course-cart-button">Корзинаға</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <h2>Потоктар тізімі</h2>
+      <h2>Потоктар тізімі</h2>
 
-    <div class="potoktar-tizimi">
-      <div *ngFor="let flow of flows; let i = index" [ngClass]="i % 2 === 0 ? 'potok-card' : 'potok-card1'">
-        <div class="potok-info">
-          <p>Поток #{{ flow.flow_id }}</p>
-          <p>Дата: {{ flow.starts_at }}</p>
-        </div>
-        <h3>{{ flow.name }}</h3>
-        <div class="potok-subjects">
-          <p class="subject_teacher" *ngFor="let course of flow.courses">
-            {{ course.name }} | {{ course.teacher_fullname }}
-          </p>
-        </div>
-        <div class="potok-footer">
-          <button (click)="showDialog()">Потокқа жазылу</button>
-        </div>
-      </div>
-    </div>
-
-
-  </div>
-  <div class="main-left">
-    <div class="main-card">
-      <div class="card-img">
-        <img src="../../../assets/images/kurska-jazylu-img.svg" alt="kurska-jazylu">
-      </div>
-      <div class="card-content">
-        <h2>Курсқа жазылу</h2>
-        <p>Төмендегі ақпараттарды толтырып курс жайлы ақпарат ала аласыз</p>
-      </div>
-      <div class="card-form">
-        <form [formGroup]="orderForm">
-        <div class="card-input">
-          <p>Аты-жөніңіз</p>
-          <input type="text" pInputText placeholder="Аты-жөніңіз" formControlName = "fullname"/>
-        </div>
-        <div class="card-input">
-          <p>Телефон номеріңіз</p>
-          <input type="text" pInputText placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'" prefix="+7 " formControlName = "phone_number"/>
-        </div>
-          <div class="card-submit">
-            <button class="card-button" (click)="submitOrder()">
-              Заявка қалдыру
-            </button>
+      <div class="potoktar-tizimi">
+        <div *ngFor="let flow of flows; let i = index" [ngClass]="i % 2 === 0 ? 'potok-card' : 'potok-card1'">
+          <div class="potok-info">
+            <p>Поток #{{ flow.flow_id }}</p>
+            <p>Дата: {{ flow.starts_at }}</p>
           </div>
-        </form>
+          <h3>{{ flow.name }}</h3>
+          <div class="potok-subjects">
+            <p class="subject_teacher" *ngFor="let course of flow.courses">
+              {{ course.name }} | {{ course.teacher_fullname }}
+            </p>
+          </div>
+          <div class="potok-footer">
+            <button (click)="showDialog()">Потокқа жазылу</button>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="mektep-statistika">
-      <h3>Мектеп статистикасы</h3>
-      <div class="statistika-images">
-        <img src="../../../assets/images/statistika-img.svg" alt="statistika">
-<!--        <img src="../../../assets/images/statistika-img.svg" alt="statistika">-->
+
+    </div>
+    <div class="main-left">
+      <div class="main-card">
+        <div class="card-img">
+          <img src="../../../assets/images/kurska-jazylu-img.svg" alt="kurska-jazylu">
+        </div>
+        <div class="card-content">
+          <h2>Курсқа жазылу</h2>
+          <p>Төмендегі ақпараттарды толтырып курс жайлы ақпарат ала аласыз</p>
+        </div>
+        <div class="card-form">
+          <form [formGroup]="orderForm">
+            <div class="card-input">
+              <p>Аты-жөніңіз</p>
+              <input type="text" pInputText placeholder="Аты-жөніңіз" formControlName = "fullname"/>
+            </div>
+            <div class="card-input">
+              <p>Телефон номеріңіз</p>
+              <input type="text" pInputText placeholder="+7 (___) ___ __ __" [mask]="'(000) 000 00 00'" prefix="+7 " formControlName = "phone_number"/>
+            </div>
+            <div class="card-submit">
+              <button class="card-button" (click)="submitOrder()">
+                Заявка қалдыру
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="mektep-statistika">
+        <h3>Мектеп статистикасы</h3>
+        <div class="statistika-images">
+          <img src="../../../assets/images/statistika-img.svg" alt="statistika">
+          <!--        <img src="../../../assets/images/statistika-img.svg" alt="statistika">-->
+        </div>
       </div>
     </div>
   </div>
 </div>
-</div>
-
+<app-footer></app-footer>
 <p-dialog  [modal]="true" [(visible)]="visible" [style]="{ width: '37rem' }" draggable="false">
   <div class="main-card">
     <div class="card-img">
