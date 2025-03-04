@@ -8,7 +8,7 @@
       <div class="search-form" >
         <label for="supplierSearch" class="visually-hidden">Модуль или тема</label>
         <input type="text" id="supplierSearch"  placeholder="Модуль или тема" class="search-input" [(ngModel)]="searchText"/>
-        <button type="submit" class="search-button" (click)="searchApplications()">Поиск</button>
+        <button type="submit" class="search-button" (click)="searchApplications(null)">Поиск</button>
       </div>
     </div>
   </div>
@@ -17,7 +17,7 @@
   <div class="content-buttons">
     <button class="content-button"
             *ngFor="let flows of flow; let i = index"
-            (click)="searchApplications()"
+            (click)="searchApplications(flows.id)"
             [class.active]="flows.id === activeFlowId">
       Поток {{flows.index}}
     </button>

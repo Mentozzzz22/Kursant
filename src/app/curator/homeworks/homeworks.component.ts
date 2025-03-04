@@ -83,7 +83,7 @@ export class HomeworksComponent implements OnInit {
     }
   }
 
-  loadCuratorHomeWork(id: number,search:string): void {
+  loadCuratorHomeWork(id: number|null,search:string): void {
     if (id !== null && id !== undefined) {
       this.activeFlowId = id;
       this.learnerHomeWorkService.getFlowHomeWorks(id,search).subscribe(data => {
@@ -105,10 +105,11 @@ export class HomeworksComponent implements OnInit {
     }
   }
 
-  searchApplications() {
-    if(this.flowId != null){
-      this.loadCuratorHomeWork(this.flowId, this.searchText);
+  searchApplications(flowId: number|null) {
+    if (flowId) {
+      this.flowId = flowId
     }
+    this.loadCuratorHomeWork(this.flowId, this.searchText);
   }
 
   calculateProgress(numberFirst: number, numberSecond: number): number {
