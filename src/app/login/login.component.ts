@@ -40,6 +40,8 @@ export class LoginComponent implements OnInit {
     //     this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Введите корректный код' });
     //   }
     // });
+
+    localStorage.clear();
   }
 
   sendCode() {

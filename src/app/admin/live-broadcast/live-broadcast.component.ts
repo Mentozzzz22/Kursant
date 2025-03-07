@@ -90,13 +90,16 @@ export class LiveBroadcastComponent implements OnInit{
 
   loadFlows() {
     this.flowService.getMeetFlows().subscribe(data => {
-      this.flows = data
-      if(this.selectedModal=='update'){
-        if (this.flowId) {
-          this.loadCourse(this.flowId);
-        }
+      this.flows = data;
+      console.log(this.flows);
+
+      if (this.selectedModal === 'update' && this.flowId) {
+        this.loadCourse(this.flowId);
+      } else {
+        this.flowId = this.flows.length > 0 ? this.flows[0].flow_id : 0;
+        this.loadCourse(this.flowId);
       }
-    })
+    });
   }
 
   loadFlowsByModal() {

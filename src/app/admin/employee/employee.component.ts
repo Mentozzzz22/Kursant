@@ -59,6 +59,7 @@ export class EmployeeComponent implements OnInit {
     {label: 'Ученики', value: 'learner'},
     {label: 'Курсы', value: 'course'},
     {label: 'Кураторы', value: 'curator'},
+    {label: 'Тестант', value: 'testant'},
   ];
 
   ngOnInit(): void {

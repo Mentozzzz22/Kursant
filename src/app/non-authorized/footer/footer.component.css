@@ -20,6 +20,17 @@
   margin: 40px auto 0px auto;
 }
 
+.contacts{
+  display: flex;
+  flex-direction: column;
+}
+
+.icons{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .logo-img img {
   max-width: 340px;
   height: auto;

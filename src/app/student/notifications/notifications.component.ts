@@ -29,7 +29,7 @@ export class NotificationsComponent implements OnInit {
     this.notificationService.getMessages().subscribe(data => {
       this.messages = data.messages.map(message => ({
         ...message,
-        text: this.sanitizer.bypassSecurityTrustHtml(message.text) // Bypass sanitization
+        text: this.sanitizer.bypassSecurityTrustHtml(message.text)
       }));
     });
   }

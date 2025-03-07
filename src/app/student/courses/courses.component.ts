@@ -65,8 +65,6 @@ export class CoursesComponent implements OnInit {
           poster: `${this.userUrl}/media/${course.poster}`
         }));
 
-        console.log('Learner Courses:', this.learnerCourses);
-        console.log('Other Courses:', this.otherCourses);
       },
       (error) => {
         console.error('Error fetching courses:', error);
