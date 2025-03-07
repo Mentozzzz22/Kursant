@@ -12,7 +12,7 @@
 .cart-container {
   display: flex;
   gap: 30px;
-  margin-top: 30px;
+  margin-top: 100px;
 
 }
 
@@ -307,6 +307,10 @@
 }
 
 @media (max-width: 1440px) {
+  .cart-container {
+    padding: 0 15px;
+  }
+
   .lil-cards {
     flex-direction: row;
     gap: 15px;
@@ -388,8 +392,8 @@
   .cart-container {
     flex-direction: column;
     gap: 20px;
-    padding: 20px;
-    margin-top: 20px;
+    padding: 15px;
+    margin-top: 80px;
   }
 
   .main-left,
@@ -440,7 +444,7 @@
     flex-direction: column;
     gap: 15px;
     padding: 15px;
-    margin-top: 15px;
+    margin-top: 110px;
   }
 
 
@@ -500,8 +504,8 @@
   .cart-container {
     flex-direction: column;
     gap: 10px;
-    padding: 10px;
-    margin-top: 10px;
+    padding: 0 15px;
+    margin-top: 105px;
   }
 
   .main-left,

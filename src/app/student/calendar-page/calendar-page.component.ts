@@ -182,10 +182,7 @@ export class CalendarPageComponent implements OnInit, OnDestroy  {
       const formattedStartTime = e.start ? e.start.toLocaleString() : 'No start time';
       const formattedEndTime = e.end ? e.end.toLocaleString() : 'No end time';
 
-      console.log(`title ${e.title}`);
-      console.log(`color ${e.color?.secondary}`);
-      console.log(`formattedStartTime ${formattedStartTime}`);
-      console.log(`formattedEndTime ${formattedEndTime}`);
+
 
       this.eventTitle = e.title;
       this.primaryColor = e.color?.primary;

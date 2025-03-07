@@ -1,24 +1,25 @@
-<div class="navbar-container">
-  <div class="nav-logo">
-    <a href="#"><img src="../../../assets/images/navbar-Kursant.svg" alt="Kursant"></a>
-  </div>
-  <div class="nav-search">
-    <img src="assets/images/search_icon.svg" width="16" height="16" (click)="onSearchChange()" alt="search" class="search">
-    <input type="text" pInputText placeholder="Курс или поток" [(ngModel)]="searchText" (keydown.enter)="onSearchChange()"/>
-  </div>
-  <div class="nav-buttons">
-    <div class="nav-cart-logo">
-      <a routerLink="cart">
-        <div class="icon-wrapper">
-          <img src="../../../assets/images/navbar-cart-logo.svg" alt="cart-logo" class="cart-icon">
-          <p-badge *ngIf="cartCount > 0" [value]="cartCount" severity="danger"></p-badge>
-        </div>
-      </a>
+<div class="navbar-wrapper">
+  <div class="navbar-container">
+    <div class="nav-logo">
+      <a href="#"><img src="../../../assets/images/kursant_logo.png" alt="Kursant"></a>
     </div>
+    <div class="nav-search">
+      <img src="assets/images/search_icon.svg" width="16" height="16" (click)="onSearchChange()" alt="search" class="search">
+      <input type="text" pInputText placeholder="Курс или поток" [(ngModel)]="searchText" (keydown.enter)="onSearchChange()"/>
+    </div>
+    <div class="nav-buttons">
+      <div class="nav-cart-logo">
+        <a routerLink="cart">
+          <div class="icon-wrapper">
+            <img src="../../../assets/images/navbar-cart-logo.svg" alt="cart-logo" class="cart-icon">
+            <p-badge *ngIf="cartCount > 0" [value]="cartCount" severity="danger"></p-badge>
+          </div>
+        </a>
+      </div>
 
-    <div class="nav-login">
-      <button pButton type="button" class="nav-login_button" routerLink="login">Кіру</button>
+      <div class="nav-login">
+        <button pButton type="button" class="nav-login_button" routerLink="login">Кіру</button>
+      </div>
     </div>
   </div>
 </div>
-

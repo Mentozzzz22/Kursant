@@ -8,6 +8,8 @@
   display: flex;
   justify-content: center;
   padding: 30px 30px;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
 .main-right {
@@ -152,9 +154,9 @@
 }
 
 .kurs-images {
-  width: 289px;
-  height: 138px;
-  object-fit: cover;
+  width: 100%;
+  height: auto;
+  border-radius:15px;
 }
 
 .subject-info h3 {
@@ -273,9 +275,8 @@ p-progressBar {
 }
 
 .kurs-images {
-  width: 289px;
-  height: 138px;
-  border-radius:10px;
+  width: 100%;
+  height: auto;
 }
 
 .subject-info h3 {
@@ -515,7 +516,6 @@ p-progressBar {
   .kurs-images {
     width: 100%;
     height: auto;
-    border-radius: 10px;
   }
 }
 

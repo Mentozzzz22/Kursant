@@ -46,6 +46,6 @@ export class NonAuthGuard implements CanActivate {
         })
       );
     }
-    return of(true); // Allow navigation for non-logged-in users
+    return of(true);
   }
 }

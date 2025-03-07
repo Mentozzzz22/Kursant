@@ -122,7 +122,6 @@ export class SabakPageComponent implements OnInit,OnDestroy {
 
   public getLesson(lessonId: number) {
     this.learnerCourseService.getLesson(lessonId).subscribe((data) => {
-      console.log('Data received:', data);
 
       this.lesson = data;
       this.lessons = data.lessons;
@@ -303,9 +302,9 @@ export class SabakPageComponent implements OnInit,OnDestroy {
 
 
   loadLessonVideo(lessonId: number) {
-    this.videoUrl = this.videoService.getLessonVideoUrl(lessonId, 720);
-    const video480Url = this.videoService.getLessonVideoUrl(lessonId, 480);
-    const video720Url = this.videoService.getLessonVideoUrl(lessonId, 720);
+    this.videoUrl = this.videoService.getLessonVideoUrl(lessonId, 1080);
+    // const video480Url = this.videoService.getLessonVideoUrl(lessonId, 480);
+    // const video720Url = this.videoService.getLessonVideoUrl(lessonId, 720);
     const video1080Url = this.videoService.getLessonVideoUrl(lessonId, 1080);
 
     this.player.source = {
@@ -315,17 +314,17 @@ export class SabakPageComponent implements OnInit,OnDestroy {
           src: video1080Url,
           type: 'video/mp4',
           size: 1080
-        },
-        {
-          src: video720Url,
-          type: 'video/mp4',
-          size: 720
-        },
-        {
-          src: video480Url,
-          type: 'video/mp4',
-          size: 480
         }
+        // {
+        //   src: video720Url,
+        //   type: 'video/mp4',
+        //   size: 720
+        // },
+        // {
+        //   src: video480Url,
+        //   type: 'video/mp4',
+        //   size: 480
+        // }
       ]
     };
   }
@@ -333,10 +332,10 @@ export class SabakPageComponent implements OnInit,OnDestroy {
   changeQuality(quality: number) {
     let videoUrl: string = '';
 
-    if (quality === 720) {
-      videoUrl = this.videoService.getLessonVideoUrl(this.lessonId, 720);
-    } else if (quality === 480) {
-      videoUrl = this.videoService.getLessonVideoUrl(this.lessonId, 480);
+    if (quality === 1080) {
+      videoUrl = this.videoService.getLessonVideoUrl(this.lessonId, 1080);
+    } else if (quality === 1080) {
+      videoUrl = this.videoService.getLessonVideoUrl(this.lessonId, 1080);
     }
 
     if (videoUrl) {
