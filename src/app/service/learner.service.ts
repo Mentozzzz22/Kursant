@@ -51,4 +51,20 @@ export class LearnerService {
     return this.http.post<any>(`${this.apiUrl}/delete_learner/`, { id }, { headers });
   }
 
+  getLearnerCourses(id: number): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+    const params = new HttpParams().set('id', id.toString());
+
+
+    return this.http.get<any>(`${this.apiUrl}/get_learner_courses/`, { headers,params });
+  }
+
+  saveLearnerCourses(data: any): Observable<any> {
+    const token = this.userService.token;
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    return this.http.post<any>(`${this.apiUrl}/save_learner_courses/`, data, { headers });
+  }
+
 }

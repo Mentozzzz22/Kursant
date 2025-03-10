@@ -317,6 +317,9 @@ export class ApplicationSalesComponent implements OnInit{
     this.modalImageUrl = imageUrl;
     this.modalImageCaption = imageCaption;
     this.isModalVisible = true;
+    if (this.selectedApplication) {
+      this.selectedApplicationType.showCancelReason = false;
+    }
   }
 
   closeModal() {
@@ -345,6 +348,10 @@ export class ApplicationSalesComponent implements OnInit{
 
       let phone = this.applicationsForm.value.learner_phone_number || '';
 
+      if (phone) {
+        phone = phone.replace(/\D/g, '');
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      }
 
       const form = new FormData();
       form.append('order_id', this.selectedApplication.order_id.toString());
@@ -408,6 +415,10 @@ export class ApplicationSalesComponent implements OnInit{
 
       let phone = this.applicationAddForm.value.learner_phone_number || '';
 
+      if (phone) {
+        phone = phone.replace(/\D/g, '');
+        phone = `+7 (${phone.slice(0, 3)}) ${phone.slice(3, 6)} ${phone.slice(6, 8)} ${phone.slice(8, 10)}`;
+      }
 
       const form = new FormData();
       form.append('learner_fullname', addFormData.learner_fullname || '');

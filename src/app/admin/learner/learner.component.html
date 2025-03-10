@@ -191,6 +191,14 @@
 
       </div>
     </form>
+
+    <div class="form-group" *ngIf="learnerCourses.length > 0">
+      <label style="margin-bottom:7px">Курсы</label>
+      <div *ngFor="let course of learnerCourses" class="courses-flex">
+        <span> {{ course.course_name }} (до {{ course.expires_at }})</span>
+        <p-checkbox [binary]="true" [(ngModel)]="course.is_active"></p-checkbox>
+      </div>
+    </div>
   </ng-container>
 
   <ng-template pTemplate="footer">

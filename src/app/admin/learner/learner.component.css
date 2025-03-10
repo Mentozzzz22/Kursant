@@ -353,3 +353,9 @@
 .add-btn i, .close-btn i {
   font-size: 1.2em;
 }
+
+.courses-flex{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom:7px;
+}

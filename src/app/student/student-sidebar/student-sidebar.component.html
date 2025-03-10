@@ -1,12 +1,12 @@
 <div class="top-bar" >
   <div class="burger-menu" (click)="toggleMobileSidebar()">☰</div>
-  <img src="assets/images/navbar-Kursant.svg" alt="KursAnt" class="logo" />
+  <img src="assets/images/kursant_logo.png" alt="KursAnt" class="logo" />
 </div>
 
 <div class="sidebar" [ngClass]="{'expanded': isExpanded || isMobileSidebarOpen}"
      (mouseenter)="toggleExpand(true)" (mouseleave)="toggleExpand(false)">
   <div class="sidebar-header" *ngIf="!isMobileSidebarOpen;">
-    <img *ngIf="isExpanded || isMobileSidebarOpen; else collapsedLogo" src="assets/images/navbar-Kursant.svg" alt="KursAnt" class="logo">
+    <img *ngIf="isExpanded || isMobileSidebarOpen; else collapsedLogo" src="assets/images/kursant_logo.png" alt="KursAnt" class="logo">
     <ng-template #collapsedLogo>
       <img src="assets/images/KursAnt.svg" alt="KursAnt Collapsed" class="collapsed-logo">
     </ng-template>

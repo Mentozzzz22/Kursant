@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ConfirmationService, MessageService, PrimeTemplate} from "primeng/api";
 import {Employee} from "../../../assets/models/employee.interface";
 import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
@@ -49,7 +49,7 @@ export class LearnerComponent implements OnInit {
   public selectedCurator: Employee | null = null;
   public regions: any[] = [];
   public filteredRegions: string[] = [];
-
+  learnerCourses: any[] = [];
 
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
 
@@ -128,6 +128,10 @@ export class LearnerComponent implements OnInit {
     phone_number: ['', Validators.required],
     region: ['', Validators.required],
     is_active: [true, Validators.required]
+  });
+
+  public learnerCourseForm = this.fb.group({
+    courses: this.fb.array([])
   });
 
   onSubmit(): void {
@@ -232,7 +236,7 @@ export class LearnerComponent implements OnInit {
         region: this.learnerUpdateForm.value.region || '',
         is_active: this.learnerUpdateForm.value.is_active ?? true
       };
-
+      this.saveLearnerCourses();
       this.learnerService.saveLeaner(learnerData).subscribe(
         response => {
           this.messageService.add({
@@ -285,6 +289,24 @@ export class LearnerComponent implements OnInit {
           is_active: leaner.is_active ?? true
         });
 
+        this.learnerService.getLearnerCourses(learnerId).subscribe(data => {
+          if (!Array.isArray(data.learner_courses)) {
+            console.error("Ошибка: data.learner_courses не массив", data);
+            return;
+          }
+
+          this.learnerCourses = data.learner_courses;
+          const courseArray = this.learnerCourseForm.get('courses') as FormArray;
+          courseArray.clear();
+
+          data.learner_courses.forEach((course: { id: any; is_active: any; }) => {
+            courseArray.push(this.fb.group({
+              id: [course.id, Validators.required],
+              is_active: [course.is_active, Validators.required]
+            }));
+          });
+        });
+
         this.selectedCurator = leaner;
         this.visibleShow = true;
       },
@@ -293,6 +315,47 @@ export class LearnerComponent implements OnInit {
           severity: 'error',
           summary: 'Ошибка',
           detail: 'Не удалось загрузить данные сотрудника'
+        });
+      }
+    );
+  }
+
+
+  saveLearnerCourses(): void {
+    if (!this.selectedCurator?.id) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Ошибка',
+        detail: 'Не выбран обучающийся'
+      });
+      return;
+    }
+
+    const requestData = {
+      learner_id: this.selectedCurator.id,
+      learner_courses_data: this.learnerCourses.map(course => ({
+        id: course.id,
+        is_active: course.is_active
+      }))
+    };
+
+    this.learnerService.saveLearnerCourses(requestData).subscribe(
+      (response: any) => {
+        if (response.success) {
+          console.log('успешно');
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось сохранить курсы'
+          });
+        }
+      },
+      error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Произошла ошибка при сохранении курсов'
         });
       }
     );
